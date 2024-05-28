@@ -27,16 +27,14 @@ namespace WMS.Controllers
             return View();
         }
         [HttpGet]
-        public JsonResult CheckIdGoodsInSystem(string epc)
+        public JsonResult CheckIdGoodsInSystem(string upc,string warehouse)
         {
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
                 var session = (ApiAccount)Session["user"];
-                var checkEpc = (from e in db.EPCs where e.IdEPC == epc
-                                join w in db.WareHouses on e.IdWareHouse equals w.Id into warehouseGroup
-                                from w in warehouseGroup.DefaultIfEmpty()
-                                where e.IdEPC == epc
+                var checkEpc = (from e in db.DetailWareHouses where e.IdGoods == upc && e.IdWareHouse == warehouse
+                                join w in db.WareHouses on e.IdWareHouse equals w.Id
                                 select new
                                 {
                                     e.IdGoods,
