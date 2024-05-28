@@ -1,0 +1,412 @@
+﻿﻿
+@{
+    ViewBag.Title = Resources.Resource.Thêm_Khách_Hàng_Doanh_Nghiệp;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form id="form">
+    <div class="card card-custom">
+        <div class="card-header">
+            <h3 class="card-title">
+                @Resources.Resource.Thêm_Khách_Hàng__Tổ_Chức_
+            </h3>
+        </div>
+        <!--begin::Form-->
+
+        <div class="card-body">
+            <div class="form-group mb-8">
+                <div class="alert alert-custom alert-default" role="alert">
+                    <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                    <div class="alert-text">
+                        @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Kiểu_Khách_Hàng <span style="color:red"> (*) </span></label>
+                <div class="col-10 col-form-label">
+                    <div class="radio-inline">
+                        <label class="radio radio-outline radio-success">
+                            <input type="radio" value="1" name="radios18" checked="checked">
+                            <span></span> @Resources.Resource.Tổ_Chức
+                        </label>
+                        <label class="radio radio-outline radio-success ">
+                            <input type="radio" value="2" name="radios18">
+                            <span></span> @Resources.Resource.Cá_Nhân
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Mã_Số_Thuế<span style="color:red"> (*) </span></label>
+                        <div class="col-10">
+                            <input required class="form-control" type="number" placeholder="@Resources.Resource.Mã_Số_Thuế" name="taxcode" onkeyup="getInfoFromTax()" id="taxCode" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Mã_Khách_Hàng<span style="color:red"> (*) </span></label>
+                        <div class="col-10">
+                            <div class="input-group-prepend">
+                                <input required class="form-control" readonly value="@ViewBag.IDNext" min="0000001" max="1000000" onkeyup="ValidateId()" onclick="ValidateId()" name="id" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Họ___Tên<span style="color:red"> (*) </span></label>
+                        <div class="col-10">
+                            <input required class="form-control" type="text" placeholder="@Resources.Resource.Họ___Tên" name="name" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Địa_Chỉ</label>
+                        <div class="col-10">
+                            <input class="form-control" type="text" placeholder="@Resources.Resource.Địa_Chỉ" name="address" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Website </label>
+                        <div class="col-10">
+                            <div class="input-group ">
+                                <input class="form-control" type="text" placeholder="Website" name="website" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group row">
+                        <label class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Loại_Khách_Hàng <span style="color:red"> (*) </span></label>
+                        <div class="col-10">
+                            <div class="input-group">
+                                <select class="form-control select2" data-id="kt_select2_1" name="typeCustomer">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Fax </label>
+                        <div class="col-10">
+                            <input class="form-control" type="number" placeholder="@Resources.Resource.Số_Fax" name="fax" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Điện_Thoại</label>
+                        <div class="col-10">
+                            <input class="form-control" type="number" placeholder="@Resources.Resource.Số_Điện_Thoại" name="phone" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="example-email-input" class="col-xl-2 col-lg-2 col-form-label">Email</label>
+                        <div class="col-10">
+                            <input class="form-control" type="email" placeholder="example@example.com" name="email" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-email-input" class="col-xl-1 col-lg-1 col-form-label">@Resources.Resource.Ghi_chú</label>
+                <div class="col-xl-11">
+                    <textarea class="form-control" name="des"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-email-input" class="col-2 col-form-label">@Resources.Resource.Trạng_Thái</label>
+                <div class="col-2">
+                    <input class="form-control" type="checkbox" name="status" checked />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card card-custom">
+            <div class="card-header card-header-tabs-line">
+                <div class="card-toolbar">
+                    <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_2">@Resources.Resource.Thông_Tin_Khác</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_2_2">@Resources.Resource.Tài_Khoản_Ngân_Hàng</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <!--Thông Tin Khác-->
+                    <div class="tab-pane fade active show" id="kt_tab_pane_1_2" role="tabpanel">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Nhân_Viên_Phụ_Trách <span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control select2" data-id="kt_select2_1" name="idUser">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Thẻ_Thành_Viên <span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control" name="membershipCard"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Nguồn_Khách_Hàng<span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control" name="customerResources"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ngành_Nghề <span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control" name="career"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hạn_Mức_Nợ</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" onkeyup="validateAndFormatNumber('debtLimit')" value="0" name="debtLimit" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Ngày_Được_Nợ</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" onkeyup="validateAndFormatNumber('numberDaysOwed')" value="0" name="numberDaysOwed" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Phương_Thức_Thanh_Toán<span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control" name="paymentMethods"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Mã_TK_Hạch_Toán <span style="color:red"> (*) </span></label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <select class="form-control select2" data-id="kt_select2_1" name="accountingAccountCode"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Tài Khoản Ngân Hàng-->
+                    <div class="tab-pane fade active" id="kt_tab_pane_2_2" role="tabpanel">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Tài_Khoản_1</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" placeholder="" name="stk1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Thông_Tin</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" placeholder="@Resources.Resource.Tên__Ngân_Hàng" name="infoStk1" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Tài_Khoản_2</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" placeholder="" name="stk2" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Thông_Tin</label>
+                                    <div class="col-10">
+                                        <div class="input-group ">
+                                            <input class="form-control" type="text" placeholder="@Resources.Resource.Tên__Ngân_Hàng" name="infoStk2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Tài Khoản Ngân Hàng-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" class="btn btn-success mr-2" id="submit">@Resources.Resource.Thêm</button>
+                <a href="Customer/index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+        var dataTC = [];
+        TypeCustomer(1)
+        function TypeCustomer(page) {
+            $.ajax({
+                url: '/TypeCustomer/List',
+                type: 'get',
+                data: {
+                    pagenum: 10,
+                    page: page,
+                    seach: ''
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        console.log(data)
+                        // Tiếp tục gọi AJAX để lấy dữ liệu của trang tiếp theo nếu cần
+                        if (page <= data.pages) {
+                            dataTC = dataTC.concat(data.c)
+                            TypeCustomer(page + 1);
+                        } else {
+                            let table = ''
+                            $.each(dataTC, function (k, v) {
+                                table += '<option value="' + v.id + '">' + v.name + '</option>'
+                            });
+                            $('select[name="typeCustomer"]').append(table);
+                        }
+
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            })
+        }
+        var dataUC = [];
+        UserCharge(1)
+        function UserCharge(page) {
+            $.ajax({
+                url: '/Register/List',
+                type: 'get',
+                data: {
+                    pagenum: 1,
+                    page: page,
+                    seach: ''
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        if (page <= data.pages) {
+                            dataUC = dataUC.concat(data.c)
+                            UserCharge(page + 1);
+                        } else {
+                            let table = '<option value="-1">@Resources.Resource.Chọn_NV_Phụ_Trách</option>'
+                            $.each(dataUC, function (k, v) {
+                                table += '<option value="' + v.id + '">' + v.name + '</option>'
+                            });
+                            $('select[name="idUser"]').append(table);
+                        }
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            })
+        }
+
+        $(function MembershipCard() {
+            $.ajax({
+                url: '/Customer/Data',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        let membershipCard = '<option value="-1">@Resources.Resource.Chọn_Thẻ_Thành_Viên</option>'
+                        $.each(data.membershipCard, function (k, v) {
+                            membershipCard += '<option value="' + v.Key + '">' + v.Value + '</option>'
+                        });
+                        $('select[name="membershipCard"]').append(membershipCard);
+                        let customerResources = '<option value="-1">@Resources.Resource.Chọn_Nguồn_KH</option>'
+                        $.each(data.customerResources, function (k, v) {
+                            customerResources += '<option value="' + v.Key + '">' + v.Value + '</option>'
+                        });
+                        $('select[name="customerResources"]').append(customerResources);
+                        let career = '<option value="-1">@Resources.Resource.Chọn_Ngành_Nghề</option>'
+                        $.each(data.career, function (k, v) {
+                            career += '<option value="' + v.Key + '">' + v.Value + '</option>'
+                        });
+                        $('select[name="career"]').append(career);
+                        let paymentMethods = '<option value="-1">@Resources.Resource.Chọn_Phương_Thức_TT</option>'
+                        $.each(data.paymentMethods, function (k, v) {
+                            paymentMethods += '<option value="' + v.Key + '">' + v.Value + '</option>'
+                        });
+                        $('select[name="paymentMethods"]').append(paymentMethods);
+                        let accountingAccountCode = '<option value="-1">@Resources.Resource.Chọn_Mã_TK_Hạch_Toán</option>'
+                        $.each(data.accountingAccountCode, function (k, v) {
+                            accountingAccountCode += '<option value="' + v.Key + '">' + v.Value + '</option>'
+                        });
+                        $('select[name="accountingAccountCode"]').append(accountingAccountCode);
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            })
+        })
+
+        $("#form").submit(function (event) {
+            try {
+                event.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/customer/Add',
+                    type: 'post',
+                    dataType: "json",
+                    data: formData,
+                    contentType: false, // Không set contentType
+                    processData: false, // Không xử lý dữ liệu
+                    success: function (data) {
+                        if (data.code == 200) {
+                            Swal.fire({
+                                title: data.msg,
+                                showDenyButton: true,
+                                confirmButtonText: 'ok',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/Customer/Index";
+                                } else {
+                                    window.location.href = "/Customer/Index";
+                                }
+                            })
+                        }
+                        else {
+                            toastr.error(data.msg);
+                        }
+                    },
+                })
+            } catch (e) {
+                toastr.error(e);
+            }
+
+        })
+
+
+    </script>
+    <script src="~/assets/js/pages/crud/forms/widgets/select2.js"></script>
+
+}

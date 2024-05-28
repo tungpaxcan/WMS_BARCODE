@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Chức_Năng_Hệ_Thống;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form">
+    <div class="card card-custom">
+        <div class="card-header">
+            <h3 class="card-title">
+                @Resources.Resource.Quyền_Chức_Năng_Của_Hệ_Thống
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-3 col-form-label">@Resources.Resource.Trạng_Thái_Tồn_Kho</label>
+                <div class="col-9">
+                    <span class="switch switch-lg">
+                        <label>
+                            <input type="checkbox" checked="@ViewBag.inventorystatus" id="changeStt" name="inventorystatus" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" onclick="change()" class="btn btn-success mr-2" id="submit">@Resources.Resource.Lưu</button>
+                <a href="Customer/index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+            </div>
+        </div>
+    </div>
+</form>
+@section scripts{
+    <script>
+
+        function change() {
+            var isChecked = $("#changeStt").prop("checked");
+            $.ajax({
+                type: "POST",
+                url: "/ModelSetting/UpdateInventoryStatus",
+                data: { id: 'inventorystatus', status: isChecked },
+                success: function (data) {
+                    if (data.status == 200) {
+                        toastr.success(data.msg);
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            });
+        }
+        
+    </script>
+    }

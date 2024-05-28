@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Danh_Sách_Phiếu_Kiểm_Kê;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        /* Màu nền chung cho modal */
+        .modal-content {
+            background-color: #ffffff;
+        }
+
+        /* Màu nền cho phần header của modal */
+        .modal-header {
+            background-color: #d9d9d9;
+        }
+    </style>
+</head>
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+           @Resources.Resource.Danh_Sách_Phiếu_Kiểm_Kê
+        </h3>
+    </div>
+    <div class="card-body">
+        <!--begin::Form-->
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Từ_ngày</label>
+            <div class="col-xl-4">
+                <input class="form-control" id="tungay" placeholder="Select time" type="date" onchange="onDateSelected()">
+            </div>
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Đến_ngày</label>
+            <div class="col-xl-4">
+                <input class="form-control" id="denngay" placeholder="Select time" type="date" onchange="onDateSelected()">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Trạng_Thái_Phiếu_Kiểm</label>
+            <div class="col-xl-4">
+                <select class="form-control" id="statusStock" name="statusStock">
+                    <option value="">@Resources.Resource.Tất_Cả</option>
+                    <option value="true">@Resources.Resource.Đã_Kiểm</option>
+                    <option value="false">@Resources.Resource.Chưa_Kiểm</option>
+                    <option value="false2">@Resources.Resource.Chưa_Quét_Xong</option>
+                </select>
+            </div>
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Chọn_Kho</label>
+            <div class="col-xl-4">
+                <select class="form-control" id="warehouse" name="warehouse"></select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Phiếu_Kiểm</label>
+            <div class="col-xl-10">
+                <div class="input-group ">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                         width="38" height="38"
+                         viewBox="0 0 48 48"
+                         style=" fill:#000000;">
+                        <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path>
+                        <path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path>
+                        <path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z" transform="rotate(-45.001 38.24 38.24)"></path>
+                        <path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+                        <path fill="#BBDEFB" d="M26.9,14.2c-1.7-2-4.2-3.2-6.9-3.2s-5.2,1.2-6.9,3.2c-0.4,0.4-0.3,1.1,0.1,1.4c0.4,0.4,1.1,0.3,1.4-0.1C16,13.9,17.9,13,20,13s4,0.9,5.4,2.5c0.2,0.2,0.5,0.4,0.8,0.4c0.2,0,0.5-0.1,0.6-0.2C27.2,15.3,27.2,14.6,26.9,14.2z"></path>
+                    </svg>
+                    <input class="form-control" type="search" placeholder="@Resources.Resource.Tìm_Mã_Phiếu_Kiểm" id="seachidStock" />
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height: 500px;overflow-y: scroll;">
+            <div class="col-sm-12">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                    <thead>
+                        <tr role="row">
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.STT</th>
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Phiếu_Kiểm</th>
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Tên_Kho</th>
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Ngày_Tạo</th>
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Trạng_Thái</th>
+                            <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 105px;" aria-label="Actions">@Resources.Resource.Trạng_Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal-->
+<div class="modal fade show" id="showlist" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Resources.Resource.Chi_Tiết_Phiếu_Kiểm_Kê - <span name="detailReceiptStock"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:950px">
+                    <thead>
+                        <tr role="row">
+                            <th>@Resources.Resource.STT</th>
+                            <th>@Resources.Resource.Mã_Hàng</th>
+                            <th>@Resources.Resource.Tên_Hàng</th>
+                            <th>@Resources.Resource.Kho_Hàng</th>
+                            <th>@Resources.Resource.Số_Lượng_Tồn</th>
+                            <th> @Resources.Resource.Số_Lượng_Kiểm_Kê</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd1">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCloseModal" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">@Resources.Resource.Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btnCloseModal").click(function () {
+                $("#showlist").modal('hide');
+            });
+        });
+        WareHouse()
+        function WareHouse() {
+            $.ajax({
+                url: '/Stock/WareHouse',
+                type: 'get',
+                success: function (data) {
+                    $('#warehouse').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="">@Resources.Resource.Tất_Cả</option>'
+                        $.each(data.w, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#warehouse').append(table);
+                        SearchStock()
+                    } else (
+                        toastr.error(data.msg)
+                    )
+                }
+            })
+        }
+        //hiển thị danh sách bằng tìm id
+        $('#seachidStock').keyup(function (e) {
+            SearchStock();
+        });
+
+        //hiển thị danh sách bằng chọn kho
+        $(document).on('change', 'select[name="warehouse"]', function () {
+            SearchStock()
+        });
+        //hiển thị danh sách bằng chọn trạng thái
+        $(document).on('change', 'select[name="statusStock"]', function () {
+            SearchStock()
+        });
+        //hiển thị danh sách khi chọn ngày
+        function onDateSelected() {
+            SearchStock()
+        }
+        // SHowListStock Lên Table
+        function SearchStock() {
+            var l = $('#tungay').val().trim() == '' ? "1900-12-12" : $('#tungay').val().trim();
+            var f = $('#denngay').val().trim() == '' ? "3000-12-12" : $('#denngay').val().trim();
+            var idwarehouse = $('#warehouse option:selected').val();
+            var idStock = $('#seachidStock').val();
+            var status;
+            // Kiểm tra xem localStorage có giá trị 'clicksaleorder' hay không
+            if (localStorage.getItem('stockStatus')) {
+
+                if (localStorage.getItem('stockStatus') === 'false') {
+                    status = 'false'; // Sử dụng giá trị từ localStorage
+                    localStorage.removeItem('stockStatus')
+                    document.getElementById("statusStock").selectedIndex = 2;// hiển thị select chưa quét
+                }
+                else {
+                    status = $('#statusStock').val(); // Sử dụng giá trị từ #statuspurchase
+                }
+            }
+            else {
+                status = $('#statusStock').val();
+            }
+            $.ajax({
+                url: '/stock/ShowListStock',
+                type: 'get',
+                data: { l, f,idwarehouse,idStock, status},
+                success: function (data) {
+                    $("#tbd").empty();
+                    if (data.code == 200) {
+                        var Stt = $('#tbd').children('tr').length + 1;
+                        $.each(data.show, function (k, v) {
+                            var createDate = moment(v.createDate).format('DD/MM/YYYY');
+                            var table = '<tr id="' + v.idstock.trim() + '" role="row" class="kiemke">';
+                            table += '<td>' + (Stt) + '</td>';
+                            table += '<td style="cursor:pointer" name="ClickTo">' + v.idstock + '</td>';
+                            table += '<td>' + v.nameWarehouse + '</td>';
+                            table += '<td>' + createDate + '</td>';
+                            table += '<td>' + v.status + '</td>';
+                            table += '<td nowrap="nowrap" >';
+                            table += '<i class="nav-icon fas fa-list" data-id="' + v.idstock.trim() + '" data-namewarehouse="' + v.nameWarehouse + '" onclick="openList(' + v.idstock.trim() + ', \'' + v.nameWarehouse + '\')"></i>';
+                            $('#tbd').append(table);
+                            Stt++;
+                        });
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            });
+        }
+        $(document).on('click', 'td[name="ClickTo"]', function () {
+            var id = $(this).text();
+            localStorage.setItem("idClickTo", id)
+            window.location.href = "/Stock/Index"
+        })
+        //hiển thị modal
+        function openList(id, warehouse) {
+
+            $('#showlist').modal('show');
+
+            $.ajax({
+                url: '/stock/detailList',
+                type: 'get',
+                data: { id: id, warehouse: warehouse },
+                success: function (data) {
+                    $("#tbd1").empty();
+                    if (data.code == 200) {
+                        $('span[name="detailReceiptStock"]').empty();
+                        $('span[name="detailReceiptStock"]').append(id);
+                        $.each(data.c, function (k, v) {
+                            var table = '<tr>';
+                            table += '<td>' + (k+1) + '</td>';
+                            table += '<td>' + v.idgoods + '</td>';
+                            table += '<td>' + v.namegoods + '</td>';
+                            table += '<td>' + v.namewarehouse + '</td>';
+                            table += '<td>' + v.QuantityInventory + '</td>';
+                            table += '<td>' + v.qttStock + '</td>';
+                            $('#tbd1').append(table);
+                        });
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            })
+        }
+    </script>
+}

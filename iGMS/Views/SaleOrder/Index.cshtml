@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Phiếu_Yêu_Cầu_Xuất;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Phiếu_Yêu_Cầu_Xuất
+        </h3>
+    </div>
+    <form id="form">
+        <!--begin::Form-->
+        <div class="card-body">
+            <div class="form-group mb-8">
+                <div class="alert alert-custom alert-default" role="alert">
+                    <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                    <div class="alert-text">
+                        @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Xuất_Tại_Kho<span style="color:red"> (*) </span></label>
+                <div class="col-xl-10">
+                    <select class="form-control" data-id="kt_select2_1" id="warehouse" name="warehouse">
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3 form-group">
+                <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Khách_Hàng<span style="color:red"> (*) </span></label>
+                <div class="col-xl-4">
+                    <div class="form-group fv-plugins-icon-container">
+                        <div class="input-group-prepend ">
+                            <select class="form-control select2" data-id="kt_select2_1" name="customer">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <input class="form-control" type="text" placeholder="@Resources.Resource.Tên_Khách_Hàng" name="nameCustomer" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Địa_Chỉ </label>
+                <div class="col-xl-10">
+                    <input class="form-control" type="text" placeholder="@Resources.Resource.Địa_Chỉ" name="address" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ghi_chú</label>
+                <div class="col-xl-10">
+                    <textarea class="form-control" type="text" placeholder="@Resources.Resource.Ghi_chú" name="des"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red"> (*) </span></label>
+                <div class="col-xl-10">
+                    <div class="input-group ">
+                        <select class="form-control" data-id="kt_select2_1" id="seachidgood">
+                            <option value="-1">Chọn Hàng Hóa</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!--style="width: 1400px;"-->
+            <div style="height: 500px;overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                    <thead>
+                        <tr role="row">
+                            <th data-field="RecordID" class="datatable-cell-center datatable-cell datatable-cell-check"><span style="width: 30px;"><label class="checkbox checkbox-single checkbox-all kt-checkbox--solid"><input type="checkbox" checked="true" id="allchange">&nbsp;<span></span></label></span></th>
+                            <th>@Resources.Resource.STT</th>
+                            <th>@Resources.Resource.Mã_Hàng</th>
+                            <th>@Resources.Resource.Tên_Hàng</th>
+                            <th>@Resources.Resource.Số_Lượng</th>
+                            <th>@Resources.Resource.Nhóm_Hàng</th>
+                            <th>@Resources.Resource.Đơn_Vị</th>
+                            <th>@Resources.Resource.Hành_Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-2">
+                </div>
+                <div class="col-10">
+                    <button type="button" id="add" class="btn btn-success mr-2">@Resources.Resource.Tạo_Đơn</button>
+                    <a href="/PurchaseOrder/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal" id="BILL" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width:1100px">
+        <div class="modal-content">
+            <div class="modal-body" id="in">
+                <div class="row">
+                    <div class="col-8">
+                        <p>CÔNG TY CỔ PHẦN THƯƠNG MẠI HÀ PHAN</p>
+                        <p>Địa Chỉ: 758/25/2B Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP HCM.</p>
+                    </div>
+                    <div class="col-4" style="transform: translate(60%, 0px);">
+                        <p>Số ĐH : <span name="iddh"></span></p>
+                        <p>Ngày ĐH : <span name="datedh"></span></p>
+                    </div>
+
+                </div>
+                <div class="" style="text-align:center">
+                    <h1>Đơn Hàng Bán</h1>
+                </div>
+                <p>- Khách Hàng : <span name="customer"></span></p>
+                <p>- Địa Chỉ :<span name="address"></span></p>
+                <p>- Xuất tại :<span name="nameware"></span></p>
+                <table class="table table-bordered" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">
+                    <thead>
+                        <tr role="row">
+                            <th>Stt</th>
+                            <th class="">Mã Hàng</th>
+                            <th class="">Tên Hàng</th>
+                            <th class="">Số Lượng</th>
+                            <th class="">Nhóm Hàng</th>
+                            <th class="">Đơn Vị</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbdmodal">
+                    </tbody>
+                </table>
+                <div class="row" style="text-align:center">
+                    <div class="col-6">
+                        <p><span name="namesupplier"></span></p>
+                        <p name="">Người Xác Nhận</p>
+                        <p name="">(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div class="col-6">
+                        Ngày.....Tháng....Năm........
+                        <p>Người Lập Đơn hàng</p>
+                        <p>(Ký, ghi rõ họ tên)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id=hide>
+                <a type="button" href="/SaleOrder/Index" class="btn btn-secondary">Close</a>
+                <button type="button" onclick="printDiv('in')" class="btn btn-primary">IN</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/assets/js/pages/crud/forms/widgets/select2.js"></script>
+    <script>
+        Customer();
+        WareHouse();
+        function Customer() {
+            $.ajax({
+                url: '/saleorder/Customer',
+                type: 'get',
+                success: function (data) {
+                    $('select[name="customer"]').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Chọn_Khách_Hàng</option>';
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('select[name="customer"]').append(table);
+                    } else (
+                        alert(data.msg)
+                    )
+                }
+            })
+        }
+        Goods(1);
+        function Goods(page) {
+            $.ajax({
+                url: '/Goods/List',
+                type: 'get',
+                data: { pagenum: 50, page: page, seach: "" },
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.c, function (k, v) {
+                            var option = `<option value="${v.id}">${v.name}(${v.id})</option>`
+                            $('#seachidgood').append(option);
+                        })
+                        if (page < data.pages) {
+                            page++
+                            Goods(page)
+                        }
+                    } else (
+                        alert(data.msg)
+                    )
+                }
+            })
+        }
+        $(document).on('change', 'select[name="customer"]', function () {
+            var id = $(this).val().trim();
+            if ($(this).val() == -1) {
+                $('input[name="nameCustomer"]').val("")
+                $('input[name="address"]').val("")
+            } else {
+                $.ajax({
+                    url: '/Customer/Detail',
+                    type: 'get',
+                    data: { id },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('input[name="nameCustomer"]').val(data.customer.Name)
+                            $('input[name="address"]').val(data.customer.AddRess)
+                        } else {
+                            toastr.error(data.msg)
+                        }
+                    }
+                })
+            }
+
+        })
+
+        function WareHouse() {
+            $.ajax({
+                url: '/purchaseorder/WareHouse',
+                type: 'get',
+                success: function (data) {
+                    $('#warehouse').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Chọn_Kho_Hàng</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#warehouse').append(table);
+                    } else (
+                        alert(data.msg)
+                    )
+                }
+            })
+        }
+
+    </script>
+    <script src="~/Scripts/SaleOrder.js"></script>
+}

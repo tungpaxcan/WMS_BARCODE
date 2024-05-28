@@ -1,0 +1,351 @@
+﻿
+
+@{
+    ViewBag.Title = Resources.Resource.Phiếu_Xuất_Kho;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Phiếu_Xuất_Kho
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" id="HandHeld">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Phương_thức_quét<span style="color:red"> (*Handheld)</span> </label>
+            <div class="col-2">
+                <input type="checkbox" id="ScanMethod" checked data-toggle="toggle" data-on="RFID" data-off="Barcode" data-onstyle="success" data-offstyle="primary">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Phiếu_Xuất_Hàng<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control" type="number" placeholder="@Resources.Resource.Số_Phiếu_Xuất_Hàng" id="id" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Phiếu_Yêu_Cầu_Xuất<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control selectpicker" id="idsalesorder" name="idsalesorder" placeholder="@Resources.Resource.Số_Phiếu_Yêu_Cầu_Xuất" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ngày_Xuất_Đơn_Hàng</label>
+            <div class="col-lg-10 col-xl-10">
+                <input class="form-control " type="text" id="datexuat" name="datexuat" placeholder="yyyy/MM/dd" readonly />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Khách_Hàng</label>
+            <div class="col-lg-10 col-xl-10">
+                <input class="form-control " readonly id="nameCustomer" name="nameCustomer" placeholder="@Resources.Resource.Tên_Khách_Hàng" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Xuất_Tại_Kho</label>
+            <div class="col-lg-10 col-xl-10">
+                <input class="form-control" readonly id="nameWarehouse" name="nameWarehouse" placeholder="@Resources.Resource.Tên_Kho" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Nhân_Viên_Kiểm_Hàng</label>
+            <div class="col-lg-10 col-xl-10">
+                <select class="form-control " data-live-search="true" id="user">
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ghi_chú</label>
+            <div class="col-xl-10">
+                <textarea class="form-control" type="text" placeholder="@Resources.Resource.Ghi_chú" name="GhiChu"></textarea>
+            </div>
+        </div>
+        <div class="form-group  row" id="desktoprfid">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
+            </div>
+        </div>
+        <div class="form-group row" id="rfidhandheld">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
+            <div class="col-lg-10 col-xl-10">
+                <button type="submit" class="btn btn-success mr-2" onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                <button type="submit" class="btn btn-secondary mr-2 "onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
+            </div>
+        </div>
+        <div class="form-group" style="height: 500px;overflow-y: scroll;">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Trạng_Thái</th>
+                        <th>@Resources.Resource.STT</th>
+                        <th>@Resources.Resource.Mã_Hàng</th>
+                        <th>@Resources.Resource.Tên_Hàng</th>
+                        <th>@Resources.Resource.Số_Lượng</th>
+                        <th>@Resources.Resource.Nhóm_Hàng</th>
+                        <th>@Resources.Resource.Đơn_Vị</th>
+                    </tr>
+                </thead>
+                <tbody name="tbd">
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-md-2 col-form-label">@Resources.Resource.Mô_Tả_Nếu_Có_Hàng_Dư_hoặc_Khác</label>
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 1234px;">
+                        <thead>
+                            <tr role="row">
+                                <th>@Resources.Resource.Mã_Hàng_Hóa</th>
+                                <th>@Resources.Resource.Tên_Kho_Hàng</th>
+                                <th>@Resources.Resource.Số_Lượng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="des">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-lg-9 col-xl-9">
+                <button type="submit" class="btn btn-success mr-2" onclick="Add(1)"> @Resources.Resource.Lưu</button>
+                <button type="submit" class="btn btn-info mr-2" onclick="Add(0)"> @Resources.Resource.Lưu_Tạm_Thời</button>
+                <a href="/Delivery/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="BILL" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width:1100px">
+        <div class="modal-content">
+            <div class="modal-body" id="in">
+                <div class="row">
+                    <div class="col-8">
+                        <p>CÔNG TY CỔ PHẦN THƯƠNG MẠI HÀ PHAN</p>
+                        <p>Địa Chỉ: 758/25/2B Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP HCM.</p>
+                    </div>
+                    <div class="col-4" style="transform: translate(30%, 0px);">
+                        <p>Số PX : <span name="idpx"></span></p>
+                        <p>Ngày PX : <span name="datepx"></span></p>
+                    </div>
+                    <div class="col-2" style="transform: translate(30%, 0px);">
+                        <div id="qrcode"></div>
+                    </div>
+                </div>
+                <div class="" style="text-align:center">
+                    <h1>Phiếu Xuất Hàng</h1>
+                    <h3>(Kiểm Phiếu Xuất Kho)</h3>
+                </div>
+                <p>- Khách Hàng : <span name="nameCustomer"></span></p>
+                <p>- Địa Chỉ : <span name="addressCustomer"></span></p>
+                <p>- Thuộc Đơn Hàng : <span name="idsalesorder"></span></p>
+                <p>- Ngày Đơn Hàng : <span name="datedh"></span></p>
+                <p>- Xuất Tại : <span name="warehouse"></span></p>
+                <table class="table table-bordered" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">
+                    <thead>
+                        <tr role="row">
+                            <th class="" style="text-align: center;">Số Lượng Thực Tế</th>
+                            <th class="">STT</th>
+                            <th class="" style="text-align: center;">Mã Hàng</th>
+                            <th class="" style="text-align: center;">Tên Hàng</th>
+                            <th class="" style="text-align: center;">Số Lượng</th>
+                            <th class="" style="text-align: center;">Nhóm Hàng</th>
+                            <th class="" style="text-align: center;">Đơn Vị</th>
+                        </tr>
+                    </thead>
+                    <tbody name="tbd">
+                    </tbody>
+                </table>
+                <h5>Ghi Chú:</h5>
+                <div class="row mb-3 form-group">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <textarea class="form-control" rows="3" placeholder="Nhập ghi chú" id="ghiChu"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="text-align:center">
+                    <div class="col-4">
+                        <p><span name="nameCustomer"></span></p>
+                        <p name="">Người Xác Nhận</p>
+                        <p name="">(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div class="col-4">
+                        <p>Người Nhận</p>
+                        <p>(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div class="col-4">
+                        Ngày.....Tháng....Năm........
+                        <p>Người Lập Đơn hàng</p>
+                        <p>(Ký, ghi rõ họ tên)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id=hide>
+                <a type="button" href="/Delivery/Index" class="btn btn-secondary">Close</a>
+                <button type="button" onclick="printDiv('in')" class="btn btn-primary">IN</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        // tạo số phiếu xuất tự động
+        var d = new Date()
+        $(function () {
+            var id = localStorage.getItem("idClickToExport")
+            if (id != null) {
+                $('input[name="idsalesorder"]').val(id)
+                Information(id)
+                localStorage.removeItem("idClickToExport");
+            }
+        })
+        $('#id').val(d.Day)
+        $(document).ready(function () {
+            $('#id').val(d.getDate() + "" + (d.getMonth() + 1) + "" + d.getFullYear() + "" + d.getHours() + "" + d.getMinutes() + "" + d.getSeconds())
+        });
+
+        //Thay đổi mã phiếu sẽ hiển thị thông tin và bảng
+        $(document).on('keypress', 'input[name="idsalesorder"]', function (e) {
+            if (e.which == 13) {
+                var id = $(this).val().trim();
+                Information(id)
+            }
+        })
+        function Information(id) {
+            $.ajax({
+                url: '/SaleOrder/Bill',
+                type: 'get',
+                data: { id: id },
+                success: function (data) {
+                    $('tbody[name="tbd"]').empty();
+                    $('span[name="idsalesorder"]').empty();
+                    $('span[name="datedh"]').empty();
+                    $('span[name="nameCustomer"]').empty();
+                    $('span[name="addressCustomer"]').empty();
+                    $('span[name="warehouse"]').empty();
+                    if (data.code == 200) {
+                        if (data.c.every(i => i.status === true)) {
+                            Swal.fire({
+                                title: "@Resources.Resource.Mã_Phiếu_Xuất_Đã_Quét",
+                                icon: "warning"
+                            });
+                        } else {
+                            setInfoSaleOrder(data)
+                            toastr.success(data.msg);
+                        }
+                    }
+                    else {
+                        toastr.error(data.msg)
+                    }
+                }
+            })
+        }
+        function setInfoSaleOrder(data) {
+            $.each(data.c, function (k, v) {
+                $('input[name="nameCustomer"]').val(v.customer)
+                $('input[name ="nameWarehouse"]').val(v.ware)
+                $('input[name ="datexuat"]').val(v.createdate)
+                //--------------------------------------------
+                $('span[name="idsalesorder"]').append(v.id)
+                $('span[name="datedh"]').append(v.createdate)
+                $('span[name="nameCustomer"]').append(v.customer)
+                $('span[name="addressCustomer"]').append(v.address)
+                $('span[name="warehouse"]').append(v.ware)
+            })
+            $.each(data.e, function (k, v) {
+                var color = "";
+                var qtyScan = v.qttscan == null ? 0 : v.qttscan;
+                var qty = v.qtt;
+                if (Number(qty) < Number(qtyScan)) {
+                    color = "yellow"
+                } else if (Number(qty) > Number(qtyScan)) {
+                    color = "red"
+                } else {
+                    color = "green"
+                }
+                let table = '<tr id="' + v.idgood.trim() + '" role="row" class="nhanhang" >';
+                table += '<td class="quantityscan' + v.idgood.trim() + '" style="background:' + color + '">' + qtyScan +'</td>'
+                table += '<td>' + (k + 1) + '</td>'
+                table += '<td id="idgood">' + v.idgood + '</td>'
+                table += '<td>' + v.name + '</td>'
+                table += '<td id="quantity' + v.idgood.trim() + '">' + v.qtt + '</td>'
+                table += '<td>' + v.gr + '</td>'
+                table += '<td>' + v.unit + '</td>'
+                table += '</tr>';
+                $('tbody[name="tbd"]').append(table)
+            })
+            if (/Android/i.test(navigator.userAgent)) {
+                $('div[name="HandheldRfid"]').show()
+                $('div[name="desktopRfid"]').hide()
+            } else {
+                $('div[name="HandheldRfid"]').hide()
+                $('div[name="desktopRfid"]').show()
+            }
+        }
+
+        // get user NV
+        GetNV()
+        function GetNV() {
+            $.ajax({
+                url: 'Receipt/UserNV',
+                type: 'get',
+                success: function (data) {
+                    $('#user').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Chọn_Nhân_Viên_Kiểm_Hàng</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        })
+                        $('#user').append(table);
+                    }
+                }
+            })
+        }
+        $(document).ready(function () {
+
+            if (/Android/i.test(navigator.userAgent)) {
+                $("#HandHeld").show()
+                $("#rfidhandheld").show()
+                $("#desktoprfid").hide()
+            } else {
+                $("#HandHeld").hide()
+                $("#rfidhandheld").hide()
+                $("#desktoprfid").show()
+            }
+        });
+        var resourcedelivery = {
+                "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
+                "thieu": "@Resources.Resource.Thiếu",
+                "dư":"@Resources.Resource.Dư",
+        }
+    </script>
+    <script src="~/Scripts/Delivery.js"></script>
+    <script src="~/Scripts/ebapi-modules.js"></script>
+    <script src="~/Scripts/elements.js"></script>
+}

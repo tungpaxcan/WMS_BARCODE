@@ -1,0 +1,1410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account Create" xml:space="preserve">
+    <value>Tạo Tài Khoản</value>
+  </data>
+  <data name="Account List" xml:space="preserve">
+    <value>Danh Sách Tài Khoản</value>
+  </data>
+  <data name="Add Function" xml:space="preserve">
+    <value>Thêm Chức Năng</value>
+  </data>
+  <data name="Add Goods" xml:space="preserve">
+    <value>Thêm Hàng Hóa</value>
+  </data>
+  <data name="Add Group Goods" xml:space="preserve">
+    <value>Thêm Nhóm Hàng</value>
+  </data>
+  <data name="Add Type Customer" xml:space="preserve">
+    <value>Thêm Loại Khách Hàng</value>
+  </data>
+  <data name="Add Unit" xml:space="preserve">
+    <value>Thêm Đơn Vị</value>
+  </data>
+  <data name="Add Warehouse" xml:space="preserve">
+    <value>Thêm Kho Hàng</value>
+  </data>
+  <data name="Assets Detail List" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Vật Tư</value>
+  </data>
+  <data name="atline" xml:space="preserve">
+    <value>Tại Dòng</value>
+  </data>
+  <data name="Bắt Đầu Quét RFID" xml:space="preserve">
+    <value>Bắt Đầu Quét RFID</value>
+  </data>
+  <data name="Bật Âm Thanh" xml:space="preserve">
+    <value>Bật Âm Thanh</value>
+  </data>
+  <data name="Bắt Đầu Định Vị Thẻ" xml:space="preserve">
+    <value>Bắt Đầu Định Vị Thẻ</value>
+  </data>
+  <data name="Bỏ Qua" xml:space="preserve">
+    <value>Bỏ Qua</value>
+  </data>
+  <data name="CancelInfo" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Chi Tiết" xml:space="preserve">
+    <value>Chi Tiết</value>
+  </data>
+  <data name="Chi Tiết Hàng Hóa" xml:space="preserve">
+    <value>Chi Tiết Hàng Hóa</value>
+  </data>
+  <data name="Chi Tiết Hàng Hóa Trong Kho" xml:space="preserve">
+    <value>Chi Tiết Hàng Hóa Trong Kho</value>
+  </data>
+  <data name="Chi Tiết Kho Hàng" xml:space="preserve">
+    <value>Chi Tiết Kho Hàng</value>
+  </data>
+  <data name="Chi Tiết Phiếu Kiểm Kê" xml:space="preserve">
+    <value>Chi Tiết Phiếu Kiểm Kê</value>
+  </data>
+  <data name="Chi Tiết Phiếu Nhập" xml:space="preserve">
+    <value>Chi Tiết Phiếu Nhập</value>
+  </data>
+  <data name="Chi Tiết Phiếu Xuất" xml:space="preserve">
+    <value>Chi Tiết Phiếu Xuất</value>
+  </data>
+  <data name="Chi Tiết Vật Tư" xml:space="preserve">
+    <value>Chi Tiết Vật Tư</value>
+  </data>
+  <data name="Choose an option" xml:space="preserve">
+    <value>Chọn một sự lựa chọn</value>
+  </data>
+  <data name="Chào," xml:space="preserve">
+    <value>Chào,</value>
+  </data>
+  <data name="Chưa Chọn Hàng Hóa" xml:space="preserve">
+    <value>Chưa Chọn Hàng Hóa</value>
+  </data>
+  <data name="Chưa Có EPC" xml:space="preserve">
+    <value>Chưa Có EPC</value>
+  </data>
+  <data name="Chưa Có Mã Hàng" xml:space="preserve">
+    <value>Chưa Có Mã Hàng</value>
+  </data>
+  <data name="Chưa Có Tài Khoản" xml:space="preserve">
+    <value>Bạn Chưa Có Tài Khoản?</value>
+  </data>
+  <data name="Chưa Kiểm" xml:space="preserve">
+    <value>Chưa Kiểm</value>
+  </data>
+  <data name="Chưa Nhập Số Lượng Quét" xml:space="preserve">
+    <value>Chưa Nhập Số Lượng Quét</value>
+  </data>
+  <data name="Chưa Quét" xml:space="preserve">
+    <value>Chưa Quét</value>
+  </data>
+  <data name="Chưa Quét Xong" xml:space="preserve">
+    <value>Chưa Quét Xong</value>
+  </data>
+  <data name="Chọn file" xml:space="preserve">
+    <value>Chọn file</value>
+  </data>
+  <data name="Chọn Hàng Hóa" xml:space="preserve">
+    <value>Chọn Hàng Hóa</value>
+  </data>
+  <data name="Chọn Kho" xml:space="preserve">
+    <value>Chọn Kho</value>
+  </data>
+  <data name="Chọn Kho Hàng" xml:space="preserve">
+    <value>Chọn Kho Hàng</value>
+  </data>
+  <data name="Chọn Kho Hàng Để Tiếp Tục" xml:space="preserve">
+    <value>Chọn Kho Hàng Để Tiếp Tục</value>
+  </data>
+  <data name="Chọn Khách Hàng" xml:space="preserve">
+    <value>Chọn Khách Hàng</value>
+  </data>
+  <data name="Chọn Khách Hàng Để Tiếp Tục" xml:space="preserve">
+    <value>Chọn Khách Hàng Để Tiếp Tục</value>
+  </data>
+  <data name="Chọn Mã TK Hạch Toán" xml:space="preserve">
+    <value>Chọn Mã TK Hạch Toán</value>
+  </data>
+  <data name="Chọn Nguồn KH" xml:space="preserve">
+    <value>Chọn Nguồn KH</value>
+  </data>
+  <data name="Chọn Ngành Nghề" xml:space="preserve">
+    <value>Chọn Ngành Nghề</value>
+  </data>
+  <data name="Chọn Nhân Viên Kiểm Hàng" xml:space="preserve">
+    <value>Chọn Nhân Viên Kiểm Hàng</value>
+  </data>
+  <data name="Chọn NV Phụ Trách" xml:space="preserve">
+    <value>Chọn NV Phụ Trách</value>
+  </data>
+  <data name="Chọn Phương Thức TT" xml:space="preserve">
+    <value>Chọn Phương Thức TT</value>
+  </data>
+  <data name="Chọn Thẻ Thành Viên" xml:space="preserve">
+    <value>Chọn Thẻ Thành Viên</value>
+  </data>
+  <data name="Chức Năng" xml:space="preserve">
+    <value>Chức Năng</value>
+  </data>
+  <data name="Chức Năng Hệ Thống" xml:space="preserve">
+    <value>Chức Năng Hệ Thống</value>
+  </data>
+  <data name="Chức Vụ" xml:space="preserve">
+    <value>Chức Vụ</value>
+  </data>
+  <data name="ConfirmDeleteWarning" xml:space="preserve">
+    <value>Hành động này sẽ không được phục hồi !!!</value>
+  </data>
+  <data name="Create Business Customer" xml:space="preserve">
+    <value>Thêm Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="Create Goods Delivery" xml:space="preserve">
+    <value>Lên Phiếu Yêu Cầu Xuất</value>
+  </data>
+  <data name="Create Goods Receipt" xml:space="preserve">
+    <value>Lên Phiếu Yêu Cầu Nhập</value>
+  </data>
+  <data name="CreateSucess" xml:space="preserve">
+    <value>Tạo Thành Công !!!</value>
+  </data>
+  <data name="Cài Đặt Chức Năng" xml:space="preserve">
+    <value>Cài Đặt Chức Năng</value>
+  </data>
+  <data name="Cài Đặt Hệ Thống" xml:space="preserve">
+    <value>Cài Đặt Hệ Thống</value>
+  </data>
+  <data name="Cá Nhân" xml:space="preserve">
+    <value>Cá Nhân</value>
+  </data>
+  <data name="Các Mã Trùng" xml:space="preserve">
+    <value>Các Mã Trùng</value>
+  </data>
+  <data name="Còn" xml:space="preserve">
+    <value>Còn</value>
+  </data>
+  <data name="Có Mã EPC Là" xml:space="preserve">
+    <value>Có Mã EPC Là</value>
+  </data>
+  <data name="Cơ Sở Dữ Liệu" xml:space="preserve">
+    <value>Cơ Sở Dữ Liệu</value>
+  </data>
+  <data name="Cảnh báo" xml:space="preserve">
+    <value>Cảnh báo</value>
+  </data>
+  <data name="Danh Mục" xml:space="preserve">
+    <value>Danh Mục</value>
+  </data>
+  <data name="Danh Mục Chính" xml:space="preserve">
+    <value>Danh Mục Chính</value>
+  </data>
+  <data name="Danh Sách" xml:space="preserve">
+    <value>Danh Sách</value>
+  </data>
+  <data name="Danh Sách Chi Tiết Hàng Hóa" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Hàng Hóa</value>
+  </data>
+  <data name="Danh Sách Chi Tiết Kho" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Kho</value>
+  </data>
+  <data name="Danh Sách Chi Tiết Kho - WMS" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Kho - WMS</value>
+  </data>
+  <data name="Danh Sách Chi Tiết Vật Tư" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Vật Tư</value>
+  </data>
+  <data name="Danh Sách Hàng Hóa" xml:space="preserve">
+    <value>Danh Sách Hàng Hóa</value>
+  </data>
+  <data name="Danh Sách Kho Hàng" xml:space="preserve">
+    <value>Danh Sách Kho Hàng</value>
+  </data>
+  <data name="Danh Sách Khách Hàng" xml:space="preserve">
+    <value>Danh Sách Khách Hàng</value>
+  </data>
+  <data name="Danh Sách Khách Hàng Doanh Nghiệp" xml:space="preserve">
+    <value>Danh Sách Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="Danh Sách Loại Khách Hàng" xml:space="preserve">
+    <value>Danh Sách Loại Khách Hàng</value>
+  </data>
+  <data name="Danh Sách Nhóm Hàng" xml:space="preserve">
+    <value>Danh Sách Nhóm Hàng</value>
+  </data>
+  <data name="Danh Sách Phiếu Kiểm Kê" xml:space="preserve">
+    <value>Danh Sách Phiếu Kiểm Kê</value>
+  </data>
+  <data name="Danh Sách Phiếu Nhập" xml:space="preserve">
+    <value>Danh Sách Phiếu Nhập</value>
+  </data>
+  <data name="Danh Sách Phiếu Xuất" xml:space="preserve">
+    <value>Danh Sách Phiếu Xuất</value>
+  </data>
+  <data name="Danh Sách Sao Lưu" xml:space="preserve">
+    <value>Danh Sách Sao Lưu</value>
+  </data>
+  <data name="Danh Sách Tài Khoản" xml:space="preserve">
+    <value>Danh Sách Tài Khoản</value>
+  </data>
+  <data name="Danh Sách Đơn Vị" xml:space="preserve">
+    <value>Danh Sách Đơn Vị</value>
+  </data>
+  <data name="Data Management" xml:space="preserve">
+    <value>Quản Lý Dữ Liệu</value>
+  </data>
+  <data name="DeleteInfo" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="DeleteWarning" xml:space="preserve">
+    <value>Bạn Muốn Xóa Dữ Liệu Này ?</value>
+  </data>
+  <data name="Delivery Bill" xml:space="preserve">
+    <value>Phiếu Xuất Kho</value>
+  </data>
+  <data name="Detail List of Goods" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Hàng Hóa</value>
+  </data>
+  <data name="Detailed List of Goods" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Hàng Hóa</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Trùng Id !!!</value>
+  </data>
+  <data name="DuplicateName" xml:space="preserve">
+    <value>Trùng Tên !!!</value>
+  </data>
+  <data name="Dư" xml:space="preserve">
+    <value>dư</value>
+  </data>
+  <data name="Dừng" xml:space="preserve">
+    <value>Dừng</value>
+  </data>
+  <data name="Dừng Quét" xml:space="preserve">
+    <value>Dừng Quét</value>
+  </data>
+  <data name="Dừng Quét RFID" xml:space="preserve">
+    <value>Dừng Quét RFID</value>
+  </data>
+  <data name="Dừng Quét HandHeld" xml:space="preserve">
+    <value>Dừng Quét HandHeld</value>
+  </data>
+  <data name="Dữ Liệu Nhập Kho" xml:space="preserve">
+    <value>Dữ Liệu Nhập Kho</value>
+  </data>
+  <data name="Dữ Liệu Xuất Kho" xml:space="preserve">
+    <value>Dữ Liệu Xuất Kho</value>
+  </data>
+  <data name="Dữ Liệu Đang Dùng" xml:space="preserve">
+    <value>Dữ Liệu Đang Dùng</value>
+  </data>
+  <data name="Dữ Liệu Đăng Nhập" xml:space="preserve">
+    <value>Dữ Liệu Đăng Nhập</value>
+  </data>
+  <data name="Edit Business Customer" xml:space="preserve">
+    <value>Sửa Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="Edit Goods" xml:space="preserve">
+    <value>Sửa Hàng Hóa</value>
+  </data>
+  <data name="Edit Group Goods" xml:space="preserve">
+    <value>Sửa Nhóm Hàng</value>
+  </data>
+  <data name="Edit Type Customer" xml:space="preserve">
+    <value>Sửa Loại Khách Hàng</value>
+  </data>
+  <data name="Edit Unit" xml:space="preserve">
+    <value>Sửa Đơn Vị</value>
+  </data>
+  <data name="Edit Warehouse" xml:space="preserve">
+    <value>Sửa Kho Hàng</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>Tiếng Anh</value>
+  </data>
+  <data name="enter group goods" xml:space="preserve">
+    <value>Vui Lòng Nhập Tên Nhóm Hàng !!!</value>
+  </data>
+  <data name="enterwarehouse" xml:space="preserve">
+    <value>Vui lòng Nhập Tên Kho Hàng !!!</value>
+  </data>
+  <data name="entries" xml:space="preserve">
+    <value>mục</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Xuất file</value>
+  </data>
+  <data name="FailCreate" xml:space="preserve">
+    <value>Tạo Thất bại !!!</value>
+  </data>
+  <data name="FailDelete" xml:space="preserve">
+    <value>Xóa Thất Bại !!!</value>
+  </data>
+  <data name="FailEdit" xml:space="preserve">
+    <value>Sửa Thất Bại !!!</value>
+  </data>
+  <data name="false" xml:space="preserve">
+    <value>Sai !!!</value>
+  </data>
+  <data name="fasle add group goods" xml:space="preserve">
+    <value>Tên Nhóm Hàng Đã Có Trong Hệ Thống !!!</value>
+  </data>
+  <data name="Function Setting" xml:space="preserve">
+    <value>Cài Đặt Chức Năng</value>
+  </data>
+  <data name="Ghi chú" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="Ghi Đè" xml:space="preserve">
+    <value>Ghi Đè</value>
+  </data>
+  <data name="Goods Issue List" xml:space="preserve">
+    <value>Danh Sách Phiếu Xuất</value>
+  </data>
+  <data name="Goods Receipt List" xml:space="preserve">
+    <value>Danh Sách Phiếu Nhập</value>
+  </data>
+  <data name="groupgoods sucess" xml:space="preserve">
+    <value>Tạo Nhóm Hàng Thành Công</value>
+  </data>
+  <data name="Gửi" xml:space="preserve">
+    <value>Gửi</value>
+  </data>
+  <data name="Hiển Thị Danh Sách Vật Tư Theo" xml:space="preserve">
+    <value>Hiển Thị Danh Sách Vật Tư Theo</value>
+  </data>
+  <data name="Hoạt Động Gần Đây" xml:space="preserve">
+    <value>Hoạt Động Gần Đây</value>
+  </data>
+  <data name="Hoặc Chưa Có Trong Hệ Thống" xml:space="preserve">
+    <value>Hoặc Chưa Có Trong Hệ Thống</value>
+  </data>
+  <data name="Hàng Hóa" xml:space="preserve">
+    <value>Hàng Hóa</value>
+  </data>
+  <data name="Hàng tồn kho cao nhất" xml:space="preserve">
+    <value>Hàng tồn kho cao nhất</value>
+  </data>
+  <data name="Hàng tồn kho thấp nhất" xml:space="preserve">
+    <value>Hàng tồn kho thấp nhất</value>
+  </data>
+  <data name="Hành Động" xml:space="preserve">
+    <value>Hành Động</value>
+  </data>
+  <data name="Hôm nay:" xml:space="preserve">
+    <value>Hôm nay:</value>
+  </data>
+  <data name="Hạn Mức Nợ" xml:space="preserve">
+    <value>Hạn Mức Nợ</value>
+  </data>
+  <data name="Hệ Thống" xml:space="preserve">
+    <value>Hệ Thống</value>
+  </data>
+  <data name="Họ &amp; Tên" xml:space="preserve">
+    <value>Họ &amp; Tên</value>
+  </data>
+  <data name="Hủy" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Nhập</value>
+  </data>
+  <data name="In" xml:space="preserve">
+    <value>In</value>
+  </data>
+  <data name="Khai Báo Dữ Liệu" xml:space="preserve">
+    <value>Khai Báo Dữ Liệu</value>
+  </data>
+  <data name="Kho Hàng" xml:space="preserve">
+    <value>Kho Hàng</value>
+  </data>
+  <data name="Khách Hàng" xml:space="preserve">
+    <value>Khách Hàng</value>
+  </data>
+  <data name="Khách Hàng Không Tồn Tại" xml:space="preserve">
+    <value>Khách Hàng Không Tồn Tại !!!</value>
+  </data>
+  <data name="Không có file được chọn" xml:space="preserve">
+    <value>Không có file được chọn</value>
+  </data>
+  <data name="Không Có Sẵn" xml:space="preserve">
+    <value>Không Có Sẵn</value>
+  </data>
+  <data name="Không Nhận Được Tất Cả Dữ Liệu" xml:space="preserve">
+    <value>Không Nhận Được Tất Cả Dữ Liệu</value>
+  </data>
+  <data name="Không Tồn Tại" xml:space="preserve">
+    <value>Không Tồn Tại !!!</value>
+  </data>
+  <data name="Không Tồn Tại Trong Kho" xml:space="preserve">
+    <value>Không Tồn Tại Trong Kho</value>
+  </data>
+  <data name="Không Đạt Yêu Cầu" xml:space="preserve">
+    <value>Không Đạt Yêu Cầu</value>
+  </data>
+  <data name="Không Đủ Để Xuất" xml:space="preserve">
+    <value>Không Đủ Để Xuất</value>
+  </data>
+  <data name="Kiểm Kho" xml:space="preserve">
+    <value>Kiểm Kho</value>
+  </data>
+  <data name="Kiểm Kê" xml:space="preserve">
+    <value>Kiểm Kê</value>
+  </data>
+  <data name="Kiểu Khách Hàng" xml:space="preserve">
+    <value>Kiểu Khách Hàng</value>
+  </data>
+  <data name="Kết Quả" xml:space="preserve">
+    <value>Kết Quả</value>
+  </data>
+  <data name="Kết Thúc Định Vị Thẻ" xml:space="preserve">
+    <value>Kết Thúc Định Vị Thẻ</value>
+  </data>
+  <data name="List of Business Customer" xml:space="preserve">
+    <value>Danh Sách Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="List of Customer Types" xml:space="preserve">
+    <value>Danh Sách Loại Khách Hàng</value>
+  </data>
+  <data name="List of Goods" xml:space="preserve">
+    <value>Danh Sách Hàng Hóa</value>
+  </data>
+  <data name="List of Group Goods" xml:space="preserve">
+    <value>Danh Sách Nhóm Hàng</value>
+  </data>
+  <data name="List Of Stock Take" xml:space="preserve">
+    <value>Danh Sách Phiếu Kiểm Kê</value>
+  </data>
+  <data name="List of Units" xml:space="preserve">
+    <value>Danh Sách Đơn Vị</value>
+  </data>
+  <data name="List of Warehouse" xml:space="preserve">
+    <value>Danh Sách Kho Hàng</value>
+  </data>
+  <data name="Liên Hệ Quản Trị Viên Để Được Cấp Lại Mật Khẩu" xml:space="preserve">
+    <value>Liên Hệ Quản Trị Viên Để Được Cấp Lại Mật Khẩu ^-^</value>
+  </data>
+  <data name="Liên Hệ Quản Trị Viên Để Được Cấp Tài Khoản" xml:space="preserve">
+    <value>Liên Hệ Quản Trị Viên Để Được Cấp Tài Khoản ^-^</value>
+  </data>
+  <data name="Loại Khách Hàng" xml:space="preserve">
+    <value>Loại Khách Hàng</value>
+  </data>
+  <data name="Lên Phiếu Kiểm Kê" xml:space="preserve">
+    <value>Lên Phiếu Kiểm Kê</value>
+  </data>
+  <data name="Lưu" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Lưu Thành Công" xml:space="preserve">
+    <value>Lưu Thành Công</value>
+  </data>
+  <data name="Lưu Tạm Thời" xml:space="preserve">
+    <value>Lưu Tạm Thời</value>
+  </data>
+  <data name="Lượng Tồn Của Hàng Hóa" xml:space="preserve">
+    <value>Lượng Tồn Của Hàng Hóa</value>
+  </data>
+  <data name="Lập Phiếu" xml:space="preserve">
+    <value>Lập Phiếu</value>
+  </data>
+  <data name="Lập Phiếu Kiểm Kê" xml:space="preserve">
+    <value>Lập Phiếu Kiểm Kê</value>
+  </data>
+  <data name="Lập Phiếu Nhập" xml:space="preserve">
+    <value>Lập Phiếu Nhập</value>
+  </data>
+  <data name="Lập Phiếu Xuất" xml:space="preserve">
+    <value>Lập Phiếu Xuất</value>
+  </data>
+  <data name="Lập Phiếu Xuất Kho" xml:space="preserve">
+    <value>Lập Phiếu Xuất Kho</value>
+  </data>
+  <data name="Lỗi Chi Tiết Phiếu Kiểm" xml:space="preserve">
+    <value>Lỗi Chi Tiết Phiếu Kiểm</value>
+  </data>
+  <data name="Máy Chủ" xml:space="preserve">
+    <value>Máy Chủ</value>
+  </data>
+  <data name="Mã" xml:space="preserve">
+    <value>Mã</value>
+  </data>
+  <data name="Mã EPC" xml:space="preserve">
+    <value>Mã EPC</value>
+  </data>
+  <data name="Mã HH" xml:space="preserve">
+    <value>Mã hàng</value>
+  </data>
+  <data name="Mã Hàng" xml:space="preserve">
+    <value>Mã Hàng</value>
+  </data>
+  <data name="Mã Hàng Hoặc Kho hàng Không Tồn Tại" xml:space="preserve">
+    <value>Mã Hàng Hoặc Kho hàng Không Tồn Tại</value>
+  </data>
+  <data name="Mã Hàng Hóa" xml:space="preserve">
+    <value>Mã Hàng Hóa</value>
+  </data>
+  <data name="mã hàng không tồn tại" xml:space="preserve">
+    <value>Mã Hàng Hóa Không Tồn Tại !!!</value>
+  </data>
+  <data name="Mã Hàng Trong Danh Sách Chưa Có Trong Phiếu Xuất" xml:space="preserve">
+    <value>Mã Hàng Trong Danh Sách Chưa Có Trong Phiếu !!!</value>
+  </data>
+  <data name="Mã Hàng Trong Danh Sách Không Có Trong Phiếu Nhập" xml:space="preserve">
+    <value>Mã Hàng Trong Danh Sách Không Có Trong Phiếu Nhập !!!</value>
+  </data>
+  <data name="Mã Hàng Trong Danh Sách Không Có Trong Phiếu Xuất" xml:space="preserve">
+    <value>Mã Hàng Trong Danh Sách Không Có Trong Phiếu Xuất</value>
+  </data>
+  <data name="mã hàng tồn tại" xml:space="preserve">
+    <value>Mã Hàng Hóa Đã Tồn Tại !!!</value>
+  </data>
+  <data name="Mã Khách Hàng" xml:space="preserve">
+    <value>Mã Khách Hàng</value>
+  </data>
+  <data name="Mã Loại Khách Hàng" xml:space="preserve">
+    <value>Mã Loại Khách Hàng</value>
+  </data>
+  <data name="Mã Phiếu Kiểm Không Tồn Tại" xml:space="preserve">
+    <value>Mã Phiếu Kiểm Không Tồn Tại</value>
+  </data>
+  <data name="Mã Phiếu Nhập Hợp Lệ" xml:space="preserve">
+    <value>Mã Phiếu Nhập Hợp Lệ!!!</value>
+  </data>
+  <data name="Mã Phiếu Nhập Không Tồn Tại !!!" xml:space="preserve">
+    <value>Mã Phiếu Nhập Không Tồn Tại !!!</value>
+  </data>
+  <data name="Mã Phiếu Nhập Đã Quét" xml:space="preserve">
+    <value>Mã Phiếu Nhập Đã Quét !!!</value>
+  </data>
+  <data name="Mã Phiếu Nhập Đã Tồn Tại" xml:space="preserve">
+    <value>Mã Phiếu Nhập Đã Tồn Tại !!!</value>
+  </data>
+  <data name="Mã Phiếu Xuất Hợp Lệ" xml:space="preserve">
+    <value>Mã Phiếu Xuất Hợp Lệ !!!</value>
+  </data>
+  <data name="Mã Phiếu Xuất Không Tồn Tại" xml:space="preserve">
+    <value>Mã Phiếu Xuất Không Tồn Tại !!!</value>
+  </data>
+  <data name="Mã Phiếu Xuất Đã Quét" xml:space="preserve">
+    <value>Mã Phiếu Xuất Đã Quét</value>
+  </data>
+  <data name="Mã Phiếu Xuất Đã Tồn Tại" xml:space="preserve">
+    <value>Mã Phiếu Xuất Đã Tồn Tại</value>
+  </data>
+  <data name="Mã Phòng Ban" xml:space="preserve">
+    <value>Mã Phòng Ban</value>
+  </data>
+  <data name="Mã Số Thuế" xml:space="preserve">
+    <value>Mã Số Thuế</value>
+  </data>
+  <data name="Mã TK Hạch Toán" xml:space="preserve">
+    <value>Mã TK Hạch Toán</value>
+  </data>
+  <data name="Mã trùng" xml:space="preserve">
+    <value>Mã trùng</value>
+  </data>
+  <data name="Mã Vật Tư" xml:space="preserve">
+    <value>Mã Vật Tư</value>
+  </data>
+  <data name="Mô Tả" xml:space="preserve">
+    <value>Mô Tả</value>
+  </data>
+  <data name="Mô Tả Nếu Có Hàng Dư hoặc Khác" xml:space="preserve">
+    <value>Mô Tả Nếu Có Hàng Dư hoặc Khác</value>
+  </data>
+  <data name="Mẫu" xml:space="preserve">
+    <value>Mẫu</value>
+  </data>
+  <data name="Mật Khẩu" xml:space="preserve">
+    <value>Mật Khẩu</value>
+  </data>
+  <data name="Mục Đích" xml:space="preserve">
+    <value>Mục Đích</value>
+  </data>
+  <data name="Nguồn Khách Hàng" xml:space="preserve">
+    <value>Nguồn Khách Hàng</value>
+  </data>
+  <data name="Ngành Nghề" xml:space="preserve">
+    <value>Ngành Nghề</value>
+  </data>
+  <data name="Ngày Giờ" xml:space="preserve">
+    <value>Ngày giờ</value>
+  </data>
+  <data name="Ngày Mua" xml:space="preserve">
+    <value>Ngày Mua</value>
+  </data>
+  <data name="Ngày Sinh" xml:space="preserve">
+    <value>Ngày Sinh</value>
+  </data>
+  <data name="Ngày Sửa" xml:space="preserve">
+    <value>Ngày Sửa</value>
+  </data>
+  <data name="Ngày Tạo" xml:space="preserve">
+    <value>Ngày Tạo</value>
+  </data>
+  <data name="Ngày Tạo Đơn Hàng" xml:space="preserve">
+    <value>Ngày Tạo Đơn Hàng</value>
+  </data>
+  <data name="Ngày Xuất Đơn Hàng" xml:space="preserve">
+    <value>Ngày Xuất Đơn Hàng</value>
+  </data>
+  <data name="Người Giao" xml:space="preserve">
+    <value>Người Giao</value>
+  </data>
+  <data name="Người Sao Lưu" xml:space="preserve">
+    <value>Người Sao Lưu</value>
+  </data>
+  <data name="Người Sở Hữu" xml:space="preserve">
+    <value>Người Sở Hữu</value>
+  </data>
+  <data name="Người Sửa" xml:space="preserve">
+    <value>Người Sửa</value>
+  </data>
+  <data name="Người Tạo" xml:space="preserve">
+    <value>Người Tạo</value>
+  </data>
+  <data name="NhapKhoQuaSL" xml:space="preserve">
+    <value>Số Lượng Nhập Vượt Quá Số Lượng Cho Phép Của</value>
+  </data>
+  <data name="Nhân Viên" xml:space="preserve">
+    <value>Nhân Viên</value>
+  </data>
+  <data name="Nhân Viên Kiểm Hàng" xml:space="preserve">
+    <value>Nhân Viên Kiểm Hàng</value>
+  </data>
+  <data name="Nhân Viên Kiểm Hàng 1" xml:space="preserve">
+    <value>Nhân Viên Kiểm Hàng 1</value>
+  </data>
+  <data name="Nhân Viên Kiểm Hàng 2" xml:space="preserve">
+    <value>Nhân Viên Kiểm Hàng 2</value>
+  </data>
+  <data name="Nhân Viên Phụ Trách" xml:space="preserve">
+    <value>Nhân Viên Phụ Trách</value>
+  </data>
+  <data name="Nhóm Hàng" xml:space="preserve">
+    <value>Nhóm Hàng</value>
+  </data>
+  <data name="Nhóm Hàng Hóa" xml:space="preserve">
+    <value>Nhóm Hàng Hóa</value>
+  </data>
+  <data name="Nhấn Nút" xml:space="preserve">
+    <value>Nhấn Nút</value>
+  </data>
+  <data name="Nhập File" xml:space="preserve">
+    <value>Nhập File</value>
+  </data>
+  <data name="Nhập Kho" xml:space="preserve">
+    <value>Nhập Kho</value>
+  </data>
+  <data name="Nhập Kho Vượt Quá" xml:space="preserve">
+    <value>Nhập Kho Vượt Quá</value>
+  </data>
+  <data name="nhập mã hàng" xml:space="preserve">
+    <value>Vui Lòng Nhập Mã Hàng Hóa !!!</value>
+  </data>
+  <data name="Nhập Mã Hàng Hóa" xml:space="preserve">
+    <value>Nhập Mã Hàng Hóa</value>
+  </data>
+  <data name="nhập số lượng cao nhất" xml:space="preserve">
+    <value>Vui lòng nhập số lượng cao nhất !!!</value>
+  </data>
+  <data name="Nhập Số Lượng Hàng Tồn Kho Cao Nhất" xml:space="preserve">
+    <value>Nhập Số Lượng Hàng Tồn Kho Cao Nhất</value>
+  </data>
+  <data name="Nhập Số Lượng Hàng Tồn Kho Thấp Nhất" xml:space="preserve">
+    <value>Nhập Số Lượng Hàng Tồn Kho Thấp Nhất</value>
+  </data>
+  <data name="nhập số lượng thấp nhất" xml:space="preserve">
+    <value>Vui lòng nhập số lượng thấp nhất !!!</value>
+  </data>
+  <data name="Nhập Số Lượng Tồn" xml:space="preserve">
+    <value>Nhập Số Lượng Tồn</value>
+  </data>
+  <data name="Nhập thông tin chi tiết của bạn để đăng nhập vào tài khoản của bạn" xml:space="preserve">
+    <value>Nhập thông tin chi tiết của bạn để đăng nhập vào tài khoản của bạn:</value>
+  </data>
+  <data name="nhập tên hàng" xml:space="preserve">
+    <value>Vui Lòng Nhập Tên Hàng Hóa !!!</value>
+  </data>
+  <data name="Nhập Tên Hàng Hóa" xml:space="preserve">
+    <value>Nhập Tên Hàng Hóa</value>
+  </data>
+  <data name="nhập tên nhóm hàng" xml:space="preserve">
+    <value>Vui Lòng Nhập Tên Nhóm Hàng !!!</value>
+  </data>
+  <data name="nhập tên đơn vị" xml:space="preserve">
+    <value>Vui Lòng Nhập Tên Đơn Vị !!!</value>
+  </data>
+  <data name="Nhập Tại Kho" xml:space="preserve">
+    <value>Nhập Tại Kho</value>
+  </data>
+  <data name="Nhập Xuất" xml:space="preserve">
+    <value>Nhập Xuất</value>
+  </data>
+  <data name="Nhập Đủ Số Phiếu Nhập" xml:space="preserve">
+    <value>Nhập Đủ Số Phiếu Nhập !!!</value>
+  </data>
+  <data name="Nhập Đủ Số Phiếu Xuất" xml:space="preserve">
+    <value>Nhập Đủ Số Phiếu Xuất</value>
+  </data>
+  <data name="Phiếu Kiểm" xml:space="preserve">
+    <value>Phiếu Kiểm</value>
+  </data>
+  <data name="Phiếu Nhập" xml:space="preserve">
+    <value>Phiếu Nhập</value>
+  </data>
+  <data name="Phiếu Nhập Kho" xml:space="preserve">
+    <value>Phiếu Nhập Kho</value>
+  </data>
+  <data name="Phiếu Xuất" xml:space="preserve">
+    <value>Phiếu Xuất</value>
+  </data>
+  <data name="Phiếu Xuất Kho" xml:space="preserve">
+    <value>Phiếu Xuất Kho</value>
+  </data>
+  <data name="Phiếu Yêu Cầu Nhập" xml:space="preserve">
+    <value>Phiếu Yêu Cầu Nhập</value>
+  </data>
+  <data name="Phiếu Yêu Cầu Xuất" xml:space="preserve">
+    <value>Phiếu Yêu Cầu Xuất</value>
+  </data>
+  <data name="Phân Quyền Chức Năng" xml:space="preserve">
+    <value>Phân Quyền Chức Năng</value>
+  </data>
+  <data name="Phân Quyền Quản Lý" xml:space="preserve">
+    <value>Phân Quyền Quản Lý</value>
+  </data>
+  <data name="Phòng Ban" xml:space="preserve">
+    <value>Phòng Ban</value>
+  </data>
+  <data name="Phương thức quét" xml:space="preserve">
+    <value>Phương thức quét</value>
+  </data>
+  <data name="Phương Thức Thanh Toán" xml:space="preserve">
+    <value>Phương Thức Thanh Toán</value>
+  </data>
+  <data name="Phụ Lục" xml:space="preserve">
+    <value>Phụ Lục</value>
+  </data>
+  <data name="Purchase Order" xml:space="preserve">
+    <value>Phiếu yêu Cầu Nhập</value>
+  </data>
+  <data name="Quyền/Chức Năng Của Hệ Thống" xml:space="preserve">
+    <value>Quyền/Chức Năng Của Hệ Thống</value>
+  </data>
+  <data name="Quét" xml:space="preserve">
+    <value>Quét</value>
+  </data>
+  <data name="Quét HandHeld" xml:space="preserve">
+    <value>Quét HandHeld</value>
+  </data>
+  <data name="Quét Lại Mã Trùng" xml:space="preserve">
+    <value>Quét Lại Mã Trùng</value>
+  </data>
+  <data name="Quét Lại Tất Cả" xml:space="preserve">
+    <value>Quét Lại Tất Cả</value>
+  </data>
+  <data name="Quên Mật Khẩu" xml:space="preserve">
+    <value>Quên Mật Khẩu ?</value>
+  </data>
+  <data name="Quản Lý Danh Mục Kho" xml:space="preserve">
+    <value>Quản Lý Danh Mục Kho</value>
+  </data>
+  <data name="Quản Lý Danh Mục Sản Phẩm" xml:space="preserve">
+    <value>Quản Lý Danh Mục Sản Phẩm</value>
+  </data>
+  <data name="Quản Lý Danh Mục Tài Khoản" xml:space="preserve">
+    <value>Quản Lý Danh Mục Tài Khoản</value>
+  </data>
+  <data name="Quản Lý Dữ Liệu" xml:space="preserve">
+    <value>Quản Lý Dữ Liệu</value>
+  </data>
+  <data name="Quản Lý Hệ Thống" xml:space="preserve">
+    <value>Quản Lý Hệ Thống</value>
+  </data>
+  <data name="Quản Lý Kho" xml:space="preserve">
+    <value>Quản Lý Kho</value>
+  </data>
+  <data name="Quản Lý Kho Hàng" xml:space="preserve">
+    <value>Quản Lý Kho Hàng</value>
+  </data>
+  <data name="Quản Lý Nhập Hàng" xml:space="preserve">
+    <value>Quản Lý Nhập Hàng</value>
+  </data>
+  <data name="Quản Lý Tài Khoản" xml:space="preserve">
+    <value>Quản Lý Tài Khoản</value>
+  </data>
+  <data name="Quản Lý Xuất Hàng" xml:space="preserve">
+    <value>Quản Lý Xuất Hàng</value>
+  </data>
+  <data name="Receip Data" xml:space="preserve">
+    <value>Dữ Liệu Nhập Kho</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Phiếu Nhập Kho</value>
+  </data>
+  <data name="remains" xml:space="preserve">
+    <value>Còn</value>
+  </data>
+  <data name="Sales Order" xml:space="preserve">
+    <value>Phiếu Yêu Cầu Xuất</value>
+  </data>
+  <data name="Sao Lưu" xml:space="preserve">
+    <value>Sao Lưu</value>
+  </data>
+  <data name="Sao Lưu Máy Chủ SQL" xml:space="preserve">
+    <value>Sao Lưu Máy Chủ SQL</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>Hiển thị</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value>f</value>
+  </data>
+  <data name="STT" xml:space="preserve">
+    <value>STT</value>
+  </data>
+  <data name="SucessDelete" xml:space="preserve">
+    <value>Xóa Thành Công !!!</value>
+  </data>
+  <data name="SucessEdit" xml:space="preserve">
+    <value>Sửa Thành Công !!!</value>
+  </data>
+  <data name="System Functions" xml:space="preserve">
+    <value>Chức Năng Hệ Thống</value>
+  </data>
+  <data name="Số Fax" xml:space="preserve">
+    <value>Số Fax</value>
+  </data>
+  <data name="Số Lượng" xml:space="preserve">
+    <value>Số Lượng</value>
+  </data>
+  <data name="Số Lượng Hàng Hóa Trong Kho Không Đủ Để Xuất" xml:space="preserve">
+    <value>Số Lượng Hàng Hóa Trong Kho Không Đủ Để Xuất !!!</value>
+  </data>
+  <data name="Số Lượng Hàng Nhập Kho" xml:space="preserve">
+    <value>Số Lượng Hàng Nhập Kho</value>
+  </data>
+  <data name="Số Lượng Kiểm Kê" xml:space="preserve">
+    <value>Số Lượng Kiểm Kê</value>
+  </data>
+  <data name="Số Lượng Nhập Vượt Quá Số Lượng Cho Phép Của Kho" xml:space="preserve">
+    <value>Số Lượng Nhập Vượt Quá Số Lượng Cho Phép Của Kho</value>
+  </data>
+  <data name="Số Lượng Tương Đồng" xml:space="preserve">
+    <value>Số Lượng Tương Đồng</value>
+  </data>
+  <data name="Số Lượng Tồn" xml:space="preserve">
+    <value>Số Lượng Tồn</value>
+  </data>
+  <data name="Số Lượng Vật Tư" xml:space="preserve">
+    <value>Số Lượng Vật Tư</value>
+  </data>
+  <data name="Số Lượng Đã Quét" xml:space="preserve">
+    <value>Số Lượng Đã Quét</value>
+  </data>
+  <data name="Số Lượng, Vui Lòng Giảm" xml:space="preserve">
+    <value>Số Lượng, Vui Lòng Giảm !!!</value>
+  </data>
+  <data name="Số Lượng, Vui Lòng Nhập Thêm" xml:space="preserve">
+    <value>Số Lượng, Vui Lòng Nhập Thêm !!!</value>
+  </data>
+  <data name="Số Ngày Được Nợ" xml:space="preserve">
+    <value>Số Ngày Được Nợ</value>
+  </data>
+  <data name="Số Phiếu Nhập Chưa Quét" xml:space="preserve">
+    <value>Số Phiếu Nhập Chưa Quét</value>
+  </data>
+  <data name="Số Phiếu Nhập Kho" xml:space="preserve">
+    <value>Số Phiếu Nhập Kho</value>
+  </data>
+  <data name="Số Phiếu Xuất Chưa Quét" xml:space="preserve">
+    <value>Số Phiếu Xuất Chưa Quét</value>
+  </data>
+  <data name="Số Phiếu Xuất Hàng" xml:space="preserve">
+    <value>Số Phiếu Xuất Hàng</value>
+  </data>
+  <data name="Số Phiếu Yêu Cầu Nhập" xml:space="preserve">
+    <value>Số Phiếu Yêu Cầu Nhập</value>
+  </data>
+  <data name="Số Phiếu Yêu Cầu Xuất" xml:space="preserve">
+    <value>Số Phiếu Yêu Cầu Xuất</value>
+  </data>
+  <data name="Số Tài Khoản 1" xml:space="preserve">
+    <value>Số Tài Khoản 1</value>
+  </data>
+  <data name="Số Tài Khoản 2" xml:space="preserve">
+    <value>Số Tài Khoản 2</value>
+  </data>
+  <data name="Số Điện Thoại" xml:space="preserve">
+    <value>Số Điện Thoại</value>
+  </data>
+  <data name="Sửa" xml:space="preserve">
+    <value>Sửa</value>
+  </data>
+  <data name="Sửa Hàng Hóa" xml:space="preserve">
+    <value>Sửa Hàng Hóa</value>
+  </data>
+  <data name="Sửa Kho Hàng" xml:space="preserve">
+    <value>Sửa Kho Hàng</value>
+  </data>
+  <data name="Sửa Khách Hàng" xml:space="preserve">
+    <value>Sửa Khách Hàng</value>
+  </data>
+  <data name="Sửa Khách Hàng Doanh Nghiệp" xml:space="preserve">
+    <value>Sửa Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="Sửa Loại Khách Hàng" xml:space="preserve">
+    <value>Sửa Loại Khách Hàng</value>
+  </data>
+  <data name="Sửa Nhóm Hàng" xml:space="preserve">
+    <value>Sửa Nhóm Hàng</value>
+  </data>
+  <data name="Sửa Đơn Vị" xml:space="preserve">
+    <value>Sửa Đơn Vị</value>
+  </data>
+  <data name="The inventory of good" xml:space="preserve">
+    <value>Lượng Tồn Của Hàng Hóa</value>
+  </data>
+  <data name="Theo Phòng Ban" xml:space="preserve">
+    <value>Theo Phòng Ban</value>
+  </data>
+  <data name="Theo Vật Tư" xml:space="preserve">
+    <value>Theo Vật Tư</value>
+  </data>
+  <data name="Thiết Lập" xml:space="preserve">
+    <value>Thiết Lập</value>
+  </data>
+  <data name="Thiếu" xml:space="preserve">
+    <value>Thiếu</value>
+  </data>
+  <data name="Thoát" xml:space="preserve">
+    <value>Thoát</value>
+  </data>
+  <data name="Thuộc Nhóm Hàng" xml:space="preserve">
+    <value>Thuộc Nhóm Hàng</value>
+  </data>
+  <data name="Thuộc Đơn Vị" xml:space="preserve">
+    <value>Thuộc Đơn Vị</value>
+  </data>
+  <data name="Thành Công" xml:space="preserve">
+    <value>Thành Công</value>
+  </data>
+  <data name="Thêm" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
+  <data name="Thêm Chức Năng" xml:space="preserve">
+    <value>Thêm Chức Năng</value>
+  </data>
+  <data name="Thêm Hàng Hóa" xml:space="preserve">
+    <value>Thêm Hàng Hóa</value>
+  </data>
+  <data name="Thêm Kho Hàng" xml:space="preserve">
+    <value>Thêm Kho Hàng</value>
+  </data>
+  <data name="Thêm Khách Hàng" xml:space="preserve">
+    <value>Thêm Khách Hàng</value>
+  </data>
+  <data name="Thêm Khách Hàng (Tổ Chức)" xml:space="preserve">
+    <value>Thêm Khách Hàng (Tổ Chức)</value>
+  </data>
+  <data name="Thêm Khách Hàng Doanh Nghiệp" xml:space="preserve">
+    <value>Thêm Khách Hàng Doanh Nghiệp</value>
+  </data>
+  <data name="Thêm Loại Khách Hàng" xml:space="preserve">
+    <value>Thêm Loại Khách Hàng</value>
+  </data>
+  <data name="Thêm Nhóm Hàng" xml:space="preserve">
+    <value>Thêm Nhóm Hàng</value>
+  </data>
+  <data name="Thêm Tài Khoản" xml:space="preserve">
+    <value>Thêm Tài Khoản</value>
+  </data>
+  <data name="Thêm Đơn Vị" xml:space="preserve">
+    <value>Thêm Đơn Vị</value>
+  </data>
+  <data name="Thông Báo" xml:space="preserve">
+    <value>Thông Báo</value>
+  </data>
+  <data name="Thông Tin" xml:space="preserve">
+    <value>Thông Tin</value>
+  </data>
+  <data name="Thông Tin Khác" xml:space="preserve">
+    <value>Thông Tin Khác</value>
+  </data>
+  <data name="Thông Tin Người Dùng" xml:space="preserve">
+    <value>Thông Tin Người Dùng</value>
+  </data>
+  <data name="Thương Hiệu" xml:space="preserve">
+    <value>Thương Hiệu</value>
+  </data>
+  <data name="Thẻ Thành Viên" xml:space="preserve">
+    <value>Thẻ Thành Viên</value>
+  </data>
+  <data name="Thừa" xml:space="preserve">
+    <value>Thừa</value>
+  </data>
+  <data name="Tin Nhắn" xml:space="preserve">
+    <value>Tin Nhắn</value>
+  </data>
+  <data name="Total goods inventory" xml:space="preserve">
+    <value>Tổng Lượng Tồn Hàng Hóa</value>
+  </data>
+  <data name="Trang Chủ" xml:space="preserve">
+    <value>Trang Chủ</value>
+  </data>
+  <data name="Trong" xml:space="preserve">
+    <value>Trong</value>
+  </data>
+  <data name="Truy Cập Gần Đây" xml:space="preserve">
+    <value>Truy Cập Gần Đây</value>
+  </data>
+  <data name="trùng tên nhóm hàng" xml:space="preserve">
+    <value>Tên Nhóm Hàng Đã Có Trong Hệ Thống !!!</value>
+  </data>
+  <data name="trùng tên đơn vị" xml:space="preserve">
+    <value>Tên Đơn Vị Đã Có Trong Hệ Thống !!!</value>
+  </data>
+  <data name="Trạng Thái" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Trạng Thái Nhập Kho" xml:space="preserve">
+    <value>Trạng Thái Nhập Kho</value>
+  </data>
+  <data name="Trạng Thái Phiếu Kiểm" xml:space="preserve">
+    <value>Trạng Thái Phiếu Kiểm</value>
+  </data>
+  <data name="Trạng Thái Tồn Kho" xml:space="preserve">
+    <value>Trạng Thái Tồn Kho</value>
+  </data>
+  <data name="Trạng Thái Xuất Kho" xml:space="preserve">
+    <value>Trạng Thái Xuất Kho</value>
+  </data>
+  <data name="Tài Khoản" xml:space="preserve">
+    <value>Tài Khoản</value>
+  </data>
+  <data name="Tài Khoản Ngân Hàng" xml:space="preserve">
+    <value>Tài Khoản Ngân Hàng</value>
+  </data>
+  <data name="Tên" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="Tên Dữ Liệu" xml:space="preserve">
+    <value>Tên Dữ Liệu</value>
+  </data>
+  <data name="Tên Hàng" xml:space="preserve">
+    <value>Tên Hàng</value>
+  </data>
+  <data name="Tên Hàng Hóa" xml:space="preserve">
+    <value>Tên Hàng Hóa</value>
+  </data>
+  <data name="Tên Kho" xml:space="preserve">
+    <value>Tên Kho</value>
+  </data>
+  <data name="Tên Kho Hàng" xml:space="preserve">
+    <value>Tên Kho Hàng</value>
+  </data>
+  <data name="Tên Khách Hàng" xml:space="preserve">
+    <value>Tên Khách Hàng</value>
+  </data>
+  <data name="Tên Loại Khách Hàng" xml:space="preserve">
+    <value>Tên Loại Khách Hàng</value>
+  </data>
+  <data name="Tên Máy Chủ" xml:space="preserve">
+    <value>Tên Máy Chủ</value>
+  </data>
+  <data name="Tên Nhóm Hàng" xml:space="preserve">
+    <value>Tên Nhóm Hàng</value>
+  </data>
+  <data name="Tên Vật Tư" xml:space="preserve">
+    <value>Tên Vật Tư</value>
+  </data>
+  <data name="Tên Đăng Nhập" xml:space="preserve">
+    <value>Tên Đăng Nhập</value>
+  </data>
+  <data name="Tên Đơn Vị" xml:space="preserve">
+    <value>Tên Đơn Vị</value>
+  </data>
+  <data name="Tên, Ngân Hàng" xml:space="preserve">
+    <value>Tên, Ngân Hàng</value>
+  </data>
+  <data name="Tìm Kiếm" xml:space="preserve">
+    <value>Tìm Kiếm</value>
+  </data>
+  <data name="Tìm Kiếm Mã EPC" xml:space="preserve">
+    <value>Tìm Kiếm Mã EPC</value>
+  </data>
+  <data name="Tìm Mã Hàng" xml:space="preserve">
+    <value>Tìm Mã Hàng</value>
+  </data>
+  <data name="Tìm Mã Phiếu Kiểm" xml:space="preserve">
+    <value>Tìm Mã Phiếu Kiểm</value>
+  </data>
+  <data name="Tìm Mã Phiếu Nhập" xml:space="preserve">
+    <value>Tìm Mã Phiếu Nhập</value>
+  </data>
+  <data name="Tìm Mã Phiếu Xuất" xml:space="preserve">
+    <value>Tìm Mã Phiếu Xuất</value>
+  </data>
+  <data name="Tạo Phiếu Nhập Hàng Thành Công" xml:space="preserve">
+    <value>Tạo Phiếu Nhập Hàng Thành Công !!!</value>
+  </data>
+  <data name="Tạo Phiếu Nhập kho" xml:space="preserve">
+    <value>Tạo Phiếu Nhập kho</value>
+  </data>
+  <data name="Tạo Phiếu Xuất Hàng Thành Công" xml:space="preserve">
+    <value>Tạo Phiếu Xuất Hàng Thành Công</value>
+  </data>
+  <data name="Tạo Phiếu Xuất Kho" xml:space="preserve">
+    <value>Tạo Phiếu Xuất Kho</value>
+  </data>
+  <data name="Tạo Đơn" xml:space="preserve">
+    <value>Tạo Đơn</value>
+  </data>
+  <data name="Tạo Đơn Thất Bại" xml:space="preserve">
+    <value>Tạo Đơn Thất Bại</value>
+  </data>
+  <data name="Tải Lại" xml:space="preserve">
+    <value>Tải Lại</value>
+  </data>
+  <data name="Tất Cả" xml:space="preserve">
+    <value>Tất Cả</value>
+  </data>
+  <data name="Tổ Chức" xml:space="preserve">
+    <value>Tổ Chức</value>
+  </data>
+  <data name="Tổng Lượng Tồn Hàng Hóa" xml:space="preserve">
+    <value>Tổng Lượng Tồn Hàng Hóa</value>
+  </data>
+  <data name="Tổng Số Lượng Tồn Kho" xml:space="preserve">
+    <value>Tổng Số Lượng Tồn Kho</value>
+  </data>
+  <data name="Từ ngày" xml:space="preserve">
+    <value>Từ ngày</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="Vui lòng chọn hiển thị danh sách vật tư theo tất cả." xml:space="preserve">
+    <value>Vui lòng chọn hiển thị danh sách vật tư theo tất cả.</value>
+  </data>
+  <data name="Vui Lòng Nhập Mã Phiếu Nhập" xml:space="preserve">
+    <value>Vui Lòng Nhập Mã Phiếu Nhập</value>
+  </data>
+  <data name="Vui Lòng Nhập Mã Phiếu Xuất" xml:space="preserve">
+    <value>Vui Lòng Nhập Mã Phiếu Xuất !!!</value>
+  </data>
+  <data name="Vui Lòng Nhập Số Lượng Cao Nhất" xml:space="preserve">
+    <value>Vui Lòng Nhập Số Lượng Cao Nhất !!!</value>
+  </data>
+  <data name="Vui Lòng Nhập Số Lượng Thấp Nhất" xml:space="preserve">
+    <value>Vui Lòng Nhập Số Lượng Thấp Nhất !!!</value>
+  </data>
+  <data name="Vui Lòng Nhập Số Lượng Tồn" xml:space="preserve">
+    <value>Vui Lòng Nhập Số Lượng Tồn !!</value>
+  </data>
+  <data name="Vui Lòng Nhập Số Lượng Vào Kho" xml:space="preserve">
+    <value>Vui Lòng Nhập Số Lượng Vào Kho !!!</value>
+  </data>
+  <data name="Vui Lòng Nhập Tên Kho Hàng" xml:space="preserve">
+    <value>Vui Lòng Nhập Tên Kho Hàng !!!</value>
+  </data>
+  <data name="Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống" xml:space="preserve">
+    <value>Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống</value>
+  </data>
+  <data name="Vui Lòng Tìm Chọn Mã Hàng Hóa Để Lập Phiếu" xml:space="preserve">
+    <value>Vui Lòng Tìm Chọn Mã Hàng Hóa Để Lập Phiếu</value>
+  </data>
+  <data name="Vẫn Còn Dư" xml:space="preserve">
+    <value>Vẫn Còn Dư</value>
+  </data>
+  <data name="Về Sản Phẩm" xml:space="preserve">
+    <value>Về Sản Phẩm</value>
+  </data>
+  <data name="Warehouse Detail List" xml:space="preserve">
+    <value>Danh Sách Chi Tiết Kho</value>
+  </data>
+  <data name="Xuất File" xml:space="preserve">
+    <value>Xuất File</value>
+  </data>
+  <data name="Xuất Tại Kho" xml:space="preserve">
+    <value>Xuất Tại Kho</value>
+  </data>
+  <data name="Xóa" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Xóa Toàn Bộ Mã Trùng" xml:space="preserve">
+    <value>Xóa Toàn Bộ Mã Trùng</value>
+  </data>
+  <data name="Đã gửi thành công" xml:space="preserve">
+    <value>Đã Gửi Thành Công</value>
+  </data>
+  <data name="Đã Kiểm" xml:space="preserve">
+    <value>Đã Kiểm</value>
+  </data>
+  <data name="Đã nhận được EPC Thành Công" xml:space="preserve">
+    <value>Đã nhận được EPC Thành Công</value>
+  </data>
+  <data name="Đã Nhập Đủ Số Lượng" xml:space="preserve">
+    <value>Đã Nhập Đủ Số Lượng !!!</value>
+  </data>
+  <data name="Đã Quét" xml:space="preserve">
+    <value>Đã Quét</value>
+  </data>
+  <data name="Đã Tồn Tại, Có Mã EPC Là" xml:space="preserve">
+    <value>Đã Tồn Tại, Có Mã EPC Là</value>
+  </data>
+  <data name="Đóng" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Đăng Kí" xml:space="preserve">
+    <value>Đăng Kí</value>
+  </data>
+  <data name="Đăng Kí Tài Khoản" xml:space="preserve">
+    <value>Đăng Kí Tài Khoản</value>
+  </data>
+  <data name="Đăng Nhập" xml:space="preserve">
+    <value>Đăng Nhập</value>
+  </data>
+  <data name="Đăng Nhập Lúc" xml:space="preserve">
+    <value>Đăng Nhập Lúc</value>
+  </data>
+  <data name="Đăng Xuất" xml:space="preserve">
+    <value>Đăng Xuất</value>
+  </data>
+  <data name="Đơn Vị" xml:space="preserve">
+    <value>Đơn Vị</value>
+  </data>
+  <data name="Đường Dẫn" xml:space="preserve">
+    <value>Đường Dẫn</value>
+  </data>
+  <data name="Đặt Hàng Bán" xml:space="preserve">
+    <value>Đặt Hàng Bán</value>
+  </data>
+  <data name="Đến ngày" xml:space="preserve">
+    <value>Đến ngày</value>
+  </data>
+  <data name="Địa Chỉ" xml:space="preserve">
+    <value>Địa Chỉ</value>
+  </data>
+  <data name="Đủ" xml:space="preserve">
+    <value>Đủ</value>
+  </data>
+</root>

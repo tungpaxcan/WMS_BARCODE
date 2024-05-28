@@ -1,0 +1,406 @@
+﻿@model WMS.Models.Good
+@{
+    ViewBag.Title = Resources.Resource.Sửa_Hàng_Hóa;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input hidden value="@Model.Id" id="id" />
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Sửa_Hàng_Hóa
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+        </div>
+        <!--HIHI-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Mã_Hàng_Hóa<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group-prepend">
+                        <input disabled class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Mã_Hàng_Hóa" value="@Model.Id" id="idgood" />
+                    </div>
+                </div>
+            </div>
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Hàng_Hóa<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group ">
+                        <input class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Tên_Hàng_Hóa" id="name" value="@Model.Name" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--HIHI-->
+        <!--HAHA-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Đơn_Vị<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <select class="form-control" data-id="kt_select2_1" name="unit" value="@Model.IdUnit">
+                    </select>
+                </div>
+            </div>
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Nhóm_Hàng_Hóa<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <select class="form-control" data-id="kt_select2_1" id="groupgoods" value="@Model.IdGroupGood">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--HAHA-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ngày_Tạo</label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group ">
+                        <input class="form-control" type="date" id="date" value="@Model.CreateDate.Value.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+            </div>
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Lượng_Tồn</label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group ">
+                        <input class="form-control" type="number" disabled placeholder="@Resources.Resource.Nhập_Số_Lượng_Tồn" id="inventory" value="@Model.Inventory" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--MIN MAX-->
+        <!-- Ghi chú -->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ghi_chú</label>
+            <div class="col-10">
+                <textarea class="form-control" rows="3" placeholder="@Resources.Resource.Ghi_chú" id="note">@Model.Description</textarea>
+            </div>
+        </div>
+        <!-- Kết thúc Ghi chú -->
+        <div class="form-group" style="height: 300px; overflow-y: scroll;">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th>STT</th>
+                        <th>@Resources.Resource.Mã_Hàng_Hóa</th>
+                        <th>@Resources.Resource.Tên_Hàng_Hóa</th>
+                        <th>@Resources.Resource.Kho_Hàng</th>
+                        <th>@Resources.Resource.Số_Lượng_Tồn</th>
+                        <th>@Resources.Resource.Hành_Động</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd">
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-md-2 col-form-label">@Resources.Resource.Mô_Tả_Nếu_Có_Hàng_Dư_hoặc_Khác</label>
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 1234px;">
+                        <thead>
+                            <tr role="row">
+                                <th>@Resources.Resource.Mã_Hàng_Hóa</th>
+                                <th>@Resources.Resource.Tên_Kho_Hàng</th>
+                                <th>@Resources.Resource.Số_Lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="des">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" class="btn btn-success mr-2" onclick="Edit()">@Resources.Resource.Sửa</button>
+                <a href="/Goods/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Thoát</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/ebapi-modules.js"></script>
+    <script src="~/Scripts/elements.js"></script>
+    <script>
+        var errorEPC = [];
+        var epcshow = [];
+        var IdGoodsForHANDHELD = ""
+            function Edit() {
+                //lấy thông tin khi nhập vào input....
+                var idGoods = $('#idgood').val()
+                var NameGoods = $('#name').val()
+                var GroupGoods = $('#groupgoods').val()
+                var UnitGoods = $('select[name="unit"]').val()
+                var NoteGoods = $('#note').val()
+                var CreateDateG = $('#date').val()
+                var InventoryG = $('#inventory').val()
+                var good = {
+                    Id: idGoods,
+                    Name: NameGoods,
+                    IdGroupGood: GroupGoods,
+                    IdUnit: UnitGoods,
+                    Description: NoteGoods,
+                    CreateDate: CreateDateG,
+                    Inventory: InventoryG,
+                }
+                let filteredData = epcshow.filter(item1 => {
+                    // Kiểm tra xem mỗi phần tử trong data1 có trùng với bất kỳ phần tử nào trong data2 không
+                    return !errorEPC.includes(item1.IdEPC);
+                });
+                $.ajax({
+                    url: '/Goods/Edit',
+                    type: 'Post',
+                    data: { good, filteredData },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            toastr.success(data.msg)
+                            setTimeout(function () { window.location.href = "/Goods/Index" }, 1000)
+                        } else {
+                            toastr.error(data.msg)
+                        }
+                    },
+                })
+        }
+        $(document).ready(function () {
+            // Lấy id từ URL
+
+            var id = $('#idgood').val();
+            $.ajax({
+                url: '/Goods/showtbd',
+                type: 'get',
+                data: { id: id }, // Sử dụng id được trích xuất từ URL
+                success: function (data) {
+                    $("#tbd").empty();
+                    if (data.code == 200) {
+                        $.each(data.e, function (k, v) {
+                            var table = '<tr id="' + v.id + '" role="table">';
+                            table += '<td>' + (k + 1) + '</td>';
+                            table += '<td>' + v.id + '</td>';
+                            table += '<td>' + v.name + '</td>';
+                            table += '<td>' + v.wareHouse + '</td>';
+                            table += '<td><input type="number" id="inventoryWarehouse' + v.IdWareHouse +'" disabled value="' + v.inventory + '" /></td>';
+                            table += `<td><div class="col-1" name="desktopRfid">
+                                          <button type="submit" class="btn btn-success mr-2 on" id="scan${v.IdWareHouse}" onclick="RFID('${v.IdWareHouse}')">@Resources.Resource.Quét</button>
+                                          <button type="submit" class="btn btn-secondary off" id="notscan${v.IdWareHouse}" style="display:none" onclick="Stop()">@Resources.Resource.Dừng_Quét</button>
+                                      </div>
+                                      <div class="col-xl-1 col-lg-1" name="HandheldRfid">
+                                          <button type="submit" class="btn btn-success mr-2 on" onclick="RFIDHandHeld('${v.IdWareHouse}')">@Resources.Resource.Quét_HandHeld</button>
+                                          <button type="submit" class="btn btn-secondary mr-2  off" id="notscanHH${v.IdWareHouse}" style="display:none" onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
+                                      </div></td>`;
+                            table += '</tr>';
+                            $('#tbd').append(table);
+                        });
+                        if (/Android/i.test(navigator.userAgent)) {
+                            $('div[name="HandheldRfid"]').show()
+                            $('div[name="desktopRfid"]').hide()
+                        } else {
+                            $('div[name="HandheldRfid"]').hide()
+                            $('div[name="desktopRfid"]').show()
+                        }
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            });
+        });
+        var start;
+
+        function CompareReceipt(epc,id) {
+            CheckIdGoodsInSystem(epc)
+                .then(function (data) {
+                    // Xử lý dữ liệu thành công
+                    if (data.status) {
+                        $('#inventory').val(Number($('#inventory').val()) + 1);
+                        $('#inventoryWarehouse' + id + '').val(Number($('#inventoryWarehouse' + id + '').val()) + 1);
+                    } else {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = data.checkEpc.IdGoods
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                        } else {
+                            var tr = `<tr class="more" id="more${barcodes}">
+                               <td>${barcodes}</td>
+                               <td>${data.checkEpc.Name}</td>
+                               <td id="amountmore${barcodes}">1</td>
+                               </tr>`
+                            $('#des').append(tr)
+                        }
+                        errorEPC.push(
+                            epc
+                        );
+                    }
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                });
+        }
+        //kiểm tra mã hàng đã có trong hệ thống
+        function CheckIdGoodsInSystem(epc) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: '/Epcs/CheckIdGoodsInSystem',
+                    type: 'get',
+                    data: { epc },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            resolve(data);
+                        }
+                        else {
+                            reject(data.msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+        function RFID(id) {
+            DeleteEpc()
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'none')
+            $(`#notscan${id}`).css('display', 'block')
+            start = setInterval(function () { AllShowEPC(id) }, 200);
+        }
+        //stop scanner
+        function Stop() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            clearInterval(start);
+        }
+
+        function StopHH() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            rfid.disconnect();
+        }
+
+        function AllShowEPC(id) {
+            $.ajax({
+                url: '/rfid/AllShowEPC',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.a, function (k, v) {
+                            $.ajax({
+                                url: '/rfid/falseEPC',
+                                type: 'post',
+                                data: { epc: v.id },
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        if (!epcshow.some(item => item.IdEPC === v.id)) {
+                                            epcshow.push({
+                                                IdEPC: v.id,
+                                                IdWareHouse:id
+                                            })
+                                            CompareReceipt(v.id,id)
+                                        }
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }
+            })
+        }
+        function DeleteEpc() {
+            $.ajax({
+                url: '/rfid/DeleteEPC',
+                type: 'post',
+            })
+        }
+        $(function Unit() {
+            $.ajax({
+                url: '/Unit/List',
+                type: 'get',
+                data: { pagenum: 1000, page: 1, seach: "" },
+                success: function (data) {
+                    $('select[name="unit"]').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="@ViewBag.idUnit">@ViewBag.nameUnit</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('select[name="unit"]').append(table);
+                    } else (
+                        alert(data.msg)
+                    )
+                }
+            })
+        })
+
+        GroupGoods()
+        function GroupGoods() {
+            $.ajax({
+                url: '/goods/GroupGoods',
+                type: 'get',
+                success: function (data) {
+                    $('#groupgoods').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="@ViewBag.idGroupGoods">@ViewBag.nameGroupGoods</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#groupgoods').append(table);
+                    } else (
+                        alert(data.msg)
+                    )
+                }
+            })
+        }
+
+        function RFIDHandHeld(id) {
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'none')
+            $(`#notscanHH${id}`).css('display', 'block')
+            IdGoodsForHANDHELD = id
+            rfid.statusEvent = "statusEvent(%json)";
+            rfid.tagEvent = "TagHandler(%json)";
+            RFIDEnumrate();
+        }
+        async function TagHandler(tagarray) {
+            for (i = 0; i < tagarray.TagData.length; i++) {
+                var epc = tagarray.TagData[i].tagID
+                if (!epcshow.some(item => item.IdEPC === epc)) {
+                    epcshow.push({
+                        IdEPC: epc,
+                        IdWareHouse: IdGoodsForHANDHELD
+                    })
+                    await CompareReceipt(epc, IdGoodsForHANDHELD)
+                }
+            }
+        }
+        function RFIDEnumrate() {
+            rfid.transport = 'serial'
+            rfid.readerID = 'RFID1';
+            rfid.enumerate();
+            setTimeout(function () {
+                rfid.connect();
+                rfid.startTriggerType = "triggerPress";
+                rfid.performInventory();
+                rfid.beepOnRead = 1;
+            }, 1000);
+        }
+    </script>
+
+}
+
+

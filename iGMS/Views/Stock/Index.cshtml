@@ -1,0 +1,508 @@
+﻿
+@{
+    ViewBag.Title = "Kiểm Kê";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            Kiểm Kê
+        </h3>
+    </div>
+    <form id="form">
+        <div class="card-body">
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Phiếu Kiểm Kê<span style="color:red"> (*) </span></label>
+                <div class="col-xl-4">
+                    <div class="input-group ">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                             width="38" height="38"
+                             viewBox="0 0 48 48"
+                             style=" fill:#000000;">
+                            <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path>
+                            <path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path>
+                            <path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z" transform="rotate(-45.001 38.24 38.24)"></path>
+                            <path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+                            <path fill="#BBDEFB" d="M26.9,14.2c-1.7-2-4.2-3.2-6.9-3.2s-5.2,1.2-6.9,3.2c-0.4,0.4-0.3,1.1,0.1,1.4c0.4,0.4,1.1,0.3,1.4-0.1C16,13.9,17.9,13,20,13s4,0.9,5.4,2.5c0.2,0.2,0.5,0.4,0.8,0.4c0.2,0,0.5-0.1,0.6-0.2C27.2,15.3,27.2,14.6,26.9,14.2z"></path>
+                        </svg>
+                        <input class="form-control" type="search" placeholder="Tìm Phiếu Kiểm Kê" name="seachStock" id="seachStock" />
+                    </div>
+                </div>
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Chọn Kho</label>
+                <div class="col-xl-4">
+                    <select class="form-control" id="warehouse" name="warehouse"></select>
+                </div>
+            </div>
+            <div class="form-group  row" id="desktoprfid">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
+                <div class="col-lg-10 col-xl-10">
+                    <button type="button" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                    <button type="button" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
+                </div>
+            </div>
+            <div class="form-group row" id="rfidhandheld">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
+                <div class="col-lg-10 col-xl-10">
+                    <button type="button" class="btn btn-success mr-2" onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                    <button type="button" class="btn btn-secondary mr-2 "  onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
+                </div>
+            </div>
+            <div class="row" style="height: 500px;overflow-y: scroll;">
+                <div class="col-sm-12">
+                    <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                        <thead>
+                            <tr role="row">
+                                <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Company Email: activate to sort column ascending">STT</th>
+                                <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">Mã Hàng</th>
+                                <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">Tên Hàng</th>
+                                <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">Số Lượng Tồn</th>
+                                <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">Số Lượng Kiểm Kê</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tbd">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <label for="example-password-input" class="col-md-2 col-form-label">@Resources.Resource.Mô_Tả_Nếu_Có_Hàng_Dư_hoặc_Khác</label>
+                <div class="col-md-10">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 1234px;">
+                            <thead>
+                                <tr role="row">
+                                    <th>@Resources.Resource.Mã_Hàng_Hóa</th>
+                                    <th>@Resources.Resource.Tên_Kho_Hàng</th>
+                                    <th>@Resources.Resource.Số_Lượng</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="des">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-10">
+                        <button type="button" class="btn btn-success mr-2" onclick="Add(1)"> @Resources.Resource.Lưu</button>
+                        <button type="button" class="btn btn-info mr-2" onclick="Add(0)"> @Resources.Resource.Lưu_Tạm_Thời</button>
+                        <a href="/Stock/Index" type="reset" class="btn btn-secondary">Thoát</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal" id="BILL" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width:1100px">
+        <div class="modal-content">
+            <div class="modal-body" id="in">
+                <div class="row">
+                    <div class="col-7">
+                        <p>CÔNG TY CỔ PHẦN THƯƠNG MẠI HÀ PHAN</p>
+                        <p>Địa Chỉ: 758/25/2B Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP HCM.</p>
+                    </div>
+                    <div class="col-5" style="transform: translate(60%, 0px);">
+                        <p>Số PKK : <span name="iddh"></span></p>
+                        <p>Ngày PKK : <span name="datedh"></span></p>
+                    </div>
+                </div>
+                <div class="" style="text-align:center">
+                    <h1>Biên Bản Kiểm Kê</h1>
+                </div>
+                <p>- Người Kiểm Kê : <span name="stocker"></span></p>
+                <p>- Tôi Đã Tiến Hành Kiểm Kê Với Kết Quả Như Sau:</p>
+                <table class="table table-bordered" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">
+                    <thead>
+                    </thead>
+                    <tbody id="tbdmodal">
+                    </tbody>
+                </table>
+                <div class="row" style="text-align:center">
+                    <div class="col-6">
+                        <p><span name="nameCustomer"></span></p>
+                        <p name="">Người Xác Nhận</p>
+                        <p name="">(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div class="col-6">
+                        Ngày.....Tháng....Năm........
+                        <p>Người Lập Đơn hàng</p>
+                        <p>(Ký, ghi rõ họ tên)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id=hide>
+                <a type="button" href="/Stock/Index" class="btn btn-secondary">Close</a>
+                <button type="button" onclick="printDiv('in')" class="btn btn-primary">IN</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/assets/js/pages/crud/forms/widgets/select2.js"></script>
+    <script src="~/Scripts/ebapi-modules.js"></script>
+    <script src="~/Scripts/elements.js"></script>
+    <script>
+        var detailEpcScan = []
+        var errorEPC = []
+        $(function () {
+            var id = localStorage.getItem("idClickTo")
+            if (id != null) {
+                $('input[name="seachStock"]').val(id)
+                WareHouse(id);
+                localStorage.removeItem("idClickTo");
+            }
+        })
+        $(document).ready(function () {
+
+            if (/Android/i.test(navigator.userAgent)) {
+                $("#HandHeld").show()
+                $("#rfidhandheld").show()
+                $("#desktoprfid").hide()
+            } else {
+                $("#HandHeld").hide()
+                $("#rfidhandheld").hide()
+                $("#desktoprfid").show()
+            }
+        });
+        // Tìm kiếm Mã phiếu kiểm kê
+        $(document).on('keypress', 'input[name="seachStock"]', function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                epcshow = []; detailEpcScan = [];
+                var idStock = $(this).val().trim();
+                $('#tbd').empty();
+                WareHouse(idStock);
+            }
+        })
+        // Sau khi search mã phiếu gọi hàm để hiển thị kho hàng
+        function WareHouse(idStock) {
+            $.ajax({
+                url: '/Stock/WarehousesByStockId',
+                type: 'post',
+                data: { idStock },
+                success: function (data) {
+                    $('#warehouse').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">Chọn Kho Hàng</option>'
+                        $.each(data.warehouses, function (k, v) {
+                            table += '<option value="' + v.idWarehouse + '">' + v.nameWarehouse + '</option>'
+                        });
+                        $.each(data.detailStockEpc, function (k, v) {
+                            epcshow.push(v.epc)
+                            detailEpcScan.push({
+                                "IdDetailStock": v.id,
+                                "IdEpc": v.epc
+                            })
+                        })
+                        if (/Android/i.test(navigator.userAgent)) {
+                            $('div[name="HandheldRfid"]').show()
+                            $('div[name="desktopRfid"]').hide()
+                        } else {
+                            $('div[name="HandheldRfid"]').hide()
+                            $('div[name="desktopRfid"]').show()
+                        }
+                        $('#warehouse').append(table);
+                        toastr.success(data.msg)
+                    } else (
+                        toastr.error(data.msg)
+                    )
+                }
+            })
+        }
+        // Thay đổi kho hàng
+        $('#warehouse').on('change', function () {
+            var Warehouse = $(this).val();
+            var idStock = $('input[name="seachStock"]').val();
+            showchangeTable(Warehouse, idStock)
+        });
+
+        function showchangeTable(Warehouse, idStock) {
+            $.ajax({
+                url: '/stock/Detail',
+                type: 'post',
+                data: { Warehouse: Warehouse, idStock: idStock },
+                success: function (data) {
+                    if (data.code === 200) {
+                        $('#tbd').empty();
+                        $.each(data.stock, function (k, v) {
+                            $.each(v.GoodsList, function (kv, item) {
+                                var color = "";
+                                var qtyScan = "0";
+                                var hasIdDetailStockA = detailEpcScan.some(function (v) {
+                                    return Object.values(v).includes(item.id);
+                                });
+                                if (hasIdDetailStockA) {
+                                    var countIdDetailStockA = 0;
+
+                                    detailEpcScan.forEach(function (va) {
+                                        if (va.IdDetailStock === item.id) {
+                                            countIdDetailStockA++;
+                                        }
+                                    });
+                                    qtyScan = countIdDetailStockA;
+                                } else {
+                                    qtyScan = item.qttStock == null ? 0 : item.qttStock;
+                                }
+                                var qty = item.QuantityInventory;
+                                if (Number(qty) < Number(qtyScan)) {
+                                    color = "yellow"
+                                } else if (Number(qty) > Number(qtyScan)) {
+                                    color = "red"
+                                } else {
+                                    color = "green"
+                                }
+                                let table = '<tr data-id="' + item.idg.trim() + '" id="' + item.id.trim() + '" role="row" class="kiemke">';
+                                table += '<td>' + (kv + 1) + '</td>'
+                                table += '<td id="idgoods' + item.id.trim() + '">' + item.idg + '</td>'
+                                table += '<td>' + item.nameGoods + '</td>'
+                                table += '<td  id="qttInventory' + item.idg.trim() + '">' + qty + '</td>'
+                                table += '<td id="checkSt"  class="numberStock' + item.idg.trim() + '" style="background:' + color + '">' + qtyScan + '</td>'
+                                table += '</tr>';
+                                $('#tbd').append(table)
+                            });
+
+                        });
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            });
+        }
+        function Add(statusSave) {
+            Stop();
+            var idStock = $('input[name="seachStock"]').val();
+            $.ajax({
+                url: '/Stock/Add',
+                type: 'post',
+                data: {
+                    statusSave, idStock, detailEpcScan: JSON.stringify(detailEpcScan),
+                },
+                beforeSend: function () {
+                    $("#wait").css("display", "block");
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        toastr.success(data.msg);
+                        $('#BILL').modal('show');
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            })
+        }
+
+        //Quét mã hàng hóa lấy số lượng thực tế của kho
+        async function CompareReceipt(epc) {
+            await CheckIdGoodsInSystem(epc)
+                .then(function (data) {
+                    if (data?.status) {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = epc
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                        } else {
+                            var tr = `<tr class="more" id="more${barcodes}">
+                                        <td>${barcodes}</td>
+                                        <td>Undeclared Data</td>
+                                        <td id="amountmore${barcodes}">1</td>
+                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
+                                        </tr>`
+                            $('#des').append(tr)
+                        }
+                        errorEPC.push(
+                            epc
+                        );
+                    } else {
+                        var statusEpc = data?.checkEpc?.Status
+                        var barcode = data?.checkEpc?.IdGoods;
+                        var nameWareHouse = data?.checkEpc?.Name;
+                        var nameWareHouseCurrent = $('#warehouse :selected').text()
+                        if (statusEpc) {
+                            if (nameWareHouse != nameWareHouseCurrent) {
+                                var more = $('.more').map(function () {
+                                    return this.id;
+                                }).get();
+                                if (more.includes("more" + epc + "")) {
+                                    $('#amountmore' + epc + '').text(Number($('#amountmore' + epc + '').text()) + 1)
+                                } else {
+                                    var tr = `<tr class="more" id="more${epc}">
+                                        <td>${barcode}</td>
+                                        <td>${nameWareHouse}</td>
+                                        <td id="amountmore${epc}">1</td>
+                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
+                                        </tr>`
+                                    $('#des').append(tr)
+                                }
+                            }
+                            var amountScan = $('.numberStock' + barcode + '').eq(0).text();
+                            var amountQuantity = $('#qttInventory' + barcode + '').text();
+                            var idDeStock = $('#qttInventory' + barcode + '').closest('tr').attr('id');
+                            $('.numberStock' + barcode + '').text(Number(amountScan) + 1);
+                            if (Number(amountScan) + 1 < Number(amountQuantity)) {
+                                $('.numberStock' + barcode + '').css("background-color", 'red')
+                            } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
+                                $('.numberStock' + barcode + '').css("background-color", 'green')
+                            } else {
+                                $('.numberStock' + barcode + '').css("background-color", 'yellow')
+                            }
+                            detailEpcScan.push({
+                                "IdDetailStock": idDeStock,
+                                "IdEpc": epc
+                            })
+                        } else {
+                            var more = $('.more').map(function () {
+                                return this.id;
+                            }).get();
+                            var barcodes = data?.checkEpc?.IdGoods
+                            if (more.includes("more" + epc + "")) {
+                                $('#amountmore' + epc + '').text(Number($('#amountmore' + epc + '').text()) + 1)
+                            } else {
+                                var tr = `<tr class="more" id="more${epc}">
+                                        <td>${barcodes}</td>
+                                        <td>Goods Not Imported</td>
+                                        <td id="amountmore${epc}">1</td>
+                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
+                                        </tr>`
+                                $('#des').append(tr)
+                            }
+                            errorEPC.push(
+                                epc
+                            );
+                        }
+                    }
+
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                })
+        }
+        $(document).on('click', 'td[name="location"]', function () {
+            var epc = $(this).attr('id').substring(8)
+            localStorage.setItem("locationEpc", epc)
+            $.ajax({
+                url: '/Epcs/LocationEpc',
+                type: 'get',
+                data: {epc}
+            })
+        })
+        function CheckIdGoodsInSystem(epc) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: '/Epcs/CheckIdGoodsInSystem',
+                    type: 'get',
+                    data: { epc },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            resolve(data);
+                        }
+                        else {
+                            toastr.error(data.msg)
+                            reject(data.msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+        var start;
+        function RFID() {
+            DeleteEpc();
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'block')
+            start = setInterval(function () { AllShowEPC() }, 200);
+        }
+        //stop scanner
+        function Stop() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            clearInterval(start);
+        }
+        var epcshow = [];
+        function AllShowEPC() {
+            $.ajax({
+                url: '/rfid/AllShowEPC',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.a, function (k, v) {
+                            $.ajax({
+                                url: '/rfid/falseEPC',
+                                type: 'post',
+                                data: { epc: v.id },
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        if (!epcshow.includes(v.id)) {
+                                            epcshow.push(v.id)
+                                            CompareReceipt(v.id)
+                                        }
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }
+            })
+        }
+        function DeleteEpc() {
+            $.ajax({
+                url: '/rfid/DeleteEPC',
+                type: 'post',
+            })
+        }
+
+        function RFIDHandHeld() {
+            rfid.statusEvent = "statusEvent(%json)";
+            rfid.tagEvent = "TagHandler(%json)";
+            RFIDEnumrate();
+        }
+        //RFID
+        function TagHandler(tagarray) {
+            for (i = 0; i < tagarray.TagData.length; i++) {
+                rfid.beepOnRead = true;
+                var epc = tagarray.TagData[i].tagID
+                if (!epcshow.includes(epc)) {
+                    epcshow.push(epc)
+                    CompareReceipt(epc)
+                }
+            }
+
+        }
+        function RFIDEnumrate() {
+            rfid.transport = 'serial'
+            rfid.readerID = 'RFID1';
+            rfid.enumerate();
+            setTimeout(function () {
+                rfid.connect();
+                rfid.startTriggerType = "triggerPress";
+                rfid.performInventory();
+                rfid.beepOnRead = 1;
+            }, 1000);
+        }
+        function StopHH() {
+            rfid.stop();
+            rfid.disconnect();
+        }
+    </script>
+
+
+}
+
+

@@ -1,0 +1,264 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Cài_Đặt_Chức_Năng;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Cài_Đặt_Chức_Năng
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="row mb-3">
+                <label for="apihostname" class="input-group-text col-md-2 col-form-label">Nhập HostName API:</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="apihostname" name="apihostname" placeholder="http://">
+                </div>
+                <button class="btn btn-success" onclick="SaveApi()">Lưu</button>
+            </div>
+            <label for="example-password-input" class="col-xl-10 col-lg-10 col-form-label">Chú ý: Để cài đặt API vui lòng nhấp chuột phải vào thư mục cần cài đặt<span style="color:red"> (*) </span></label>
+            <div id="kt_tree_3" class="tree-demo">
+            </div>
+        </div>
+     </div>
+
+        </div>
+        @section scripts{
+            <script>
+                $('#kt_tree_3').jstree({
+                    "plugins": ["wholerow", "checkbox", "types", "contextmenu"],
+                    "checkbox": {
+                        "keep_selected_style": false
+                    },
+                    "core": {
+                        "themes": {
+                            "responsive": false
+                        },
+                        "data": function (node, callback) {
+                            // Gọi API GetMenu để lấy dữ liệu menu và chức năng tương ứng
+                            $.ajax({
+                                url: '/FunctionSetting/GetMenu',
+                                type: 'POST',
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        var menuNodes = [];
+                                        // Lặp qua mỗi menu
+                                        data.menu.forEach(function (menu) {
+                                            var menuNode = {
+                                                "text": menu.name,
+                                                "menuId": menu.id,
+                                                "children": []
+                                            };
+                                            // Lặp qua mỗi chức năng của menu và thêm chúng vào menuNode
+                                            menu.functions.forEach(function (func) {
+                                                menuNode.children.push({
+                                                    "text": func.name,
+                                                    "functionId": func.id,
+                                                    "state": {
+                                                        "selected": func.status,
+                                                    },
+                                                    "namefunctionapi": func.namefunctionapi,
+                                                });
+                                            });
+
+                                            menuNodes.push(menuNode);
+                                        });
+                                        console.log(menuNodes);
+                                        // Gọi callback với dữ liệu đã được cấu trúc
+                                        callback(menuNodes);
+                                    } else {
+                                        console.error('Failed to retrieve menu data');
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error retrieving menu data:', error);
+                                }
+                            });
+                        }
+                    },
+                    "types": {
+                        "default": {
+                            "icon": "fa fa-folder text-warning"
+                        },
+                        "file": {
+                            "icon": "fa fa-file  text-warning"
+                        }
+                    },
+                    "contextmenu": {
+                        "items": function (node) {
+                            var menu = {
+                                "add": {
+                                    "label": "Cài đặt API",
+                                    "action": function (obj) {
+                                        // Lấy functionId từ thuộc tính original của node
+                                        var idfunction = node.original.functionId;
+                                        console.log(idfunction)
+                                        // Lấy thông tin về node được chọn
+                                        var functionName = node.text;
+                                        // lấy thông tin tên thư mục cha
+                                        var menuNode = $('#kt_tree_3').jstree(true).get_node(node.parents[node.parents.length - 2]);
+                                        var menuName = menuNode.text;
+                                        var namedunctionapi = node.original.namefunctionapi;
+                                        // Chuyển hướng đến trang AddFunction với các tham số tương ứng
+                                        window.location.href = "/FunctionSetting/AddFunction?menuName=" + menuName + "&functionName=" + functionName + "&functionId=" + idfunction + "&namefunctionAPI=" + namedunctionapi;
+                                    }
+                                },
+                            };
+
+                            return menu;
+                        }
+                    }
+                });
+
+                $('#kt_tree_3').on('deselect_node.jstree', function (e, data) {
+                    var deselectedNode = data.node;
+
+                    if (!deselectedNode.children.length) {
+
+                        var idfunction = deselectedNode.original.functionId;
+
+                        updateFunctionStatus(idfunction, false);
+                    }
+                    else {
+                        // Nếu nút bỏ chọn là một nút cha, cập nhật trạng thái của tất cả các nút con
+                        updateChildNodesStatus(deselectedNode, false);
+                    }
+                })
+
+                // Xử lý sự kiện changed.jstree khi click vào nút cha
+                $('#kt_tree_3').on('changed.jstree', function (e, data) {
+                    var selectedNodes = data.selected;
+
+                    // Lặp qua mỗi node con đã chọn
+                    if (selectedNodes) {
+                        selectedNodes.forEach(function (nodeId) {
+                            // Lấy thông tin của node
+                            var node = $('#kt_tree_3').jstree(true).get_node(nodeId);
+
+                            if (!node.children.length) {
+                                var functionId = node.original.functionId;
+                                updateFunctionStatus(functionId, true);
+                            }
+                        });
+                    }
+                });
+
+                // Hàm đệ quy để cập nhật trạng thái của tất cả các nút con
+                function updateChildNodesStatus(parentNode, status) {
+                    var childrenNodes = $('#kt_tree_3').jstree(true).get_children_dom(parentNode);
+
+                    childrenNodes.each(function (index, childNode) {
+                        var node = $('#kt_tree_3').jstree(true).get_node(childNode);
+
+                        if (!node.children.length) {
+                            var functionId = node.original.functionId;
+                            updateFunctionStatus(functionId, status);
+                        } else {
+                            updateChildNodesStatus(childNode, status);
+                        }
+                    });
+                }
+
+
+                function updateFunctionStatus(idfunction, status) {
+                    $.ajax({
+                        url: '/FunctionSetting/UpdateFunctionStatus',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { idfunction: idfunction, status: status },
+                        success: function (response) {
+                            if (response.code == 200) {
+                                console.log('Cập nhật trạng thái thành công');
+                            }
+                            else {
+                                console.error('Lỗi: ' + response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Lỗi AJAX: ' + error);
+                        }
+                    });
+                }
+
+                // lấy giá trị hostname từ Web.config
+                $.ajax({
+                    url: '/FunctionSetting/GetApiHostname',
+                    type: 'GET',
+                    success: function (data) {
+                        // Đặt giá trị hostname vào trường input
+                        $('#apihostname').val(data.hostname);
+                    },
+                    error: function (error) {
+                        console.error('Error retrieving API hostname:', error);
+                        console.error('Error retrieving API hostname:', error);
+                    }
+                });
+                function SaveApi() {
+                    var hostname = document.getElementById("apihostname").value;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/FunctionSetting/SaveApiHostname", true);
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            console.log("Hostname saved successfully!");
+                            var userData = JSON.parse(xhr.response).data;
+                            reLoginAndSaveSession(userData);
+                        }
+                    };
+                    xhr.send(JSON.stringify({ hostname: hostname }));
+                }
+
+                //Đăng nhập lại
+                function reLoginAndSaveSession(UserData) {
+                    var UserName = UserData.UserName;
+                    var FullName = UserData.FullName
+                    var DepartmentId = UserData.DepartmentId;
+                    var DepartmentName = UserData.DepartmentName;
+                    var ApiRolesString = JSON.stringify(UserData.ApiRoles);
+
+                    $.ajax({
+                        url: '/Login/LoginApi',
+                        type: 'get',
+                        data: { UserName, FullName, DepartmentId, DepartmentName, ApiRolesString },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                window.location.href = "Home/Index";
+                                KTUtil.scrollTop();
+                            } else {
+                                swal.fire({
+                                    title: "Có Lỗi !",
+                                    text: data.msg,
+                                    icon: "error",
+                                    buttonsStyling: false,
+                                    heightAuto: false,
+                                    customClass: {
+                                        confirmButton: "btn font-weight-bold btn-light-primary"
+                                    }
+                                }).then(function () {
+                                    KTUtil.scrollTop();
+                                });
+                            }
+                        },
+                        error: function () {
+                            swal.fire({
+                                title: "Có Lỗi !",
+                                text: "Vui Lòng Tải Lại Trang Và Thử Lại !",
+                                icon: "error",
+                                heightAuto: false,
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok!",
+                                customClass: {
+                                    confirmButton: "btn font-weight-bold btn-light-primary"
+                                }
+                            }).then(function () {
+                                KTUtil.scrollTop();
+                            });
+                        }
+                    })
+                }
+            </script>
+        }

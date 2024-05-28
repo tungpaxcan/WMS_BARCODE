@@ -1,0 +1,134 @@
+﻿@model WMS.Models.User
+@{
+    ViewBag.Title = "Sửa Mật Khẩu";
+}
+<div class="card card-custom">
+    <form id="form">
+        <div class="card-header">
+            <h3 class="card-title">
+                Sửa Mật Khẩu
+            </h3>
+        </div>
+        <input hidden class="form-control" type="text" value="@Model.Id" name="Id" />
+        <!--begin::Form-->
+        <div class="card-body">
+            <div class="form-group mb-8">
+                <div class="alert alert-custom alert-default" role="alert">
+                    <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                    <div class="alert-text">
+                        Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống
+                    </div>
+                </div>
+            </div>
+
+                <div class="col-xl-12 col-xxl-7">
+                    <!--begin::Form Wizard-->
+                    <form class="form fv-plugins-bootstrap fv-plugins-framework" id="kt_projects_add_form">
+                        <!--begin::Step 1-->
+                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="form-group row fv-plugins-icon-container">
+                                        <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Mật Khẩu Cũ<span style="color:red"> (*) </span></label>
+                                        <div class="col-lg-10 col-xl-10">
+                                            <div class="input-group ">
+                                                <input required class="form-control" type="password" placeholder="Mật Khẩu Cũ" name="Pass" />
+                                                <div class="input-group-append" id="eye">
+                                                    <span class="input-group-text"><i class="icon-xl far fa-eye" onclick=""></i><i class="icon-xl far fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row fv-plugins-icon-container">
+                                        <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Mật Khẩu Mới<span style="color:red"> (*) </span></label>
+                                        <div class="col-lg-10 col-xl-10">
+                                            <div class="input-group ">
+                                                <input required class="form-control" type="password" placeholder="Mật Khẩu Mới" name="PassNew" />
+                                                <div class="input-group-append" id="eye">
+                                                    <span class="input-group-text"><i class="icon-xl far fa-eye" onclick=""></i><i class="icon-xl far fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row fv-plugins-icon-container">
+                                        <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Nhập Lại Mật Khẩu Mới<span style="color:red"> (*) </span></label>
+                                        <div class="col-lg-10 col-xl-10">
+                                            <div class="input-group ">
+                                                <input required class="form-control" type="password" placeholder="Nhập Lại Mật Khẩu Mới" name="PassNewAgain" />
+                                                <div class="input-group-append" id="eye">
+                                                    <span class="input-group-text"><i class="icon-xl far fa-eye" onclick=""></i><i class="icon-xl far fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+             
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-10">
+                        <button type="button" class="btn btn-success mr-2" id="submit">Lưu</button>
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+@section scripts{
+    <script>
+        //------------Register------------
+        $('#submit').click(function (e) {
+            Register();
+        })
+
+
+        //------------Register------------
+        function Register() {
+            var form = document.getElementById("form");
+            var formData = new FormData(form);
+            $.ajax({
+                url: '/register/EditPassword',
+                type: 'post',
+                data: formData,
+                contentType: false, // Không thiết lập contentType để jQuery tự động xác định
+                processData: false,
+                success: function (data) {
+                    if (data.code == 200) {
+                        toastr.success(data.msg)
+                        setTimeout(function () { window.location.href = "/register/ListUser" }, 1000)
+                    } else {
+                        toastr.error(data.msg)
+                    }
+                    $('input[name="Pass"]').val('');
+                    $('input[name="PassNew"]').val('');
+                    $('input[name="PassNewAgain"]').val('');
+                },
+                complete: function () {
+                    $('.Loading').css("display", "none");//Request is complete so hide spinner
+                }
+            })
+        }
+        //---------eye::pass---------
+        $('.icon-xl.far.fa-eye-slash').css("display", "none")
+        $('.icon-xl.far.fa-eye').click(function () {
+            $('.icon-xl.far.fa-eye-slash').css("display", "block")
+            $('.icon-xl.far.fa-eye').css("display", "none")
+            $('input[name="Pass"]').attr("type", "text");
+            $('input[name="PassNew"]').attr("type", "text");
+            $('input[name="PassNewAgain"]').attr("type", "text");
+        })
+        $('.icon-xl.far.fa-eye-slash').click(function () {
+            $('.icon-xl.far.fa-eye-slash').css("display", "none")
+            $('.icon-xl.far.fa-eye').css("display", "block")
+            $('input[name="Pass"]').attr("type", "password");
+            $('input[name="PassNew"]').attr("type", "password");
+            $('input[name="PassNewAgain"]').attr("type", "password");
+        })
+    </script>
+}
+

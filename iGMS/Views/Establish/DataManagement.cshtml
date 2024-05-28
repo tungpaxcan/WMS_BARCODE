@@ -1,0 +1,269 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Quản_Lý_Dữ_Liệu;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Sao_Lưu_Máy_Chủ_SQL
+        </h3>
+        <div class="card-toolbar">
+       
+                <a data-toggle="modal" data-target="#DanhSachSaoLuu" class="btn btn-primary font-weight-bolder">
+                    @Resources.Resource.Danh_Sách_Sao_Lưu
+                </a>
+        </div>
+    </div>
+
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group row">
+            <label class="col-2 col-form-label">@Resources.Resource.Đường_Dẫn<span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">D:\Backup\</span>
+                    </div>
+                    <input class="form-control" type="file" value="D:\\Backup" id="backupPath" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Máy_Chủ</label>
+            <div class="col-10">
+                <select class="form-control" id="serverName">
+                    <option>@ViewBag.DatabaseServer</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Cơ_Sở_Dữ_Liệu</label>
+            <div class="col-10">
+                <select class="form-control" id="databaseName">
+                    <option>@ViewBag.DatabaseName</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Cơ_Sở_Dữ_Liệu</label>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Tài_Khoản</label>
+                            <div class="col-10">
+                                <input class="form-control" type="text" value="sa" id="userName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Mật_Khẩu</label>
+                            <div class="col-10">
+                                <input class="form-control" type="password" value="123" id="password" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">@Resources.Resource.Trạng_Thái</label>
+            <div class="col-10">
+                <textarea id="status" style="width:100%"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" class="btn btn-success mr-2" id="submit" onclick="BackupDatabase()">@Resources.Resource.Sao_Lưu</button>
+                <a href="Home/index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="DanhSachSaoLuu" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Resources.Resource.Danh_Sách_Sao_Lưu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: scroll;">
+                <table class="table" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:1200px">
+                    <thead>
+                        <tr role="row">
+                            <th>@Resources.Resource.STT</th>
+                            <th>@Resources.Resource.Ngày_Giờ</th>
+                            <th>@Resources.Resource.Người_Sao_Lưu</th>
+                            <th>@Resources.Resource.Tên_Máy_Chủ</th>
+                            <th>@Resources.Resource.Tên_Dữ_Liệu</th>
+                            <th>@Resources.Resource.Đường_Dẫn</th>
+                            <th>@Resources.Resource.Hành_Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">@Resources.Resource.Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        List()
+        function BackupDatabase() {
+            var backupPath = $('#backupPath')[0].files[0].name;
+            var databaseName = $('#databaseName').val()
+            var serverName = $('#serverName').val()
+            var userName = $('#userName').val()
+            var password = $('#password').val()
+            $.ajax({
+                url: '/Establish/BackupDatabase',
+                type: 'post',
+                data: { backupPath, databaseName, serverName, userName, password },
+                success: function (data) {
+                    if (data.code == 200) {
+                        $('#status').val(data.msg)
+                        toastr.success(data.msg);
+                        List()
+                    } else {
+                        $('#status').val(data.msg)
+                        toastr.error(data.msg);
+                    }
+                }
+            })
+        }
+
+        function List() {
+            $.ajax({
+                url: '/Establish/List',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        $('#tbd').empty()
+                        let tbd = ``;
+                        $.each(data.backup, function (k, v) {
+                            tbd += `<tr>
+                                            <td>${k + 1}</td>
+                                            <td>${dateConvert(v.date)}</td>
+                                            <td>${v.user}</td>
+                                            <td>${v.sever}</td>
+                                            <td>${v.name}</td>
+                                            <td>${v.path}</td>
+                                            <td><div class="dropdown dropdown-inline">
+            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+            <span class="svg-icon svg-icon-md">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <rect x="0" y="0" width="24" height="24"></rect>
+            <path d="M5,8.6862915 L5,5 L8.6862915,5 L11.5857864,2.10050506 L14.4852814,5 L19,5 L19,9.51471863 L21.4852814,12 L19,14.4852814 L19,19 L14.4852814,19 L11.5857864,21.8994949 L8.6862915,19 L5,19 L5,15.3137085 L1.6862915,12 L5,8.6862915 Z M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z" fill="#000000"></path>
+            </g>
+            </svg>
+            </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+            <ul class="navi flex-column navi-hover py-2">
+            <li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+            chọn hành động:
+            </li>
+            <li class="navi-item">
+            <a id="delete${v.id}" name="delete" class="navi-link">
+            <span class="navi-icon"><i class="icon-2x text-dark-50 flaticon-delete"></i></span>
+            <span class="navi-text">Xóa</span>
+            </a>
+            </li>
+            <li class="navi-item">
+            <a id="retore${v.id}" name="retore" class="navi-link">
+            <span class="navi-icon"><i class="icon-xl fas fa-reply-all"></i></span>
+            <span class="navi-text">Phúc Hồi</span>
+            </a>
+            </li>
+            </ul>
+            </div>
+            </div></td></tr>
+                                            `
+                        })
+                        $('#tbd').append(tbd)
+
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            })
+        }
+
+        $(document).on('click', 'a[name="delete"]', function () {
+            var id = $(this).attr('id').substring(6)
+            Swal.fire({
+                title: 'Có Chắc Muốn Xóa?',
+                text: "hành động này sẽ không được phục hồi!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Chắc Chắn!',
+                cancelButtonText: 'Quay Lại!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Establish/Delete',
+                        type: 'post',
+                        data: { id },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                toastr.success(data.msg);
+                                List()
+                            } else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', 'a[name="retore"]', function () {
+            var id = $(this).attr('id').substring(6)
+            var userName = $('#userName').val()
+            var password = $('#password').val()
+            Swal.fire({
+                title: 'Có Chắc Muốn Phục Hổi Dữ Liệu?',
+                text: "hành động này sẽ không quay lại được!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Chắc Chắn!',
+                cancelButtonText: 'Quay Lại!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Establish/RetoreDatabase',
+                        type: 'post',
+                        data: { id, userName, password },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                toastr.success(data.msg);
+                                setTimeout(function () { window.location.reload() }, 1000)
+                            } else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}
+

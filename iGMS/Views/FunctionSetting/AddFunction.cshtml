@@ -1,0 +1,604 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Add_Function;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Add_Function
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="namefunction" class="input-group-text col-md-2 col-form-label">Nhập Tên Hàm:</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="namefunction" name="namefunction" placeholder="Tên hàm: /Unit/Add">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="methodfunction" class="input-group-text col-md-2 col-form-label">Nhập Phương Thức:</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="methodfunction" name="methodfunction" value="@ViewBag.Method" placeholder="phương thức: get">
+                </div>
+            </div>
+
+            <div id="inputContainer">
+                <!-- Các input sẽ được thêm vào đây -->
+            </div>
+
+            <!--Trạng thái trả về thành công-->
+            <div class="row mb-3">
+                <label for="returnjson" class="input-group-text col-md-2 col-form-label">Trạng Thái Trả Về Thành Công:</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="returnjson" name="returnjson" placeholder="vd: code">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="statusreturnjson" class="input-group-text col-md-2 col-form-label">Giá Trị Trạng Thái Trả Về Th.Công:</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="statusreturnjson" name="statusreturnjson" placeholder="vd: 200">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="namereturnjson" class="input-group-text col-md-2 col-form-label">Từ Khóa Thông Báo Trả Về Th.Công:</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="namereturnjson" name="namereturnjson" placeholder="vd:message">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="namereturnjson" class="input-group-text col-md-2 col-form-label mb-2">Đối tượng trả về</label>
+                <textarea class="form-control" id="returnValues" rows="3" placeholder='Ví dụ: {"data":{"departmentId":"4","departmentName":"Giai Phap","fullName":"Nhat","roles":{"roleDes":"Admin","roleId":"1","roleName":"Admin"}}}'></textarea>
+            </div>
+            <!--Cây thư mục đối tượng trả về-->
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+                    <button id="addfunction" class="btn btn-primary">Thêm Tham Số</button>
+                    <button id="cancel" class="btn btn-secondary">Xóa Tham Số</button>
+                    <button id="folder" class="btn btn-secondary">Áp dụng giá trị trả về</button>
+                </div>
+                <div class="col-md-6">
+                    <button id="save" class="btn btn-success">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Lấy các tham số từ URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var namefunctionAPI = urlParams.get('namefunctionAPI');
+            var functionId = urlParams.get('functionId');
+
+            // Điền dữ liệu vào các ô input
+            document.getElementById("namefunction").value = namefunctionAPI;
+
+
+            // Gọi action GetParamOptions từ controller khi DOM được load
+            $.ajax({
+                url: '/FunctionSetting/Data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        // Xóa các options cũ trong select
+                        $('#param').empty();
+
+                        // Thêm các options mới từ dữ liệu nhận được
+                        response.paramfunction.forEach(function(option) {
+                            $('#param').append($('<option>', {
+                                value: option.Value,
+                                text: option.Key
+                            }));
+                        });
+                    } else {
+                        console.error('Lỗi khi lấy dữ liệu: ' + response.msg);
+                    }
+                },
+                error: function(error) {
+                    console.error('Lỗi AJAX: ' + error);
+                }
+            });
+
+            // Nút thêm input
+            var addButton = document.getElementById("addfunction");
+
+            // Hàm để thêm input mới
+            function addInput() {
+                var inputGroup = document.createElement("div");
+                inputGroup.classList.add("row", "mb-3");
+
+                // Tạo label cho input thứ nhất
+                var newLabel1 = document.createElement("label");
+                newLabel1.textContent = "Nhập Tham Số Truyền:";
+                newLabel1.classList.add("input-group-text", "col-md-2", "col-form-label");
+                inputGroup.appendChild(newLabel1);
+
+                // Tạo input thứ nhất
+                var newInput1 = document.createElement("div");
+                newInput1.classList.add("col-md-4");
+                var input1 = document.createElement("input");
+                input1.type = "text";
+                input1.name = "name";
+                input1.placeholder = "Đối số";
+                input1.classList.add("form-control","param-name");
+                newInput1.appendChild(input1);
+                inputGroup.appendChild(newInput1);
+
+                // Tạo label cho select thứ hai
+                var newLabel2 = document.createElement("label");
+                newLabel2.textContent = "Nhập Kiểu Dữ Liệu Truyền:";
+                newLabel2.classList.add("input-group-text", "col-md-2", "col-form-label");
+                inputGroup.appendChild(newLabel2);
+
+                // Tạo select thứ hai
+                var newInput2 = document.createElement("div");
+                newInput2.classList.add("col-md-4");
+                var select = document.createElement("select");
+                select.id = "param";
+                select.name = "param";
+                select.classList.add("form-control","param-type");
+                newInput2.appendChild(select);
+                inputGroup.appendChild(newInput2);
+
+                // Thêm inputGroup vào container chứa input
+                inputContainer.appendChild(inputGroup);
+
+                getDataTypes(select);
+
+            }
+
+
+            // lấy danh sách paramFunctions
+            $.ajax({
+                url: '/FunctionSetting/GetParamFunctions',
+                type: 'GET',
+                data: { functionId: functionId }, // Truyền functionId
+                success: function (data) {
+                    if (data.success) {
+
+                        data.paramFunctions.forEach(function (param) {
+                            // Tạo một hàng mới
+                            var row = document.createElement("div");
+                            row.classList.add("row", "mb-3");
+
+                            // Tạo label cho input đối số
+                            var label = document.createElement("label");
+                            label.textContent = "Nhập Tham Số Truyền:";
+                            label.classList.add("input-group-text", "col-md-2", "col-form-label");
+
+                            // Tạo input đối số
+                            var inputDiv = document.createElement("div");
+                            inputDiv.classList.add("col-md-4");
+                            var input = document.createElement("input");
+                            input.type = "text";
+                            input.name = "name";
+                            input.placeholder = "Đối số";
+                            input.classList.add("form-control", "param-name");
+                            input.value = param.nameparam; // Đặt giá trị cho input từ param.nameparam
+                            inputDiv.appendChild(input);
+
+                            // Tạo label cho select datatype
+                            var datatypeLabel = document.createElement("label");
+                            datatypeLabel.textContent = "Nhập Kiểu Dữ Liệu Truyền:";
+                            datatypeLabel.classList.add("input-group-text", "col-md-2", "col-form-label");
+
+                            // Tạo select datatype
+                            var datatypeDiv = document.createElement("div");
+                            datatypeDiv.classList.add("col-md-4");
+                            var select = document.createElement("select");
+                            select.name = "param";
+                            select.classList.add("form-control", "param-type");
+
+                            // Tạo option cho select datatype
+                            var option = document.createElement("option");
+                            option.value = param.datatype;
+                            option.text = param.datatype;
+                            select.appendChild(option);
+
+                            // Thêm label và input vào hàng
+                            row.appendChild(label);
+                            row.appendChild(inputDiv);
+
+                            // Thêm label và select vào hàng
+                            row.appendChild(datatypeLabel);
+                            row.appendChild(datatypeDiv);
+
+                            // Thêm select vào div của kiểu dữ liệu
+                            datatypeDiv.appendChild(select);
+
+                            // Thêm hàng vào inputContainer
+                            inputContainer.appendChild(row);
+
+                            // Đặt giá trị cho các input
+                            $('#methodfunction').val(param.method);
+                            $('#returnjson').val(param.returnjson);
+                            $('#statusreturnjson').val(param.statusreturnjson);
+                            $('#namereturnjson').val(param.namereturnjson);
+
+                            // Lấy dữ liệu từ controller để điền vào select
+                            getDataTypes(select);
+                        });
+                    } else {
+                        console.error('Lỗi khi lấy dữ liệu paramfunctions:', data.message);
+                    }
+                },
+                error: function (error) {
+                    console.error('Lỗi AJAX khi lấy dữ liệu paramfunctions:', error);
+                }
+        });
+
+         // Lấy dữ liệu từ controller để điền vào select
+            function getDataTypes(select) {
+                $.ajax({
+                    url: '/FunctionSetting/Data',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            // Lặp qua danh sách giá trị từ controller và thêm mỗi giá trị là một tùy chọn vào select
+                            data.paramfunction.forEach(function (item) {
+                                var option = document.createElement("option");
+                                option.value = item.Key; // Set giá trị của tùy chọn
+                                option.text = item.Value; // Set văn bản hiển thị của tùy chọn
+                                select.appendChild(option); // Thêm tùy chọn vào select
+                            });
+                        } else {
+                            console.error('Failed to retrieve data from controller');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error retrieving data from controller:', error);
+                    }
+                });
+            }
+
+      // Sự kiện click nút "Thêm"
+            addButton.addEventListener("click", addInput);
+
+     // Nút hủy
+            var cancelButton = document.getElementById("cancel");
+
+            cancelButton.addEventListener("click", function () {
+                // Lấy cặp input và label cuối cùng
+                var lastInputGroup = inputContainer.querySelector(".row:last-child");
+
+                // Xóa cặp input và label cuối cùng
+                if (lastInputGroup) {
+                    lastInputGroup.remove();
+                }
+            });
+
+     // Nút lưu
+            $('#save').on('click', function() {
+                // Lấy các giá trị từ các ô input và select
+                var namefunction = $('#namefunction').val();
+                var methodfunction = $('#methodfunction').val();
+                var returnjson = $('#returnjson').val();
+                var statusreturnjson = $('#statusreturnjson').val();
+                var namereturnjson = $('#namereturnjson').val();
+                var nameparam = [];
+                var datatype = [];
+
+                $('#inputContainer').find('.row').each(function () {
+                    var nameInput = $(this).find('.param-name').val();
+                    var typeSelect = $(this).find('.param-type').val();
+                    nameparam.push(nameInput);
+                    datatype.push(typeSelect);
+                });
+
+         // Gọi API để thêm chức năng mới
+                $.ajax({
+                    url: '/FunctionSetting/AddFunctionAPI',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        functionId: '@ViewBag.FunctionId',
+                        namefunction: namefunction,
+                        returnjson: returnjson,
+                        statusReturnjson: statusreturnjson,
+                        nameReturnjson: namereturnjson,
+                        methodfunction: methodfunction,
+                        nameparam: nameparam,
+                        datatype: datatype
+                    },
+                    success: function(response) {
+                        if (response.code == 200) {
+                            toastr.success(response.message);
+                            setTimeout(function () { window.location.href = "/functionsetting/functionsetting" }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(error) {
+                        toastr.error('Lỗi: ' + error);
+                    }
+                });
+            });
+        });
+
+        var form = new FormData();
+        form.append("functionId", "@ViewBag.FunctionId");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetReturnValue", "FunctionSetting")",
+            data: form,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.code === 200) {
+                    $("#returnValues").val(response.values);
+                }
+            },
+            error: function (error) {
+                toastr.error("Lỗi:", error);
+            }
+        })
+
+// Tạo cây thư mục đối tượng json trả về
+        /*$('#kt_tree_3').jstree({
+            'core': {
+                'data': function (node, callback) {
+                    var valueNode = [];
+                    var node = {
+                        'text': 'Cây Đối Tượng Trả về',
+                        'children': []
+                    }
+                    var form = new FormData();
+                    form.append("functionId", '');
+                    $.ajax({
+                        type: "POST",
+                        url: "",
+                        data: form,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.code === 200) {
+                                var returnValues = JSON.parse(response.values);
+                                for (var key in returnValues) {
+                                    var subNode = {
+                                        'text': key,
+                                        'children': []
+                                    }
+                                    if (returnValues[key] !== "") {
+                                        var getChildren = checkChildren(returnValues[key]);
+                                        subNode.children = (getChildren);
+                                    }
+                                    node.children.push(subNode);
+                                }
+                                valueNode.push(node);
+                            } else {
+                                valueNode.push(node);
+                            }
+                            console.log(valueNode);
+                            callback(valueNode)
+                        },
+                        error: function (error) {
+                            toastr.error("Lỗi:", error);
+                        }
+                    })
+                },
+                'check_callback': true
+            },
+            'plugins': ['contextmenu']
+        });*/
+
+        function checkChildren(object) {
+            var getChildren = [];
+            for (var key in object) {
+                var nodeChildren = {
+                    'text': key,
+                    'children': []
+                }
+                if (object[key] !== "") {
+                    var check = checkChildren(object[key]);
+                    nodeChildren.children.push(check);
+                }
+                getChildren.push(nodeChildren);
+            }
+            console.log(getChildren);
+            return getChildren;
+        }
+
+
+
+        // Sự kiện khi nhấp chuột phải vào node
+        /*$('#tree').on('contextmenu.jstree', function (e) {
+            var node = $(e.target).closest('.jstree-node');
+            console.log(node);
+            var instance = $.jstree.reference(node);
+
+            var newNode = {
+                'text': 'Thư mục mới',
+                'state': {
+                    'opened': true
+                },
+            };
+
+            // Thêm node mới vào cây
+            instance.create_node(node, newNode, 'last', function () {
+                instance.edit(node.children('a').last());
+            });
+        });*/
+
+
+        $('#folder').on('click', function () {
+            var output = ($("#returnValues").val());
+
+            var form = new FormData();
+            form.append("values", output);
+            form.append("functionId", "@ViewBag.FunctionId");
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddReturnValue", "FunctionSetting")",
+                data: form,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.code === 200) {
+                        toastr.success(response.msg);
+                        console.log("Giá trị trả về sau khi gán:", JSON.parse(response.text));
+                    } else {
+                        toastr.error(response.msg);
+                    }
+                },
+                error: function (e) {
+                    toastr.error("Lỗi:", e.message);
+                }
+            })
+
+            /*var output = '{';
+
+            //console.log("Output:", output);
+            var treeData = $('#kt_tree_3').jstree(true).get_json('#', { flat: true });
+            console.log("Cay ne:", treeData);
+            // Khai báo một mảng để lưu trữ thông tin của thư mục
+            var folderData = [];
+            var childrentFolderData = [];
+
+            var count = 1
+
+            for (var i = 0; i < treeData.length; i++) {
+                if (treeData[i].parent === '#') {
+                    continue;
+                }
+                if (i == 1) {
+                    if (treeData[i].parent === "j1_1") {
+                        output += `"${treeData[i].text}"` + ':';
+                        var check = returnSubTree(treeData[i].id);
+                        output += `${check}`;
+                    }
+                } else {
+                    if (treeData[i].parent === "j1_1") {
+                        output += `,"${treeData[i].text}"` + ':';
+                        var check = returnSubTree(treeData[i].id);
+                        output += `${check}`;
+                    }
+                }
+                /*if (treeData[i].parent === '#') {
+                    continue;
+                } else if (treeData[i].parent === "j1_1" && i < treeData.length - 2) {
+                    output += `"${treeData[i].text}"` + ':';
+                    var subtree = (returnSubTree(treeData[i].id));
+                    if (subtree === '{}') {
+                        output += '"",';
+                    } else {
+                        output += `${subtree},`;
+                    }
+                } else if (treeData[i].parent === "j1_1" && i === treeData.length - 1) {
+                    console.log("Do ko ku");
+                    output += `"${treeData[i].text}"` + ':';
+                    var subtree = (returnSubTree(treeData[i].id));
+                    if (subtree === '{}') {
+                        output += '""';
+                    } else {
+                        output += `${subtree}`;
+                    }
+                }
+                console.log(i);
+            }
+
+            output += '}';
+            var form = new FormData();
+            form.append("values", output);
+            form.append("functionId", "");
+
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: form,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.code === 200) {
+                        toastr.success(response.msg);
+                        console.log("Giá trị trả về sau khi gán:", JSON.parse(response.text));
+                    } else {
+                        toastr.error(response.msg);
+                    }
+                },
+                error: function (e) {
+                    toastr.error("Lỗi:", e.message);
+                }
+            })
+
+            // Lặp qua mảng treeData và trích xuất các thông tin của thư mục
+            /*treeData.forEach(function (node,index) {
+
+                var folder = {
+                    id: node.id,
+                    name: node.text,
+                    parentId: node.parent
+                };
+
+                folderData.push(folder);
+
+                // Kiểm tra nếu node không phải là thư mục cha (#)
+                if (node.parent !== '#') {
+                    // Kiểm tra xem id của thư mục cha đã được thêm vào childrentFolderData hay chưa
+                    if (!parentIds[node.parent]) {
+                        // Tạo đối tượng chứa thông tin của thư mục con
+                        var childrentFolder = {
+                            idParent: node.parent,
+                            id: node.id,
+                            name: node.text
+                        };
+
+                        // Thêm đối tượng vào mảng childrentFolderData
+                        childrentFolderData.push(childrentFolder);
+
+                        // Đánh dấu id của thư mục cha đã được thêm vào childrentFolderData
+                        parentIds[node.parent] = true;
+                    };
+                }
+            });
+
+            //console.log(folderData);
+            //console.log(childrentFolder);
+            */
+        })
+
+        function returnSubTree(treeId) {
+            var subtree = "{";
+            var count = 0;
+            var treeData = $('#kt_tree_3').jstree(true).get_json('#', { flat: true });
+            for (var i = 0; i < treeData.length; i++) {
+                if (treeData[i].parent === treeId) {
+                    if (count === 0) {
+                        subtree += `"${treeData[i].text}"` + ':';
+                        var check = returnSubTree(treeData[i].id);
+                        subtree += `${check}`;
+
+                    } else {
+                        subtree += ',' + `"${treeData[i].text}"` + ':';
+                        var check = returnSubTree(treeData[i].id);
+                        subtree += `${check}`;
+                    }
+
+                    count += 1;
+                }
+            }
+
+            subtree += '}';
+            if (subtree === "{}") {
+                subtree = '""';
+            }
+            return subtree;
+        }
+    </script>
+}
+
+

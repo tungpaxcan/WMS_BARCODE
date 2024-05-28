@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Thêm_Đơn_Vị;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Thêm_Đơn_Vị
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-xxl-7" id="unitdefault" style="display:none">
+            <!--begin::Form Wizard-->
+            <form class="form fv-plugins-bootstrap fv-plugins-framework" id="kt_projects_add_form">
+                <!--begin::Step 1-->
+                <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Đơn_Vị<span style="color:red"> (*) </span></label>
+                                <div class="col-lg-10 col-xl-10">
+                                    <div class="input-group ">
+                                        <input class="form-control" type="text" placeholder="@Resources.Resource.Tên_Đơn_Vị" id="name" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-2">
+                </div>
+                <div class="col-10">
+                    <button type="submit" class="btn btn-success mr-2" onclick="Add()">@Resources.Resource.Thêm</button>
+                    <a href="/Unit/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+                </div>
+            </div>
+    </div>
+        <div id="unitapi" style="display:none">
+            <h2>API Unit</h2>
+            <div class="row">
+                <div class="col-xl-12" name="APIFunctionInfo">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2">
+                </div>
+                <div class="col-10">
+                    <button id="save" class="btn btn-success" onclick="SaveApiUnit()">Lưu Unit APi</button>
+                </div>
+            </div>
+        </div>
+</div>
+    </div>
+    @section scripts{
+
+    <script src="~/Scripts/Unit.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            var functionId = "@ViewBag.FunctionId";
+
+            // lấy trạng thái settingfunction
+            $.ajax({
+                url: '/FunctionSetting/GetFunctionSettingEnabled',
+                type: 'GET',
+                data: { functionId},
+                success: function (data) {
+                    // Nhận giá trị functionSettingEnabled
+                    var functionSettingEnabled = data;
+
+                    if (functionSettingEnabled)
+                    {
+                        $('#unitdefault').hide();
+                        $('#unitapi').show();
+                    } else
+                    {
+                        $('#unitdefault').show();
+                        $('#unitapi').hide();
+                    }
+                },
+                error: function (error) {
+                    console.error('Lỗi AJAX: ' + error);
+                }
+            });
+
+            // hiển thị unitapi khi bật cài đặt function
+            $.ajax({
+                url: '/functionsetting/FunctionAPI',
+                type: 'get',
+                data: { functionId },
+                success: function (data) {
+                    if (data.code == 200) {
+                        var inputsContainer = $('div[name="APIFunctionInfo"]');
+
+                        $.each(data.function, function (k, v) {
+                            $.each(v.paramData, function (index, param) {
+
+                                var inputGroup = $('<div class="form-group row mb-3"></div>');
+                                var label = $('<label class="col-xl-2 col-lg-2 col-form-label"></label>').text(param.nameParam);
+                                var input = $('<div class="col-md-8"></div>');
+                                var inputElement = $('<input type="text" class="form-control" name="' + param.nameParam + '" placeholder="' + param.nameParam + '">');
+                                input.append(inputElement);
+                                inputGroup.append(label);
+                                inputGroup.append(input);
+                                inputsContainer.append(inputGroup);
+                            });
+                        });
+                    }
+                },
+                error: function (data) {
+                    console.error("Error:", data);
+                }
+            })
+        })
+
+        // lưu unit api
+        function SaveApiUnit() {
+
+        var functionId = "@ViewBag.FunctionId";
+        $.ajax({
+            url: '/functionsetting/FunctionAPI',
+            type: 'get',
+            data: { functionId: functionId },
+            success: function (data) {
+                if (data.code == 200 && data.function.length > 0) {
+                    var v = data.function[0]; // Lấy phần tử đầu tiên của mảng function
+
+
+                    var functionNameAPI = v.functionNameAPI;
+                    var method = v.method;
+                    var returnjson = v.returnjson;
+                    var statusreturnjson = v.statusreturnjson;
+                    var namereturnjson = v.namereturnjson;
+
+                    var params = {};
+                    v.paramData.forEach(function (param) {
+                        params[param.nameParam] = $('input[name="' + param.nameParam + '"]').val();
+                    });
+                    console.log(params);
+                        $.ajax({
+                            url: functionNameAPI,
+                            type: method,
+                            data: { params },
+                            success: function (response) {
+
+                                if (response[returnjson] == statusreturnjson) {
+                                    alert(response[namereturnjson]);
+                                    window.location.reload();
+                                    console.log(statusreturnjson)
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error)
+                            }
+                        });
+                    }
+                }
+            })
+        }
+</script>
+}
+
+

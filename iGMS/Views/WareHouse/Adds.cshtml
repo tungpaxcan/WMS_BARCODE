@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = @Resources.Resource.Thêm_Kho_Hàng;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Thêm_Kho_Hàng
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+        </div>
+        <!--<div class="form-group row">
+            <label class="col-2 col-form-label">Mã Kho Hàng <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group-prepend">-->
+        @*<span class="input-group-text">K</span>*@
+        <!--<input required class="form-control" value="@ViewBag.idNext" type="text" id="id" />
+                </div>
+            </div>
+        </div>-->
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Kho_Hàng<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control" type="text" placeholder="@Resources.Resource.Tên_Kho_Hàng" id="name" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_tồn_kho_thấp_nhất<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Số_Lượng_Hàng_Tồn_Kho_Thấp_Nhất" id="min" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_tồn_kho_cao_nhất<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Số_Lượng_Hàng_Tồn_Kho_Cao_Nhất" id="max" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" class="btn btn-success mr-2" id="btnWH" onclick="CheckAddApi()">@Resources.Resource.Thêm</button>
+                <a href="/WareHouse/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        // truyền tài nguyên resources sang js
+        var resourceAddWH = {
+            "nhaptenkho": "@Resources.Resource.Vui_Lòng_Nhập_Tên_Kho_Hàng",
+            "nhapslmin": "@Resources.Resource.Vui_Lòng_Nhập_Số_Lượng_Thấp_Nhất",
+            "nhapslmax": "@Resources.Resource.Vui_Lòng_Nhập_Số_Lượng_Cao_Nhất",
+        };
+    </script>
+    <script src="~/Scripts/WareHouse.js"></script>
+
+}
+
+

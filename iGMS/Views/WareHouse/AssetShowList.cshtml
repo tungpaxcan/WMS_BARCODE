@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Danh_Sách_Chi_Tiết_Vật_Tư;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Danh_Sách_Chi_Tiết_Vật_Tư
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hiển_Thị_Danh_Sách_Vật_Tư_Theo</label>
+            <div class="col-xl-8">
+                <select class="form-control" id="assetlist" name="assetlist">
+                    <option value="all">@Resources.Resource.Tất_Cả</option>
+                    <option value="asset">@Resources.Resource.Theo_Vật_Tư</option>
+                    <option value="department">@Resources.Resource.Theo_Phòng_Ban</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Từ_ngày</label>
+            <div class="col-xl-3">
+                <input class="form-control" id="tungay" placeholder="Select time" type="date" onchange="onDateSelected()">
+            </div>
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Đến_ngày</label>
+            <div class="col-xl-3">
+                <input class="form-control" id="denngay" placeholder="Select time" type="date" onchange="onDateSelected()">
+            </div>
+            <div class="col-xl-2">
+                <div id="message" class="fv-plugins-message-container" style="display:none">
+                    <div data-field="communication" data-validator="choice" class="fv-help-block">@Resources.Resource.Vui_lòng_chọn_hiển_thị_danh_sách_vật_tư_theo_tất_cả_</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 500px;overflow-y: scroll; display:none" id="asset">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th>STT</th>
+                        <th>@Resources.Resource.Tên_Vật_Tư</th>
+                        <th>@Resources.Resource.Số_Lượng</th>
+                        <th>@Resources.Resource.Chi_Tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd">
+                </tbody>
+            </table>
+        </div>
+        <div style="height: 500px;overflow-y: scroll; display:none" id="department">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th>STT</th>
+                        <th>@Resources.Resource.Phòng_Ban</th>
+                        <th>@Resources.Resource.Số_Lượng_Vật_Tư</th>
+                        <th>@Resources.Resource.Chi_Tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd2">
+                </tbody>
+            </table>
+        </div>
+        <div style="height: 500px;overflow-y: scroll;" id="all">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th>STT</th>
+                        <th>@Resources.Resource.Tên_Vật_Tư</th>
+                        <th>@Resources.Resource.Phòng_Ban</th>
+                        <th>@Resources.Resource.Người_Sở_Hữu</th>
+                        <th>@Resources.Resource.Mục_Đích</th>
+                        <th>@Resources.Resource.Trạng_Thái</th>
+                        <th>@Resources.Resource.Thương_Hiệu</th>
+                        <th>@Resources.Resource.Ngày_Tạo</th>
+                        <th>@Resources.Resource.Mã_EPC</th>
+                        <th>@Resources.Resource.Tìm_Kiếm</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd3">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@*modal*@
+<div class="modal fade show" id="AssetShowListEPC" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">@Resources.Resource.Chi_Tiết_Vật_Tư</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                    <thead>
+                        <tr role="row">
+                            <th>STT</th>
+                            <th>@Resources.Resource.Tên_Vật_Tư</th>
+                            <th>@Resources.Resource.Phòng_Ban</th>
+                            <th>@Resources.Resource.Người_Sở_Hữu</th>
+                            <th>@Resources.Resource.Mục_Đích</th>
+                            <th>@Resources.Resource.Trạng_Thái</th>
+                            <th>@Resources.Resource.Ngày_Mua</th>
+                            <th>@Resources.Resource.Ngày_Tạo</th>
+                            <th>@Resources.Resource.Mã_EPC</th>
+                            <th>@Resources.Resource.Tìm_Kiếm</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd1">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">@Resources.Resource.Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        $('#assetlist').change(function () {
+            var selectedType = $(this).val();
+            if (selectedType === 'asset') {
+                // Hiển thị danh sách theo Vật Tư
+                $('#asset').show();
+                $('#department').hide();
+                $('#all').hide();
+            } else if (selectedType === 'department') {
+                // Hiển thị danh sách theo Phòng Ban
+                $('#asset').hide();
+                $('#department').show();
+                $('#all').hide();
+            }
+            else if (selectedType == 'all') {
+                $('#all').show();
+                $('#asset').hide();
+                $('#department').hide();
+                $('#message').hide();
+            }
+        });
+
+        // Hàm chung để xử lý lấy dữ liệu và hiển thị danh sách Asset
+        function GetListAsset(tbodyId, idKey, nameKey, onClickEPC) {
+            $.ajax({
+                url: 'http://bill.haphan.com/API/APIAsset',
+                type: 'GET',
+                success: function (data) {
+                    $(tbodyId).empty();
+
+                    var groupedAssets = {};
+                    $.each(data.asset, function (k, v) {
+                        var assetKey = v[idKey];
+                        if (!groupedAssets.hasOwnProperty(assetKey)) {
+                            groupedAssets[assetKey] = {
+                                id: v[idKey],
+                                name: v[nameKey],
+                                totalAsset: 0
+                            };
+                        }
+                        groupedAssets[assetKey].totalAsset++;
+                    });
+
+                    if (data.status == true) {
+                        var Stt = $(tbodyId).children('tr').length + 1;
+                        $.each(groupedAssets, function (assetKey, asset) {
+                            var table = '<tr>';
+                            table += '<td>' + (Stt++) + '</td>';
+                            table += '<td>' + asset.name + '</td>';
+                            table += '<td>' + asset.totalAsset + '</td>';
+                            table += '<td nowrap="nowrap">';
+                            table += '<i class="nav-icon fas fa-list" data-id="' + asset.id + '" onclick="' + onClickEPC + '(' + asset.id + ')"></i>';
+                            table += '</tr>';
+                            $(tbodyId).append(table);
+                        });
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            });
+        }
+        ListAsset()
+        // Hàm hiển thị danh sách theo asset
+        function ListAsset() {
+            GetListAsset(
+                '#tbd',
+                'PorfolioID',
+                'AssetName',
+                'AssetListEPC'
+            );
+        }
+        ListAssetInDepartment()
+        // Hàm hiển thị danh sách theo department
+        function ListAssetInDepartment() {
+            GetListAsset(
+                '#tbd2',
+                'DepartmentID',
+                'DepartmentName',
+                'AssetListEPC1'
+            );
+        }
+
+        // Hàm hiển thị modal
+        function displayModal(modalId, tbodyId, filterFunction) {
+            $.ajax({
+                url: 'http://192.168.1.133:81/API/APIAsset',
+                type: 'get',
+                success: function (data) {
+                    $(modalId).modal('show');
+                    $(tbodyId).empty();
+                    if (data.status == true) {
+
+                        var Stt = $(tbodyId).children('tr').length + 1;
+                        $.each(data.asset, function (k, v) {
+                            if (filterFunction(v)) {
+                                var epc = v.EPC;
+                                var table = '<tr id="' + v.PorfolioID + '" role="row">';
+                                table += '<td>' + (Stt++) + '</td>';
+                                table += '<td>' + v.AssetName + '</td>';
+                                table += '<td>' + v.DepartmentName + '</td>';
+                                table += '<td>' + v.OwnerName + '</td>';
+                                table += '<td>' + v.PurposeName + '</td>';
+                                table += '<td>' + v.StatusName + '</td>';
+                                table += '<td>' + v.BuyAt + '</td>';
+                                table += '<td>' + v.CreateAt + '</td>';
+                                table += '<td>' + epc + '</td>';
+                                table += '<td nowrap="nowrap">';
+                                table += `<a class="nav-link" name="setEPC" id="${epc}" >`;
+                                table += '<i class="nav-icon la la-search"></i></a>';
+                                table += '</tr>';
+                                $(tbodyId).append(table);
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            })
+        }
+
+        // Hàm hiển thị modal theo nhóm vật tư
+        function AssetListEPC(PorfolioID) {
+                    displayModal('#AssetShowListEPC', '#tbd1', function (v) {
+                        return v.PorfolioID == PorfolioID;
+                    });
+        }
+
+        // Hàm hiển thị modal vật tư theo phòng ban
+        function AssetListEPC1(DepartmentID) {
+                    displayModal('#AssetShowListEPC', '#tbd1', function (v) {
+                        return v.DepartmentID == DepartmentID;
+                    });
+        }
+
+    
+        function onDateSelected() {
+            var selectedOption = $('#assetlist').val();
+            var Message = $('#message');
+            if (selectedOption !== 'all')
+            {
+                Message.show();
+                return;
+            }
+            else
+            {
+                Message.hide();
+                GetAllAsset()
+            }
+        }
+
+        GetAllAsset();
+
+        function GetAllAsset() {
+
+            var s = $('#tungay').val().trim() == '' ? "1900-12-12" : $('#tungay').val().trim();
+            var e = $('#denngay').val().trim() == '' ? "3000-12-12" : $('#denngay').val().trim();
+            $.ajax({
+                url: 'http://192.168.1.133:81/API/APIAsset',
+                type: 'get',
+                success: function (data) {
+
+                    $('#tbd3').empty(); 
+                    if (data.status == true) {
+                        var Stt = $('#tbd3').children('tr').length + 1;
+                        $.each(data.asset, function (k, v) {
+                            var epc = v.EPC;
+                            
+                            var createDate = moment(v.CreateAt, "DD-MM-YYYY").format("YYYY-MM-DD");
+
+                            if (moment(createDate).isBetween(s, e, null, '[]')) {
+
+                                var table = '<tr id="' + v.PorfolioID + '" role="row">';
+                                table += '<td>' + (Stt++) + '</td>';
+                                table += '<td>' + v.AssetName + '</td>';
+                                table += '<td>' + v.DepartmentName + '</td>';
+                                table += '<td>' + v.OwnerName + '</td>';
+                                table += '<td>' + v.PurposeName + '</td>';
+                                table += '<td>' + v.StatusName + '</td>';
+                                table += '<td>' + v.BrandName + '</td>';
+                                table += '<td>' + v.CreateAt + '</td>';
+                                table += '<td>' + epc + '</td>';
+                                table += '<td nowrap="nowrap">';
+                                table += `<a class="nav-link" name="setEPC" id="${epc}" >`;
+                                table += '<i class="nav-icon la la-search"></i></a>';
+                                table += '</tr>';
+                                $('#tbd3').append(table);
+                            }
+                          
+                               
+                        });
+                    }
+                },
+                error:function() {
+                    toastr.error('Lỗi.');
+                } 
+            })
+        }
+
+        // localstorage
+        $(document).on('click', 'a[name="setEPC"]', function () {
+            var idEPC = $(this).attr('id')
+            localStorage.setItem("EPC", idEPC)
+            window.location.href = "/Goods/SearchEPC"
+        })
+    </script>
+}

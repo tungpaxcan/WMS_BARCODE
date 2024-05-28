@@ -1,0 +1,261 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Danh_Sách_Chi_Tiết_Kho;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        /* Màu nền chung cho modal */
+        .modal-content {
+            background-color: #ffffff;
+        }
+
+        /* Màu nền cho phần header của modal */
+        .modal-header {
+            background-color: #d9d9d9;
+        }
+    </style>
+</head>
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Danh_Sách_Chi_Tiết_Kho
+        </h3>
+    </div>
+    <div class="card-body">
+        <!--begin::Form-->
+        <div class="form-group row">
+            <label for="example-search-input" class="col-3 col-form-label">@Resources.Resource.Kho_Hàng</label>
+            <div class="col-9">
+                <select class="form-control" id="warehouse" name="warehouse"></select>
+            </div>
+        </div>
+        <div style="height: 500px;overflow-y: scroll;">
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                <thead>
+                    <tr role="row">
+                        <th>STT</th>
+                        <th>@Resources.Resource.Tên_Kho</th>
+                        <th>@Resources.Resource.Tổng_Số_Lượng_Tồn_Kho</th>
+                        <th>@Resources.Resource.Chi_Tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@*hiển thị danh sách mặt hàng trong kho*@
+<div class="modal fade show" id="showlist" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">@Resources.Resource.Chi_Tiết_Kho_Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:750px">
+                    <thead>
+                        <tr role="row">
+                            <th>STT</th>
+                            <th>@Resources.Resource.Mã_Hàng</th>
+                            <th>@Resources.Resource.Tên_Hàng</th>
+                            <th>@Resources.Resource.Số_Lượng_Tồn</th>
+                            <th>@Resources.Resource.Chi_Tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd1">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">@Resources.Resource.Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*hiển thị danh sách EPC của mặt hàng trong kho*@
+<div class="modal fade show" id="showlistEPC" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">@Resources.Resource.Chi_Tiết_Hàng_Hóa_Trong_Kho</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:750px">
+                    <thead>
+                        <tr role="row">
+                            <th>STT</th>
+                            <th>@Resources.Resource.Tên_Kho</th>
+                            <th>@Resources.Resource.Mã_Hàng</th>
+                            <th>@Resources.Resource.Mã_EPC</th>
+                            <th>@Resources.Resource.Tìm_Kiếm</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd2">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">@Resources.Resource.Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        WareHouse()
+        function WareHouse() {
+            $.ajax({
+                url: '/purchaseorder/WareHouse',
+                type: 'get',
+                success: function (data) {
+                    $('#warehouse').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="">@Resources.Resource.Tất_Cả</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#warehouse').append(table);
+                        SearchDetailWareHouse();
+                    } else (
+                        toastr.error(data.msg)
+                    )
+                }
+            })
+        }
+        //hiển thị danh sách bằng chọn kho
+        $(document).on('change', 'select[name="warehouse"]', function () {
+            SearchDetailWareHouse()
+        });
+
+
+        function SearchDetailWareHouse() {
+            var idwarehouse = $('#warehouse option:selected').val();
+
+            $.ajax({
+                url: '/warehouse/ShowDetailWareHouse',
+                type: 'get',
+                data: { idwarehouse },
+                success: function (data) {
+                    $("#tbd").empty();
+                    if (data.code == 200) {
+                        var Stt = $('#tbd').children('tr').length + 1;
+                        $.each(data.list, function (k, v) {
+                            var table = '<tr id="' + v.idwarehouse.trim() + '" role="row" class="khohang">';
+                            table += '<td>' + (Stt) + '</td>';
+                            table += '<td>' + v.namewarehouse + '</td>';
+                            table += '<td>' + v.count + '</td>';
+                            table += '<td nowrap="nowrap"style="cursor: pointer;"> ';
+                            table += '<i class="nav-icon fas fa-list" data-id="' + v.idwarehouse.trim() + '" onclick="openList(\'' + v.idwarehouse.trim() + '\')"></i>';
+
+                            table += '</tr>';
+                            $('#tbd').append(table);
+                            Stt++;
+                        });
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            });
+        }
+        //hiển thị modal chi tiết hàng hóa trong kho
+        function openList(idwarehouse) {
+
+            $('#showlist').modal('show');
+
+            $.ajax({
+                url: '/warehouse/ShowDetailWareHouse',
+                type: 'get',
+                data: { idwarehouse },
+                success: function (data) {
+                    $("#tbd1").empty();
+                    if (data.code == 200) {
+                        $.each(data.goods, function (k, v) {
+                            var table = '<tr id="' + v.idgoods + '" role="table">';
+                            table += '<td>' + (k + 1) + '</td>';
+                            table += '<td>' + v.idgoods + '</td>';
+                            table += '<td>' + v.name + '</td>';
+                            table += '<td>' + v.qtt + '</td>';
+                            table += '<td nowrap="nowrap"style="cursor: pointer;">';
+                            table += '<i class="nav-icon fas fa-list" data-id="' + v.idgoods + '" onclick="openListEPC(\'' + idwarehouse + '\', \'' + v.idgoods + '\')"></i>';
+
+                            table += '</tr>';
+                            $('#tbd1').append(table);
+                        });
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            })
+        }
+        //hiển thị modal danh sách chi tiết EPC của hàng hóa
+        function openListEPC (idwarehouse, idgoods){
+            $('#showlistEPC').modal('show');
+            $.ajax({
+                url: '/warehouse/ShowDetailWareHouse',
+                type: 'get',
+                data: {idwarehouse, idgoods },
+                success: function (data) {
+                    $('#tbd2').empty();
+                    if (data.code == 200) {
+                        for (var i = 0; i < data.epcInGoods.length; i++) { 
+                            var epc = data.epcInGoods[i].idEPC
+                            let table = '<tr id="' + data.epcInGoods[i].idgoods.trim() + '" role="row" >';
+                            table += '<td>' + Number(i + 1) + '</td>'
+                            table += '<td>' + data.epcInGoods[i].namewarehouse + '</td>'
+                            table += '<td>' + data.epcInGoods[i].idgoods + '</td>'
+                            table += '<td>' + epc + '</td>'
+                            table += '<td nowrap="nowrap"style="cursor: pointer;">';
+                            table += `<a class="nav-link" name="setEPC" id="${epc}" >`;
+                            table += '<i class="nav-icon la la-search"></i></a>';
+                            table += '</tr>';
+                            $('#tbd2').append(table);
+                        }     
+                    }
+                }
+            })
+        }
+
+
+        // lấy giá trị idwarehouse, idgoods từ localstorage được lưu trữ trong tab thông báo tồn kho
+        $(document).ready(function () {
+
+            var idwarehouse = localStorage.getItem('idwarehouse');
+            var idgoods = localStorage.getItem('idgoods');
+            console.log(idwarehouse);
+            console.log(idgoods);
+            // idgoods có giá trị
+            if (idwarehouse && idgoods !== null) {
+                openListEPC(idwarehouse, idgoods);
+                openList(idwarehouse);
+                localStorage.removeItem('idwarehouse');
+                localStorage.removeItem('idgoods');
+            }
+            //idgoods không có giá trị truyền
+            else if (idwarehouse && idgoods == null) {
+                openList(idwarehouse);
+                localStorage.removeItem('idwarehouse');
+            }
+        });
+
+        //sử dụng localStorage để lưu epc chuyển hướng đến trang tìm kiếm
+        $(document).on('click', 'a[name="setEPC"]', function () {
+            var idEPC = $(this).attr('id')
+            localStorage.setItem("EPC", idEPC)
+            window.location.href = "/Goods/SearchEPC"
+        })
+
+    </script>
+}

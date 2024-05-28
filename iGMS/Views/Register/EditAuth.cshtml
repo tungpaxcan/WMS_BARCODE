@@ -1,0 +1,308 @@
+﻿
+@{
+    ViewBag.Title = "EditAuth";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card card-custom">
+    <form id="form">
+        <div class="card-header">
+            <h3 class="card-title">
+                Chỉnh Sửa Quyền Của Tài Khoản
+            </h3>
+        </div>
+        <!--begin::Form-->
+        <div class="card-body">
+            <div class="form-group mb-8">
+                <div class="alert alert-custom alert-default" role="alert">
+                    <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                    <div class="alert-text">
+                        Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Tài Khoản <span style="color:red"> (*) </span></label>
+                <div class="col-xl-10">
+                    <div class="input-group ">
+                        <input id="account" required class="form-control" type="text" readonly placeholder="Tài Khoản" value="@ViewBag.Username" name="Username" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Họ & Tên</label>
+                <div class="col-xl-10">
+                    <input id="name" class="form-control" type="text" placeholder="Họ & Tên" value="" name="Name" readonly/>
+                </div>
+            </div>
+            <h1 style="text-align:center">Phân Quyền Quản Lý</h1>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Quản Lý Danh Mục Sản Phẩm</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="ManageMainCategories" checked="@ViewBag.RoleAdmin.ManageMainCategories" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Quản Lý Danh Mục Kho</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="WarehouseManagement" checked="@ViewBag.RoleAdmin.WarehouseManagement" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Quản Lý Danh Mục Tài Khoản</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="AccountManager" checked="@ViewBag.RoleAdmin.AccountManager" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Quản Lý Nhập Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="PurchaseManager" checked="@ViewBag.RoleAdmin.PurchaseManager" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Quản Lý Xuất Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="SalesManager" checked="@ViewBag.RoleAdmin.SalesManager" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Quản Lý Hệ Thống</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="SystemManagement" checked="@ViewBag.RoleAdmin.SystemManagement" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <h1 style="text-align:center">Phân Quyền Chức Năng</h1>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Kho</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="addwarehouse" checked="@ViewBag.Role.AddWareHouse" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Kho</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="editwarehouse" checked="@ViewBag.Role.EditWareHouse" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Xóa Kho</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deletewarehouse" checked="@ViewBag.Role.DeleteWareHouse" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Sản Phẩm</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="addgoods" checked="@ViewBag.Role.AddGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Sản Phẩm</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="editgoods" checked="@ViewBag.Role.EditGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Xóa Sản Phẩm</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deletegoods" checked="@ViewBag.Role.DeleteGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Nhóm Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="addgroupgoods" checked="@ViewBag.Role.AddGroupGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Nhóm Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="editgroupgoods" checked="@ViewBag.Role.EditGroupGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Xóa Nhóm Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deletegroupgoods" checked="@ViewBag.Role.DeleteGroupGoods" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="addcustomer" checked="@ViewBag.Role.AddCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="editcustomer" checked="@ViewBag.Role.EditCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Xóa Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deletecustomer" checked="@ViewBag.Role.DeleteCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Loại Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="addtypecustomer" checked="@ViewBag.Role.AddTypeCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Loại Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="edittypecustomer" checked="@ViewBag.Role.EditTypeCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Xóa Loại Khách Hàng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deletetypecustomer" checked="@ViewBag.Role.DeleteTypeCustomer" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Thêm Người Dùng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="adduser" checked="@ViewBag.Role.AddUser" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Người Dùng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="edituser" checked="@ViewBag.Role.EditUser" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sửa Mật Khẩu User</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="editpassword" checked="@ViewBag.Role.EditPassWord" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Xóa Người Dùng</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="deleteuser" checked="@ViewBag.Role.DeleteUser" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <label class="col-2 col-form-label">Sao Lưu Dữ Liệu</label>
+                <div class="col-2">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="backupsql" checked="@ViewBag.Role.BackUpSQL" />
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-2">
+                </div>
+                <div class="col-10">
+                    <button type="button" class="btn btn-success mr-2" id="submit">Lưu</button>
+                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section scripts{
+    <script src="~/Scripts/EditAuth.js"></script>
+}
+
+

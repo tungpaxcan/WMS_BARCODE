@@ -1,0 +1,684 @@
+﻿
+@{
+    ViewBag.Title = "Lên Phiếu Kiểm Kê";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            Lên Phiếu Kiểm Kê
+        </h3>
+    </div>
+    <form id="form">
+        <!--begin::Form-->
+        <div class="card-body">
+            <div class="form-group mb-8">
+                <div class="alert alert-custom alert-default" role="alert">
+                    <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                    <div class="alert-text">
+                        Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Kiểm Kê Tại Kho<span style="color:red"> (*) </span></label>
+                <div class="col-xl-10">
+                    <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modalwarehouse">
+                        Chọn Kho Kiểm Kê
+                    </button>
+                </div>
+            </div>
+            <!--Modal Chọn Kho-->
+            <!-- Modal -->
+            <div class="modal fade" id="modalwarehouse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Chọn Kho Kiểm Kê</h5>
+                            <button type="button" id="openModal" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Kho Hàng<span style="color:red"> (*) </span></label>
+                                <div class="col-xl-10">
+                                    <div class="input-group ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                             width="38" height="38"
+                                             viewBox="0 0 48 48"
+                                             style=" fill:#000000;">
+                                            <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path>
+                                            <path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path>
+                                            <path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z" transform="rotate(-45.001 38.24 38.24)"></path>
+                                            <path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+                                            <path fill="#BBDEFB" d="M26.9,14.2c-1.7-2-4.2-3.2-6.9-3.2s-5.2,1.2-6.9,3.2c-0.4,0.4-0.3,1.1,0.1,1.4c0.4,0.4,1.1,0.3,1.4-0.1C16,13.9,17.9,13,20,13s4,0.9,5.4,2.5c0.2,0.2,0.5,0.4,0.8,0.4c0.2,0,0.5-0.1,0.6-0.2C27.2,15.3,27.2,14.6,26.9,14.2z"></path>
+                                        </svg>
+                                        <input class="form-control" type="search" placeholder="Tìm Kho Hàng" id="seachWareHouse" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height: 350px;overflow-y: scroll;">
+                                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 750px;">
+                                    <thead>
+                                        <tr role="row">
+                                            <th data-field="RecordID" class="datatable-cell-center datatable-cell datatable-cell-check"><span style="width: 30px;"><label class="checkbox checkbox-single checkbox-all kt-checkbox--solid"><input type="checkbox" id="allchangeWH">&nbsp;<span></span></label></span></th>
+                                            <th>Stt</th>
+                                            <th>Tên Kho</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbdwarehouse">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="button" id="addChecked" data-dismiss="modal" class="btn btn-primary">Chọn</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Modal Chọn Kho-->
+            <div class="form-group row">
+                <label class="col-xl-2 col-lg-2 col-form-label">Ghi chú</label>
+                <div class="col-xl-10">
+                    <textarea class="form-control" type="text" placeholder="Ghi Chú" name="des"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Chọn Hàng Hóa<span style="color:red"> (*) </span></label>
+                <div class="col-xl-10">
+                    <select class="form-control" data-id="kt_select2_1" id="good" name="good">
+                    </select>
+                </div>
+            </div>
+            <div style="height: 300px;overflow-y: scroll;">
+                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                    <thead>
+                        <tr role="row">
+                            <th data-field="RecordID" class="datatable-cell-center datatable-cell datatable-cell-check"><span style="width: 30px;"><label class="checkbox checkbox-single checkbox-all kt-checkbox--solid"><input type="checkbox" id="allchange">&nbsp;<span></span></label></span></th>
+                            <th>Stt</th>
+                            <th>Mã Hàng</th>
+                            <th>Tên Hàng</th>
+                            <th>Nhóm Hàng</th>
+                            <th>Đơn Vị</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbd">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-2">
+                </div>
+                <div class="col-10">
+                    <button type="button" id="add" class="btn btn-success mr-2">Submit</button>
+                    <a href="/Receipt/Index" type="reset" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal" id="BILL" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width:1100px">
+        <div class="modal-content">
+            <div class="modal-body" id="in">
+                <div class="row">
+                    <div class="col-7">
+                        <p>CÔNG TY CỔ PHẦN THƯƠNG MẠI HÀ PHAN</p>
+                        <p>Địa Chỉ: 758/25/2B Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh, TP HCM.</p>
+                    </div>
+                    <div class="col-5" style="transform: translate(60%, 0px);">
+                        <p>Số PKK : <span name="iddh"></span></p>
+                        <p>Ngày PKK : <span name="datedh"></span></p>
+                    </div>
+                </div>
+                <div class="" style="text-align:center">
+                    <h1>Phiếu Kiểm Kê</h1>
+                </div>
+                <p>- Người Tạo Phiếu : <span name="rcStocker"></span></p>
+                <p>- Kiểm Kê tại kho : <span name="nameware"></span></p>
+                <table class="table table-bordered" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">
+                    <thead>
+                    </thead>
+                    <tbody id="tbdmodal">
+                    </tbody>
+                </table>
+                <b>Ghi Chú:</b>
+                <div class="row mb-3 form-group">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <textarea class="form-control" rows="3" placeholder="Nhập ghi chú" id="ghiChu"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="text-align:center">
+                    <div class="col-6">
+                        <p><span name="nameCustomer"></span></p>
+                        <p name="">Người Xác Nhận</p>
+                        <p name="">(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div class="col-6">
+                        Ngày.....Tháng....Năm........
+                        <p>Người Lập Đơn hàng</p>
+                        <p>(Ký, ghi rõ họ tên)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id=hide>
+                <a type="button" href="/ReceiptStock/Index" class="btn btn-secondary">Close</a>
+                <button type="button" onclick="printDiv('in')" class="btn btn-primary">IN</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="~/Scripts/jquery.scannerdetection.js"></script>
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <script>
+        $(function GoodsChose() {
+            $.ajax({
+                url: '/receiptstock/GoodsChose',
+                type: 'get',
+                success: function (data) {
+                    $('#good').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">Chọn Hàng Hóa</option>'
+                        table += '<option value="All">Chọn Tất Cả</option>';
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#good').append(table);
+
+                    } else (
+                        toastr.warning(data.msg)
+                    )
+                }
+            })
+        })
+        $('#good').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue === 'All') {
+                AllGoods();
+            }
+        });
+        var allGoodsList = [];
+        function AllGoods() {
+            $.ajax({
+                url: '/receiptStock/ShowListGoods',
+                type: 'get',
+                success: function (data) {
+                    $("#tbd").empty();
+                    if (data.code == 200) {
+                        allGoodsList = data.slG;
+                        var Stt = $('#tbd').children('tr').length + 1;
+                        $.each(data.slG, function (k, v) {
+                            var table = '<tr class="check">';
+                            table += '<td class="datatable-cell-sorted datatable-cell-center datatable-cell datatable-cell-check" data-field="RecordID" aria-label="2"><span style="width: 30px;"><label class="checkbox checkbox-single kt-checkbox--solid"><input id="' + v.Id + 'abc" type="checkbox" checked="true" data-amount' + v.Id + '="1" value="' + v.Id + '" name="change" />&nbsp;<span></span></label></span></td>'
+                            table += '<td>' + (Stt++) + '</td>';
+                            table += '<td>' + v.Id.trim() + '</td>';
+                            table += '<td>' + v.name + '</td>';
+                            table += '<td>' + v.nameGroupGoods + '</td>';
+                            table += '<td>' + v.nameUnit + '</td>';
+                            table += '<td name="delete" style="margin-left:25px;"><i class="icon-2x text-dark-50 flaticon-delete-1 delete-icon"></i> <i class="icon-2x text-dark-50 nav-icon fas fa-list detail-icon" id="detail-icon' + v.Id + '" data-id="' + v.Id.trim() + '" data-toggle="popover"></i></td>';
+
+                            table += '</tr>';
+                            $('#tbd').append(table);
+                            $('#' + v.Id + 'abc').change(function () {
+                                ArrayCheckeGoods(); // Gọi hàm setArrayCheckedWH() khi checkbox thay đổi trạng thái
+                            });
+                            ArrayCheckeGoods();
+                        });
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error('Lỗi.');
+                }
+            });
+        }
+
+        // Khai báo mảng để lưu trữ các kho đã chọn
+        var selectedWarehouses = [];
+        $('#modalwarehouse').on('shown.bs.modal', function () {
+            // Nếu có kho đã chọn từ trước, thì khôi phục trạng thái chọn
+            if (selectedWarehouses.length > 0) {
+                restoreSelectedWarehouses();
+            } else {
+                // Ngược lại, tải tất cả các kho
+                AllWareHouse();
+            }
+        });
+        // Hàm khôi phục trạng thái checked của các kho
+        function restoreSelectedWarehouses() {
+            $.each(selectedWarehouses, function (index, id) {
+                $('#' + id + 'abc').prop('checked', true);
+            });
+        }
+        // Hàm hiển thị tất cả các kho để chọn
+        function AllWareHouse() {
+            $.ajax({
+                url: '/receiptStock/ShowListWareHouse',
+                type: 'get',
+                success: function (data) {
+                    $("#tbdwarehouse").empty();
+                    if (data.code == 200) {
+                        $.each(data.slW, function (k, v) {
+                            var table = '<tr class="check">';
+                            table += '<td class="datatable-cell-sorted datatable-cell-center datatable-cell datatable-cell-check" data-field="RecordID" aria-label="2"><span style="width: 30px;"><label class="checkbox checkbox-single kt-checkbox--solid"><input id="' + v.id + 'abc" type="checkbox" data-amount' + v.id + '="1" value="' + v.id + '" name="changeWH" />&nbsp;<span></span></label></span></td>'
+                            table += '<td>' + (k + 1) + '</td>';
+                            table += '<td>' + v.name + '</td>';
+                            table += '</tr>';
+                            $('#tbdwarehouse').append(table);
+                            $('#' + v.id + 'abc').change(function () {
+                                ArrayCheckedWH(); 
+                            });
+                        });
+                        
+                        $('#seachWareHouse').on('input', function () {
+                            var searchWH = $(this).val().toLowerCase();
+                            $('#tbdwarehouse tr').each(function () {
+                                var text = $(this).find('td:eq(2)').text().toLowerCase();
+                                var match = text.indexOf(searchWH) > -1;
+                                $(this).toggle(match);
+                            });
+                        });
+                    }
+                }
+            });
+        }
+        //Chọn tích tất cả các kho hang
+        $('#allchangeWH').click(function () {
+            var allchange = $('#allchangeWH').is(":checked");
+            if (allchange == false) {
+                $('input[name="changeWH"]').map(function () {
+                    $(this).prop('checked', false);
+                })
+            }
+            else {
+                $('input[name="changeWH"]').map(function () {
+                    $(this).prop('checked', true);
+                })
+            }
+        })
+        //Chọn tích tất cả các sản phẩm
+        $('#allchange').click(function () {
+            var allchange = $('#allchange').is(":checked");
+            if (allchange == false) {
+                $('input[name="change"]').map(function () {
+                    $(this).prop('checked', false);
+                })
+            }
+            else {
+                $('input[name="change"]').map(function () {
+                    $(this).prop('checked', true);
+                })
+            }
+        })
+        $(document).on('change', 'select[name="good"]', function () {
+            var id = $(this).val().trim();
+            var check = allGoodsList.some(i => i.Id == id);
+            if (check) {
+                var checkedId = $('#' + id + 'abc');
+                if (!checkedId.is(':checked')) {
+                    checkedId.prop('checked', true)
+                } else {
+                    toastr.warning("Hàng Hóa Đã Được Chọn");
+                }
+                return;
+            } else {
+                $.ajax({
+                    url: '/receiptstock/DetailGoods',
+                    type: 'get',
+                    data: { id },
+                    success: function (data) {
+                        $('#kt_datatable_info').empty();
+                        if (data.code == 200) {
+                            var Stt = $('#tbd').children('tr').length + 1;
+                            let table = '<tr>';
+                            table += '<td class="datatable-cell-sorted datatable-cell-center datatable-cell datatable-cell-check" data-field="RecordID" aria-label="2"><span style="width: 30px;"><label class="checkbox checkbox-single kt-checkbox--solid"><input id="' + data.goods.Id + 'abc" type="checkbox" checked="true" data-amount' + data.goods.Id + '="1" value="' + data.goods.Id + '" name="change" />&nbsp;<span></span></label></span></td>'
+                            table += '<td>' + (Stt) + '</td>'
+                            table += '<td id="god">' + data.goods.Id + '</td>'
+                            table += '<td>' + data.goods.Name + '</td>'
+                            table += '<td>' + data.goods.nameGroupGoods + '</td>'
+                            table += '<td>' + data.goods.nameUnit + '</td>'
+                            table += '<td name="delete" style="margin-left:25px;"><i class="icon-2x text-dark-50 flaticon-delete-1 delete-icon"></i> <i class="icon-2x text-dark-50 nav-icon fas fa-list detail-icon" id="detail-icon' + data.goods.Id + '" data-id="' + data.goods.Id.trim() + '" data-toggle="popover"></i></td>';
+
+                            table += '</tr>';
+                            $('#tbd').append(table);
+                            $('#' + data.goods.Id + 'abc').change(function () {
+                                ArrayCheckeGoods();
+                            });
+                            allGoodsList.push(data.goods);
+                            ArrayCheckeGoods();
+                        }
+                    }
+                })
+            }
+        })
+        var seach = '';
+        $('#addChecked').click(function () {
+            setArrayCheckedWH();
+            $('#modalwarehouse').modal('hide');
+        });
+        var selectedWarehousesTest =[];
+        function ArrayCheckedWH() {
+            selectedWarehousesTest = [];
+            var checkboxes = document.getElementsByName('changeWH');
+            // Loop over them all
+            for (var i = 0; i < checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked) {
+                    if (!selectedWarehousesTest.includes(checkboxes[i].value)) {
+                        selectedWarehousesTest.push({
+                            "IdWareHouse": checkboxes[i].value,
+                            "isChecked": true // Thêm trạng thái của checkbox
+                        });
+                    }
+                } else {
+                    if (!selectedWarehousesTest.includes(checkboxes[i].value)) {
+                        selectedWarehousesTest.push({
+                            "IdWareHouse": checkboxes[i].value,
+                            "isChecked": false // Thêm trạng thái của checkbox
+                        });
+                    }
+                }
+            }
+            var allChecked = selectedWarehousesTest.every(function (warehouse) {
+                return warehouse.isChecked === true;
+            });
+            $('#allchangeWH').prop('checked', allChecked);
+            return selectedWarehousesTest;
+        }
+        var selectedGoodsTest = [];
+        function ArrayCheckeGoods() {
+            selectedGoodsTest = [];
+            var checkboxes = document.getElementsByName('change');
+            // Loop over them all
+            for (var i = 0; i < checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked) {
+                    if (!selectedGoodsTest.includes(checkboxes[i].value)) {
+                        selectedGoodsTest.push({
+                            "IdGoods": checkboxes[i].value,
+                            "isChecked": true 
+                        });
+                    }
+                } else {
+                    if (!selectedGoodsTest.includes(checkboxes[i].value)) {
+                        selectedGoodsTest.push({
+                            "IdGoods": checkboxes[i].value,
+                            "isChecked": false
+                        });
+                    }
+                }
+            }
+            var allChecked = selectedGoodsTest.every(function (goods) {
+                return goods.isChecked === true;
+            });
+            $('#allchange').prop('checked', allChecked);
+            console.log(selectedGoodsTest)
+            return selectedGoodsTest;
+        }
+        
+        // Checked kho hàng
+        function setArrayCheckedWH() {
+            selectedWarehouses = [];
+            var checkboxes = document.getElementsByName('changeWH');
+            // loop over them all
+            for (var i = 0; i < checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked) {
+                    if (!selectedWarehouses.includes(checkboxes[i].value)) {
+                        selectedWarehouses.push({
+                            "IdWareHouse": checkboxes[i].value,
+                        });
+                    }
+                }
+            }
+            return selectedWarehouses;
+        }
+        // Checked Hàng Hóa
+        function setArrayChecked() {
+            var checkboxesChecked = [];
+            var checkboxes = document.getElementsByName('change');
+            // loop over them all
+            for (var i = 0; i < checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked) {
+                    if (checkboxesChecked.includes(checkboxes[i].value) == false) {
+                        checkboxesChecked.push({
+                            "IdGoods": checkboxes[i].value,
+                            "isChecked": true
+                        });
+                    }
+                } else {
+                    checkboxesChecked.filter(function (item) {
+                        return item !== checkboxes[i].value;
+                    });
+                }
+            }
+            return checkboxesChecked;
+        }
+        //Popover
+        var Popover = null;
+        $(document).on('click', '.detail-icon', function (e) {
+            var getIdGoods = $(this).closest('tr').find('td:nth-child(3)').text();
+            if (Popover !== null) {
+                Popover.popover('hide');
+            }
+            var table = $('<table>').addClass('table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline');
+            var thead = $('<thead>').append('<tr><th>Kho Hàng</th><th>Tên Hàng</th><th>Số Lượng Tồn</th></tr>');
+            table.append(thead);
+            var tbodytable = $('<tbody>').attr('id', 'tbodytable');
+            table.append(tbodytable);
+            var popoverContent = $('<div>').css({ height: '300px', overflowY: 'scroll' }).append(table);
+            Popover = $(this);
+            $(this).popover({
+                container: 'body',
+                placement: 'bottom',
+                html: true,
+                content: popoverContent,
+            });
+            $(this).popover('show');
+            $(this).on('shown.bs.popover', function () {
+                detailChoose(getIdGoods);
+            });
+            
+        });
+        // Ẩn popover nếu nhấp ra ngoài popover
+        $(document).on('click', function (e) {
+            if (Popover !== null && !Popover.is(e.target) && Popover.has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                Popover.popover('hide');
+            }
+        });
+        // Hàm để hiển thị kho và số lượng tồn trong table Popover
+        function detailChoose(IdGoods) {
+            var ArrayDetail = [];
+            for (var i = 0; i < selectedWarehouses.length; i++) {
+                var IdWarehouse = selectedWarehouses[i].IdWareHouse;
+                ArrayDetail.push({
+                    "IdWareHouse": IdWarehouse,
+                });
+            }
+            $.ajax({
+                url: '/receiptstock/getdeatil',
+                type: 'post',
+                data: { IdGoods: IdGoods, ArrayDetail: JSON.stringify(ArrayDetail) },
+                success: function (data) {
+                    if (data.code == 200) {
+                        $('#tbodytable').empty();
+                        data.detailsList.forEach(function (detailArray) {
+                            var detail = detailArray[0]; // Lấy phần tử đầu tiên trong mảng
+                            var newRowHTML = '<tr>' +
+                                '<td>' + detail.nameWareHouse + '</td>' +
+                                '<td>' + detail.nameGoods + '</td>' +
+                                '<td>' + detail.qttInventory + '</td>' +
+                                '</tr>';
+                            $('#tbodytable').append(newRowHTML);
+                        });
+                    } else {
+                        toastr.warning(data.msg);
+                    }
+                }
+            });
+        }
+        // Hàm để cập nhật lại số thứ tự
+        function updateRowNumbers() {
+            $('#tbd tr').each(function (index) {
+                $(this).find('td:nth-child(2)').text(index + 1);
+            });
+        }
+        $(document).on('click', '.delete-icon', function (e) {
+            // Lấy idGoods của hàng cần xóa
+            var idGoodsToDelete = $(this).closest('tr').find('td:nth-child(3)').text();
+            // Xóa hàng khỏi bảng
+            $(this).closest('tr').remove();
+            // Lọc các phần tử không có idGoods là idGoodsToDelete và gán lại cho mảng allGoodsList
+            allGoodsList = allGoodsList.filter(function (item) {
+                return item.Id != idGoodsToDelete;
+            });
+            updateRowNumbers();
+        });
+        // Thêm phiếu kiểm kê
+        $(document).on('click', '#add', function (e) {
+            e.preventDefault();
+            var form = document.getElementById("form");
+            var formData = new FormData(form);
+            var ArrayG = [];
+            for (var i = 0; i < selectedWarehouses.length; i++) {
+                var IdWarehouse = selectedWarehouses[i].IdWareHouse;
+                for (var j = 0; j < setArrayChecked().length; j++) {
+                    var IdGoods = setArrayChecked()[j].IdGoods;
+                    ArrayG.push({
+                        "idwarehouse": IdWarehouse,
+                        "idgoods": IdGoods,
+                    });
+                }
+            }
+            for (var i = 0; i < ArrayG.length; i++) {
+                formData.append('data[' + i + '].IdGoods', ArrayG[i].idgoods);
+                formData.append('data[' + i + '].IdWarehouse', ArrayG[i].idwarehouse);
+            }
+            var Des = $('[name="des"]').val();
+            $.ajax({
+                url: '/receiptstock/Add',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.code == 200) {
+
+                        return;
+                        toastr.success(data.msg);
+                        selectedWarehouses = [];
+                        $('#ghiChu').text(Des);
+                        Detail(data.id);
+                        $('#BILL').modal('show');
+
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            });
+        });
+        // Hiển thị ra bill
+        function Detail(id) {
+            $.ajax({
+                url: '/receiptstock/detail',
+                type: 'post',
+                data: { id },
+                beforeSend: function () {
+                    $("#wait").css("display", "block");
+                },
+                success: function (data) {
+                    $('span[name="iddh"]').empty();
+                    $('span[name="datedh"]').empty();
+                    $('span[name="nameware"]').empty();
+                    $('#tbdmodal').empty()
+                    if (data.code == 200) {
+                        $.each(data.stock, function (key, value) {
+                            $('span[name="iddh"]').append(value.id);
+                            $('span[name="datedh"]').append(formatDate(value.createDate))
+                            $('span[name="nameware"]').append(value.nameWarehouse);
+                            $('span[name="rcStocker"]').append(value.receiptstocker)
+                        });
+                        var firstIteration = true;
+
+                        $.each(data.warehouse, function (kw, vl) {
+                            if (firstIteration) {
+                                firstIteration = false;
+                            } else {
+                                $('span[name="nameware"]').append("-");
+                            }
+                            $('span[name="nameware"]').append(vl.nameWarehouse);
+                        });
+                        // Tạo một đối tượng để lưu trữ các hàng hóa của từng kho
+                        let warehouseData = {};
+
+                        // Duyệt qua dữ liệu và xây dựng cấu trúc dữ liệu
+                        $.each(data.detailStock, function (k, v) {
+                            let idWarehouse = v.idWarehouse;
+                            if (!warehouseData[idWarehouse]) {
+                                warehouseData[idWarehouse] = {
+                                    name: v.nameWarehouse,
+                                    goods: []
+                                };
+                            }
+                            warehouseData[idWarehouse].goods.push({
+                                id: v.idGoods,
+                                name: v.nameGoods,
+                                unit: v.unitGoods,
+                                group: v.groupGoods,
+                                quantity: v.QuantityInventory
+                            });
+                        });
+
+                        // Tạo HTML từ cấu trúc dữ liệu
+                        let tableHtml = '<table class="table table-bordered custom-table" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">';
+                        tableHtml += '<thead><tr><th>Tên Kho</th><th>Mã Hàng</th><th>Tên Hàng</th><th>Đơn Vị</th><th>Nhóm Hàng</th><th>Số Lượng Tồn</th></tr></thead>';
+                        tableHtml += '<tbody>';
+
+                        for (let idWarehouse in warehouseData) {
+                            tableHtml += '<tr>';
+                            tableHtml += '<td rowspan="' + warehouseData[idWarehouse].goods.length + '">' + warehouseData[idWarehouse].name + '</td>';
+                            $.each(warehouseData[idWarehouse].goods, function (index, goods) {
+                                if (index > 0) {
+                                    tableHtml += '<tr>';
+                                }
+                                tableHtml += '<td>' + goods.id + '</td>';
+                                tableHtml += '<td>' + goods.name + '</td>';
+                                tableHtml += '<td>' + goods.unit + '</td>';
+                                tableHtml += '<td>' + goods.group + '</td>';
+                                tableHtml += '<td>' + goods.quantity + '</td>';
+                                tableHtml += '</tr>';
+                            });
+                        }
+                        tableHtml += '</tbody></table>';
+                        $('#tbdmodal').append(tableHtml);
+
+                    }
+                    else {
+                        alert("Tạo Đơn Thất Bại")
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            })
+
+        }
+
+    </script>
+}
+

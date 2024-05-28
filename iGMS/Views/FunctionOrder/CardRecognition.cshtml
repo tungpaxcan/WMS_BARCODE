@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewBag.Title = "Ghi Nhận Thẻ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="form-group row">
+        <label for="example-search-input" class="col-2 col-form-label">Hàng Hóa<span style="color:red"> (*) </span></label>
+        <div class="col-10" style="height: 500px;overflow-y: scroll;">
+            <div class="input-group ">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                     width="38" height="38"
+                     viewBox="0 0 48 48"
+                     style=" fill:#000000;">
+                    <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path>
+                    <path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path>
+                    <path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z" transform="rotate(-45.001 38.24 38.24)"></path>
+                    <path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+                    <path fill="#BBDEFB" d="M26.9,14.2c-1.7-2-4.2-3.2-6.9-3.2s-5.2,1.2-6.9,3.2c-0.4,0.4-0.3,1.1,0.1,1.4c0.4,0.4,1.1,0.3,1.4-0.1C16,13.9,17.9,13,20,13s4,0.9,5.4,2.5c0.2,0.2,0.5,0.4,0.8,0.4c0.2,0,0.5-0.1,0.6-0.2C27.2,15.3,27.2,14.6,26.9,14.2z"></path>
+                </svg>
+                <input class="form-control" type="search" placeholder="Nhập Mã Hàng: Số Lượng" id="seachidgood" />
+            </div>
+            <div class="input-group " id="HandHeld">
+                <label for="example-search-input" class="col-2 col-form-label">Phương thức quét<span style="color:red"> (*Handheld)</span> </label>
+
+                <input class="form-control" type="checkbox" id="ScanMethod" checked data-toggle="toggle" data-on="RFID" data-off="Barcode" data-onstyle="success" data-offstyle="primary">
+
+            </div>
+            <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 1234px;">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">Barcode</th>
+                        <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">EPC</th>
+                        <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">Id</th>
+                        <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">Name</th>
+                    </tr>
+                </thead>
+                <tbody id="tbd">
+                </tbody>
+            </table>
+
+        </div>
+        <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">Bắt Đầu Quét RFIF</button>
+        <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">Dừng Quét RFIF</button>
+        <button type="submit" class="btn btn-secondary mr-2"  onclick="fnExcelReport('kt_datatable');">Excel export</button>
+    </div>
+   <div style=" width: 70px; height: 50px;position: absolute; left: 50%; background: red;" id="divResult"><p style="padding:15%" id="result">Kết Quả</p></div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/ebapi-modules.js"></script>
+    <script src="~/Scripts/elements.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            //enter get id good
+            $('#seachidgood').keypress(function (e) {
+                if (e.which == 13) {
+                    let id = $('#seachidgood').val().trim()            
+                    Good(id)
+                }
+            })
+
+            // code check
+            function Good(ids) {
+                let index = ids.indexOf(":")
+                let id = ids.substring(0, index)
+                let amount = ids.substring(index + 1).trim()
+                $.ajax({
+                    url: '/FunctionOrder/GetId',
+                    type: 'get',
+                    data: {
+                        id
+                    },
+                    beforeSend: function () {
+                        $("#wait").css("display", "block");
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            if (data.getId > 0 && ids.includes(":")) {
+                                if(confirm("Bắt Đầu Quét Lấy Mã Epc Cho " + id )){
+                                  //scanner
+                                    $('#seachidgood').attr('disabled', true)
+                                    RFID(amount, data.barcode, id,data.name)
+                                }
+                            } else {
+                                alert("Mã Không Hợp Lệ !!!")
+                            }
+                        }
+                        else {
+                        }
+                    },
+                    complete: function () {
+                        $("#wait").css("display", "none");
+                    }
+                })
+            }
+        });
+
+        var start;
+        //start scanner
+        function RFID(amount,barcode,id,name) {
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'block')
+            start = setInterval(function () { AllShowEPC(amount, barcode, id, name) }, 200);
+        }
+
+        //stop scanner
+        function Stop() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            clearInterval(start);
+        }
+
+        //get epc read it
+        var epcshow = [];
+        function AllShowEPC(amount, barcode, id, name) {
+            $.ajax({
+                url: '/rfid/AllShowEPC',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.a, function (k, v) {
+                            table( v.id, amount, barcode, id, name)
+                        })
+                    }
+                }
+            })
+        }
+
+       //check amount get result
+        const checkAmount = (amount) => {
+            var amountCheck = Number(amount)
+            var amountTr = $('#tbd')[0].childNodes.length - 1
+            if (amountTr == 0) {
+                $('#result').empty()
+                $('#result').append("Chưa Có")
+            } else if (amountTr < amountCheck) {
+                $('#result').empty()
+                $('#result').append("Chưa Đủ")
+                $('#divResult').css("background", "yellow")
+            } else if (amountTr == amountCheck) {
+                $('#result').empty()
+                $('#result').append("Đủ")
+                $('#divResult').css("background", "green")
+            } else if (amountTr > amountCheck) {
+                $('#result').empty()
+                $('#result').append("Dư")
+                $('#divResult').css("background", "blueviolet")
+            }
+        }
+
+        const table = ( epc, amount, barcode, id, name) => {
+            let ids = $('.Ids').map(function () {
+                return this.id;
+            }).get();
+            if (ids.includes(epc)) {
+
+            } else {
+                let tbd = '<tr id="' + epc + '" class="Ids">'
+                tbd += '<td>' + barcode + '</td>';
+                tbd += '<td>' + epc + '</td><';
+                tbd += '<td>' + id + '</td>';
+                tbd += '<td>' + name + '</td></tr>';
+                $('#tbd').append(tbd)
+                checkAmount(amount)
+            }         
+        }
+        $("#ScanMethod").change(function () {
+            if ($(this).is(":checked")) {
+                alert('Bắt đầu quét RFID')
+                lstEpcSended.length = 0;
+                EB.Barcode.disable()
+                RFIDEnumrate()
+            } else {
+                alert('Bắt đầu quét Barcode')
+                lstEpcSended.length = 0;
+                rfid.disconnect()
+                BarcodeEnumrate()
+            }
+        });
+
+        $(document).ready(function () {
+            if (/Android/i.test(navigator.userAgent)) {
+                $("#HandHeld").show()
+
+            } else {
+                $("#HandHeld").hide()
+            }
+            rfid.statusEvent = "statusEvent(%json)";
+            rfid.tagEvent = "TagHandler(%json)";
+            RFIDEnumrate()
+        })
+
+        function TagHandler(tagarray) {
+            for (i = 0; i < tagarray.TagData.length; i++) {
+                var epc = tagarray.TagData[i].tagID
+                if (!lstEpcSended.includes(epc)) {
+                    lstEpcSended.push(epc)
+                    let index = ids.indexOf(":")
+                    let id = ids.substring(0, index)
+                    let amount = ids.substring(index + 1).trim()
+                    $.ajax({
+                        url: '/FunctionOrder/GetId',
+                        type: 'get',
+                        data: {
+                            id
+                        },
+                        beforeSend: function () {
+                            $("#wait").css("display", "block");
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                if (data.getId > 0 && ids.includes(":")) {
+                                    table(epc, amount, data.barcode, id, data.name)
+                                } else {
+                                    alert("Mã Không Hợp Lệ !!!")
+                                }
+                            }
+                            else {
+                            }
+                        },
+                        complete: function () {
+                            $("#wait").css("display", "none");
+                        }
+                    })
+                }
+            }
+        }
+
+
+        function RFIDEnumrate() {
+
+            rfid.transport = 'serial'
+            rfid.readerID = 'RFID1';
+
+            rfid.enumerate();
+            setTimeout(function () {
+                rfid.connect();
+            }, 1000);
+
+        }
+
+        function MouseCheck(code) {
+            var txt = getText(document.activeElement);
+
+
+            if (txt == 'purchaseorder') {
+                setPurchaseOrderText(code.data)
+
+            } else {
+
+                temp(code)
+            }
+
+        }
+
+        function getText(elem) {
+            if ((elem.tagName === "INPUT" && elem.type === "text")) {
+
+                return elem.id
+            }
+            return null;
+        }
+    </script>
+
+
+}
+

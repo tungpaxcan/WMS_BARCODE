@@ -1,0 +1,177 @@
+﻿@model WMS.Models.Customer
+@{
+    ViewBag.Title = "Chi Tiết Khách Hàng Doang Nghiệp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="id" hidden value="@Model.Id" />
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            Chi Tiết Khách Hàng Doanh Nghiệp
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    Vui Lòng Nhập Đúng Tất Cả Dữ Liệu Để Đảm Bảo Hệ Thống
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Họ & Tên <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <input disabled class="form-control" type="text" placeholder="Họ & Tên" id="name" value="@Model.Name" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Địa Chỉ  <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <input disabled class="form-control" type="text" placeholder="Địa Chỉ" id="address" value="@Model.AddRess" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Tên Giao Dịch </label>
+            <div class="col-10">
+                <input disabled class="form-control" type="text" placeholder="Tên Giao Dịch" id="nametransaction" value="@Model.NameTransaction" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Mã Số Thuế  <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <input disabled class="form-control" type="number" placeholder="Mã Số Thuế" id="taxcode" value="@Model.TaxCode" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Số Fax </label>
+            <div class="col-10">
+                <input disabled class="form-control" type="number" placeholder="Số Fax" id="fax" value="@Model.Fax" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Số Điện Thoại <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <input disabled class="form-control" type="number" placeholder="Số Điện Thoại" id="phone" value="@Model.Phone" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-email-input" class="col-2 col-form-label">Email <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <input disabled class="form-control" type="email" placeholder="example@example.com" id="email" value="@Model.Email" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Đại Diện <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" placeholder="Đại Diện" id="represent" value="@Model.Represent" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Chức Vụ <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" placeholder="Chức Vụ" id="position" value="@Model.Position" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Website</label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" placeholder="Website" id="website" value="@Model.Website" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Tài Khoản Giao Dịch <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="number" placeholder="Tài Khoản Giao Dịch" id="stk" value="@Model.STK" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Thuộc Ngân Hàng <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" placeholder="Thuộc Ngân Hàng" id="bank" value="@Model.Bank" />
+                    <input disabled class="form-control" type="text" placeholder="Thuộc Ngân Hàng" id="bank" value="@Model.Bank" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Thuộc Nhóm Hàng <span style="color:red"> (*) </span></label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <select disabled class="form-control" id="groupgoods">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Được Nợ Từ Giá</label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" value="@Model.DebtFrom" id="debtfrom" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-2 col-form-label">Được Nợ Đến Giá</label>
+            <div class="col-10">
+                <div class="input-group ">
+                    <input disabled class="form-control" type="text" value="@Model.DebtTo" id="debtto" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <a href="Customer/index" type="reset" class="btn btn-danger">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+       ValidateMoney('debtfrom')
+       ValidateMoney('debtto')
+
+        GroupGoods()
+      //--------------------Select::Industry--------------
+       //--------------------Select::GroupGoods--------------
+        function GroupGoods() {
+               $.ajax({
+               url: '/customer/GroupGoods',
+               type: 'get',
+               success: function (data) {
+                   $('#groupgoods').empty();
+                   if (data.code == 200) {
+                       let table = '<option value="@Model.IdGroupGoods">@Model.GroupGood.Name</option>'
+                       $.each(data.c, function (k, v) {
+                           table += '<option value="' + v.id + '">' + v.name + '</option>'
+                       });
+                       $('#groupgoods').append(table);
+                   } else (
+                       alert(data.msg)
+                   )
+               }
+           })
+        }
+    </script>
+    <script src="~/Scripts/api.js"></script>
+    <script src="~/Scripts/data.json.js"></script>
+
+    <script src="~/Scripts/Customer.js"></script>
+}
+
+

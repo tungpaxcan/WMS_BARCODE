@@ -1,0 +1,450 @@
+﻿
+@{
+    ViewBag.Title = Resources.Resource.Thêm_Hàng_Hóa;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title">
+            @Resources.Resource.Thêm_Hàng_Hóa
+        </h3>
+    </div>
+    <!--begin::Form-->
+    <div class="card-body">
+        <div class="form-group mb-8">
+            <div class="alert alert-custom alert-default" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning text-primary"></i></div>
+                <div class="alert-text">
+                    @Resources.Resource.Vui_Lòng_Nhập_Đúng_Tất_Cả_Dữ_Liệu_Để_Đảm_Bảo_Hệ_Thống
+                </div>
+            </div>
+        </div>
+        <!--HIHI-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Mã_Hàng_Hóa<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group-prepend">
+                        <input class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Mã_Hàng_Hóa" id="idgood" />
+                    </div>
+                </div>
+            </div>
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Hàng_Hóa<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group-prepend ">
+                        <input class="form-control" type="text" placeholder="@Resources.Resource.Nhập_Tên_Hàng_Hóa" id="name" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--HIHI-->
+        <!--HAHA-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Đơn_Vị</label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <select class="form-control" data-id="kt_select2_1" name="unit">
+                    </select>
+                </div>
+            </div>
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Nhóm_Hàng_Hóa</label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <select class="form-control" data-id="kt_select2_1" id="groupgoods">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--HAHA-->
+        <div class="row mb-3 form-group">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ngày_Tạo</label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group ">
+                        <input class="form-control" type="date" id="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                    </div>
+                </div>
+            </div>
+            <label class="col-xl-1 col-lg-1 col-form-label">@Resources.Resource.Số_Lượng_Tồn<span style="color:red"> (*) </span></label>
+            <div class="col-1" id="desktopRfid">
+                <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Quét</button>
+                <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét</button>
+            </div>
+            <div class="col-xl-1 col-lg-1" id="HandheldRfid">
+                <button type="submit" class="btn btn-success mr-2 on" onclick="RFIDHandHeld()">@Resources.Resource.Quét_HandHeld</button>
+                <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
+            </div>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <div class="input-group ">
+                        <input class="form-control" type="number" placeholder="@Resources.Resource.Nhập_Số_Lượng_Tồn" value="0" id="qtt" name="SoLuongTon" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Chọn Kho Hàng Nhập-->
+        <div class="row mb-3 form-group">
+            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Chọn_Kho<span style="color:red"> (*) </span></label>
+            <div class="col-xl-4">
+                <div class="form-group fv-plugins-icon-container">
+                    <select class="form-control" data-id="kt_select2_1" id="warehouse" name="warehouse">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Ghi chú -->
+        <div class="row mb-3 form-group">
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Ghi_chú</label>
+                    <div class="col-10">
+                        <div class="form-group fv-plugins-icon-container">
+                            <textarea class="form-control" rows="3" placeholder="@Resources.Resource.Ghi_chú" id="note"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Kết thúc Ghi chú -->
+
+        <div class="form-group row">
+            <label for="example-password-input" class="col-md-2 col-form-label">@Resources.Resource.Mô_Tả_Nếu_Có_Hàng_Dư_hoặc_Khác</label>
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width: 1234px;">
+                        <thead>
+                            <tr role="row">
+                                <th>@Resources.Resource.Mã_Hàng_Hóa</th>
+                                <th>@Resources.Resource.Tên_Kho_Hàng</th>
+                                <th>@Resources.Resource.Số_Lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="des">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10">
+                <button type="submit" class="btn btn-success mr-2" onclick="AddGoods()">@Resources.Resource.Thêm</button>
+                <a href="/Goods/Index" type="reset" class="btn btn-secondary">@Resources.Resource.Thoát</a>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="text" value="0" id="abc"/>
+<div id="cba"></div>
+@section scripts{
+    <script>
+        /*--------------- AddGoods--------------*/
+        function AddGoods() {
+
+            //lấy thông tin khi nhập vào input....
+            var idGoods = $('#idgood').val()
+            var NameGoods = $('#name').val()
+            var GroupGoods = $('#groupgoods').val()
+            var UnitGoods = $('select[name="unit"]').val()
+            var NoteGoods = $('#note').val()
+            var Inventory = $('#qtt').val()
+
+            var good = {
+                Id: idGoods,
+                Name: NameGoods,
+                IdGroupGood: GroupGoods,
+                IdUnit: UnitGoods,
+                Description: NoteGoods,
+                Inventory: Inventory,
+            }
+            sendAjaxRequest(good)
+        }
+        function sendAjaxRequest(good) {
+            var idDetailWarehouse = $('#warehouse').val().trim()
+            if (idDetailWarehouse == "-1") { toastr.warning('Chọn Kho hàng !!!'); return; };
+            $.each(errorEPC, function (k, v) {
+                epcshow = epcshow.filter(function (element) {
+                    return element !== v;
+                })
+            });
+            $.ajax({
+                url: '/Goods/Add',
+                type: 'Post',
+                data: { good: good, idDetailWarehouse: idDetailWarehouse, arrayepc: JSON.stringify(epcshow) },
+                success: function (data) {
+                    if (data.status == 200) {
+                        toastr.success(data.msg);
+                        setTimeout(function () { window.location.href = "/Goods/Index"; }, 1000);
+                    } else if (data.status == 300) {
+                        Swal.fire({
+                            title: "@Resources.Resource.Cảnh_báo",
+                            text: data.msg,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "@Resources.Resource.Quét_Lại_Tất_Cả",
+                            cancelButtonText: "@Resources.Resource.Hủy",
+                            cancelButtonColor: "#d33",
+                            showCloseButton: true,
+                            showDenyButton: true,
+                            denyButtonText: "@Resources.Resource.Quét_Lại_Mã_Trùng",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Quét lại tất cả.
+                                epcshow = [];
+                                $('#qtt').val(0);
+
+                            } else if (result.dismiss === Swal.DismissReason.Deny) {
+                                // Tìm kiếm lấy mã trùng gửi...
+                                Swal.fire({
+                                    title: "@Resources.Resource.Mã_trùng",
+                                    html: data.epc,
+                                    icon: "info",
+                                    showCancelButton: true,
+                                    confirmButtonText: "Ok",
+                                    cancelButtonText: "@Resources.Resource.Gửi",
+                                    showCloseButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        //Ok
+                                    } else {
+                                        // Gửi
+                                    }
+                                });
+
+                            } else {
+                                //Hủy
+                                Swal.close();
+                            }
+                        });
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                },
+            });
+        }
+        $(document).ready(function () {
+            if (/Android/i.test(navigator.userAgent)) {
+                $("#HandheldRfid").show()
+                $("#desktopRfid").hide()
+            } else {
+                $("#HandheldRfid").hide()
+                $("#desktopRfid").show()
+            }
+        });
+        WareHouse()
+        GroupGoods()
+        Unit();
+        function Unit() {
+            $.ajax({
+                url: '/Unit/List',
+                type: 'get',
+                data: { pagenum: 1000, page: 1, seach: "" },
+                success: function (data) {
+                    $('select[name="unit"]').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Thuộc_Đơn_Vị</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('select[name="unit"]').append(table);
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        }
+
+        function GroupGoods() {
+            $.ajax({
+                url: '/goods/GroupGoods',
+                type: 'get',
+                data: { pagenum: 1000, page: 1, seach: "" },
+                success: function (data) {
+                    $('#groupgoods').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Thuộc_Nhóm_Hàng</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#groupgoods').append(table);
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        }
+
+        function WareHouse() {
+            $.ajax({
+                url: '/goods/WareHouse',
+                type: 'get',
+                success: function (data) {
+                    $('#warehouse').empty();
+                    if (data.code == 200) {
+                        let table = '<option value="-1">@Resources.Resource.Chọn_Kho_Hàng</option>'
+                        $.each(data.c, function (k, v) {
+                            table += '<option value="' + v.id + '">' + v.name + '</option>'
+                        });
+                        $('#warehouse').append(table);
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        }
+        // lấy danh sách nhập hàng vào detail warehouse
+        var des = '';
+        var errorEPC = [];
+        //Quét mã hàng hóa lấy số lượng thực tế
+        async function CompareReceipt(epc) {
+            await CheckIdGoodsInSystem(epc)
+                .then(function (data) {
+                    // Xử lý dữ liệu thành công
+                    if (data?.status) {
+                        $('#qtt').val(Number($('#qtt').val()) + 1);
+                    } else {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = data?.checkEpc?.IdGoods
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                        } else {
+                            var tr = `<tr class="more" id="more${barcodes}">
+                                      <td>${barcodes}</td>
+                                      <td>${data?.checkEpc?.Name}</td>
+                                      <td id="amountmore${barcodes}">1</td>
+                                      </tr>`
+                            $('#des').append(tr)
+                        }
+                        errorEPC.push(
+                            epc
+                        );
+                    }
+                      
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                });
+          
+        }
+        //kiểm tra mã hàng đã có trong hệ thống
+        function CheckIdGoodsInSystem(epc) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: '/Epcs/CheckIdGoodsInSystem',
+                    type: 'get',
+                    data: { epc },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            resolve(data);
+                        }
+                        else {
+                            toastr.error(data.msg)
+                            reject(data.msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        var start;
+        function RFID() {
+            if ($('#warehouse').val().trim()=="-1") { toastr.warning('Chọn Kho hàng !!!'); return; };
+            DeleteEpc()
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'block')
+            start = setInterval(function () { AllShowEPC() }, 200);
+        }
+        //stop scanner
+        function Stop() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            clearInterval(start);
+        }
+
+        function StopHH() {
+            $('.on').css('display', 'block')
+            $('.off').css('display', 'none')
+            rfid.disconnect();
+        }
+        var epcshow = [];
+        function AllShowEPC() {
+            $.ajax({
+                url: '/rfid/AllShowEPC',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.a, function (k, v) {
+                            $.ajax({
+                                url: '/rfid/falseEPC',
+                                type: 'post',
+                                data: { epc: v.id },
+                                success: async function (data) {
+                                    if (data.code == 200) {
+                                        if (!epcshow.includes(v.id)) {
+                                            epcshow.push(v.id)
+                                            await CompareReceipt(v.id)
+                                        }
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }
+            })
+        }
+        function DeleteEpc() {
+            $.ajax({
+                url: '/rfid/DeleteEPC',
+                type: 'post',
+            })
+        }
+        function RFIDHandHeld() {
+            $('.on').css('display', 'none')
+            $('.off').css('display', 'block')
+            rfid.statusEvent = "statusEvent(%json)";
+            rfid.tagEvent = "TagHandler(%json)";
+            RFIDEnumrate();
+        }
+        //RFID
+        async function TagHandler(tagarray) {
+            for (i = 0; i < tagarray.TagData.length; i++) {
+                var epc = tagarray.TagData[i].tagID
+                if (!epcshow.includes(epc)) {
+                    epcshow.push(epc)
+                     await CompareReceipt(epc)
+             
+                }
+            }
+        }
+        function RFIDEnumrate() {
+            rfid.transport = 'serial'
+            rfid.readerID = 'RFID1';
+            rfid.enumerate();
+            setTimeout(function () {
+                rfid.connect();
+                rfid.startTriggerType = "triggerPress";
+                rfid.performInventory();
+                rfid.beepOnRead = 1;
+            }, 1000);
+        }
+
+    </script>
+    <script src="~/assets/js/pages/crud/forms/widgets/select2.js"></script>
+    <script src="~/Scripts/ebapi-modules.js"></script>
+    <script src="~/Scripts/elements.js"></script>
+
+
+}
