@@ -20,12 +20,12 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row" id="HandHeld">
-            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Phương_thức_quét<span style="color:red"> (*Handheld)</span> </label>
-            <div class="col-2">
-                <input type="checkbox" id="ScanMethod" checked data-toggle="toggle" data-on="RFID" data-off="Barcode" data-onstyle="success" data-offstyle="primary">
-            </div>
-        </div>
+        @*<div class="form-group row" id="HandHeld">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Phương_thức_quét<span style="color:red"> (*Handheld)</span> </label>
+                <div class="col-2">
+                    <input type="checkbox" id="ScanMethod" checked data-toggle="toggle" data-on="RFID" data-off="Barcode" data-onstyle="success" data-offstyle="primary">
+                </div>
+            </div>*@
         <div class="form-group row">
             <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label"> @Resources.Resource.Số_Phiếu_Nhập_Kho<span style="color:red"> (*) </span></label>
             <div class="col-lg-10 col-xl-10">
@@ -78,20 +78,20 @@
                 <textarea class="form-control" type="text" placeholder="@Resources.Resource.Ghi_chú" name="GhiChu"></textarea>
             </div>
         </div>
-        <div class="form-group  row" id="desktoprfid">
-            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
-            <div class="col-lg-10 col-xl-10">
-                <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
+        @*<div class="form-group  row" id="desktoprfid">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
+                <div class="col-lg-10 col-xl-10">
+                    <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                    <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
+                </div>
             </div>
-        </div>
-        <div class="form-group row" id="rfidhandheld">
-            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
-            <div class="col-lg-10 col-xl-10">
-                <button type="submit" class="btn btn-success mr-2 " onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                <button type="submit" class="btn btn-secondary mr-2 " onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
-            </div>
-        </div>
+            <div class="form-group row" id="rfidhandheld">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
+                <div class="col-lg-10 col-xl-10">
+                    <button type="submit" class="btn btn-success mr-2 " onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
+                    <button type="submit" class="btn btn-secondary mr-2 " onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
+                </div>
+            </div>*@
         <div class="form-group" style="height: 500px;overflow-y: scroll;">
             <!--1234px-->
             <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
@@ -218,143 +218,383 @@
 
 @section scripts{
     <script>
-        $(function () {
-            var id = localStorage.getItem("idClickToImport")
-            if (id != null) {
-                $('input[name="purchaseorder"]').val(id)
-                Info(id)
-                localStorage.removeItem("idClickToImport");
-            }
-        })
-        $(document).on('keypress', 'input[name="purchaseorder"]', function (e) {
-            if (e.which == 13) {
-                e.preventDefault();
-                var id = $(this).val().trim();
-                Info(id)
-            }
-        })
+     $(function () {
+         var id = localStorage.getItem("idClickToImport")
+         if (id != null) {
+             $('input[name="purchaseorder"]').val(id)
+             Info(id)
+             localStorage.removeItem("idClickToImport");
+         }
+     })
+     $(document).on('keypress', 'input[name="purchaseorder"]', function (e) {
+         if (e.which == 13) {
+             e.preventDefault();
+             var id = $(this).val().trim();
+             Info(id)
+         }
+     })
 
-        function Info(id) {
-            $.ajax({
-                url: '/PurchaseOrder/Detail',
-                type: 'post',
-                data: { id: id },
-                success: function (data) {
-                    $('tbody[name="tbd"]').empty();
-                    if (data.code == 200) {
-                        if (data.po.status == true) {
-                            Swal.fire({
-                                title: "@Resources.Resource.Mã_Phiếu_Nhập_Đã_Quét",
-                                icon: "warning"
-                            });
+     function Info(id) {
+         $.ajax({
+             url: '/PurchaseOrder/Detail',
+             type: 'post',
+             data: { id: id },
+             success: function (data) {
+                 $('tbody[name="tbd"]').empty();
+                 if (data.code == 200) {
+                     if (data.po.status == true) {
+                         Swal.fire({
+                             title: "@Resources.Resource.Mã_Phiếu_Nhập_Đã_Quét",
+                             icon: "warning"
+                         });
+                     } else {
+                         setInfoPurchase(data.po, data.detailPo, id)
+                         toastr.success(data.msg);
+                     }
+                 }
+                 else {
+                     toastr.error(data.msg)
+                 }
+
+             }
+         })
+     }
+     function setInfoPurchase(po, detailPo, id) {
+         $('input[name="datenhap"]').val(formatDate(po.createDate))
+         $('input[name="nameCustomer"]').val(po.nameCustomer)
+         $('input[name="nameWarehouse"]').val(po.nameWarehouse)
+         $('input[name="nameWarehouse"]').attr('data-idwarehouse',po.idWarehouse)
+         //hiển thị phiếu nhập hàng
+         $('span[name="phoneCustomer"]').append(po.phone)
+         $('span[name="nameCustomer"]').append(po.nameCustomer);
+         $('span[name="addressCustomer"]').append(po.addressCustomer);
+         $('span[name="idpurchaseorder"]').append(id);
+         $('span[name="datedh"]').append(formatDate(po.createDate));
+         $('span[name="warehouse"]').append(po.nameWarehouse);
+
+         for (var i = 0; i < detailPo.length; i++) {
+             var color = "";
+             var qtyScan = detailPo[i].quantityscan == null ? 0 : detailPo[i].quantityscan;
+             var qty = detailPo[i].quantity;
+             if (Number(qty) < Number(qtyScan)) {
+                 color = "yellow"
+             } else if (Number(qty) > Number(qtyScan)) {
+                 color = "red"
+             } else {
+                 color = "green"
+             }
+             let table = '<tr id="' + detailPo[i].idGoods.trim() + '" role="row" class="nhanhang" >';
+             table += '<td class="quantityscan' + detailPo[i].idGoods.trim() + '" style="background:' + color +'">' + qtyScan +'</td>'
+             table += '<td>' + Number(i + 1) + '</td>'
+             table += '<td id="idgoods">' + detailPo[i].idGoods + '</td>'
+             table += '<td>' + detailPo[i].nameGoods + '</td>'
+             table += '<td id="quantity' + detailPo[i].idGoods.trim() + '">' + detailPo[i].quantity + '</td>'
+             table += '<td>' + detailPo[i].nameGroupGoods + '</td>'
+             table += '<td>' + detailPo[i].nameUnit + '</td>'
+             table += '</tr>';
+             $('tbody[name="tbd"]').append(table);
+         }
+ 
+     }
+
+
+     var d = new Date()
+     $('#id').val(d.Day)
+     $(document).ready(function () {
+         $('#id').val(d.getDate() + "" + (d.getMonth() + 1) + "" + d.getFullYear() + "" + d.getHours() + "" + d.getMinutes() + "" + d.getSeconds())
+     });
+     User()
+     function User() {
+         $.ajax({
+             url: '/Receipt/UserNV',
+             type: 'get',
+             success: function (data) {
+                 $('#user1').empty();
+                 $('#user2').empty();
+                 if (data.code == 200) {
+                     let table = '<option value="-1">@Resources.Resource.Chọn_Nhân_Viên_Kiểm_Hàng</option>'
+                     $.each(data.c, function (k, v) {
+                         table += '<option value="' + v.id + '">' + v.name + '</option>'
+                     });
+                     $('#user1').append(table);
+                     $('#user2').append(table);
+                 } else (
+                     alert(data.msg)
+                 )
+             }
+         })
+     }
+     // truyền tài nguyên resources sang js
+     var resourcereceipt = {
+             "canhbao":@Html.Raw(Json.Encode(Resources.Resource.Cảnh_báo.ToString())),
+             "quetlaitatca": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Tất_Cả.ToString())),
+             "huy": "@Resources.Resource.Hủy",
+             "quetlaimatrung": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Mã_Trùng.ToString())),
+             "matrung":@Html.Raw(Json.Encode(Resources.Resource.Mã_trùng.ToString())),
+             "gui": "@Resources.Resource.Gửi",
+             "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
+             "thieu": "@Resources.Resource.Thiếu",
+             "dư":"@Resources.Resource.Dư",
+     }
+        $(document).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            startChar: [120],
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            minLength: 1,
+            onComplete: async function (barcode, qty) {
+                await CompareReceipt(barcode.trim())
+            }, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            onError: function (string) { alert('Error ' + string); }
+        });
+
+        async function CompareReceipt(upc) {
+            await CheckIdGoodsInSystem(upc)
+                .then(function (data) {
+                    if (data?.status) {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = upc
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
                         } else {
-                            setInfoPurchase(data.po, data.detailPo, id)
-                            toastr.success(data.msg);
+                            var tr = `<tr class="more" id="more${barcodes}">
+                                      <td>${barcodes}</td>
+                                      <td>Undeclared Data</td>
+                                      <td id="amountmore${barcodes}">1</td>
+                                       <td style="cursor: pointer;" name="location" id="location${barcodes}"><i class="nav-icon la la-search"></i></td>
+                                      </tr>`
+                            $('#des').append(tr)
                         }
+                    } else {
+                        var barcode = upc;
+                        var amountScan = $('.quantityscan' + barcode + '').eq(0).text();
+                        var amountQuantity = $('#quantity' + barcode + '').text();
+                        $('.quantityscan' + barcode + '').text(Number(amountScan) + 1);
+                        if (Number(amountScan) + 1 < Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'red')
+                        } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'green')
+                        } else {
+                            $('.quantityscan' + barcode + '').css("background-color", 'yellow')
+                        }
+
+                    }
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                })
+
+        }
+        //kiểm tra mã hàng đã có trong hệ thống
+        function CheckIdGoodsInSystem(upc) {
+            return new Promise(function (resolve, reject) {
+                var warehouse = $('#nameWarehouse').attr('data-idwarehouse').trim()
+                $.ajax({
+                    url: '/Epcs/CheckIdGoodsInSystem',
+                    type: 'get',
+                    data: { upc, warehouse },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            resolve(data);
+                        }
+                        else {
+                            toastr.error(data.msg)
+                            reject(data.msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+        //End
+
+        //-------------------add--------------------
+
+        function Add(statusSave) {
+            Stop();
+            var arrayGoods = [];
+            var arrayRow = $('tbody').children(1).closest('tr.nhanhang');
+            for (let i = 0; i < arrayRow.length / 2; i++) {
+                var idGoods = arrayRow.eq(i).attr('id');
+                var qtyScan = $('.quantityscan' + idGoods + '').eq(0).text();
+                arrayGoods.push({
+                    "IdGoods": idGoods,
+                    "QuantityScan": qtyScan
+                })
+            }
+            var stringError = ""
+            $.each(arrayGoods, function (k, v) {
+                var quantity = $('#quantity' + v.IdGoods + '').text();
+                var check = Number(quantity) - Number(v.QuantityScan)
+                if (check > 0) {
+                    stringError += resourcereceipt.mahh + " " + v.IdGoods + " " + resourcereceipt.thieu + " " + check + "\n"
+                } else if (check < 0) {
+                    stringError += resourcereceipt.mahh + " " + v.IdGoods + " " + resourcereceipt.dư + " " + Math.abs(check) + "\n"
+                }
+            })
+            if (stringError == "") {
+                Swal.fire({
+                    title: "Do you want to save the changes?",
+                    showDenyButton: true,
+                    icon: "warning"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkScan(arrayGoods, statusSave)
+                    } else if (result.isDenied) {
+
+                    }
+
+                })
+
+            } else {
+                Swal.fire({
+                    title: stringError,
+                    showDenyButton: true,
+                    icon: "warning"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkScan(arrayGoods, statusSave)
+                    } else if (result.isDenied) {
+
+                    }
+
+                })
+            }
+        }
+        function checkScan(arrayGoods, statusSave) {
+            var id = $('#id').val().trim();
+            var purchaseorder = $('input[name="purchaseorder"]').val();
+            var user1 = $('#user1').val();
+            var user2 = $('#user2').val();
+            var Des = $('[name="GhiChu"]').val();
+            $.each(errorEPC, function (k, v) {
+                epcshow = epcshow.filter(function (element) {
+                    return element !== v;
+                })
+            });
+            $.ajax({
+                url: '/receipt/Add',
+                type: 'post',
+                data: {
+                    statusSave, id, purchaseorder, user1, user2, Des, arrayGoods: JSON.stringify(arrayGoods), arrayepc: JSON.stringify(epcshow)
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        toastr.success(data.msg);
+                        LastReceipt();
+                        $('#ghiChu').text(Des);
+                        $('#BILL').modal('show');
+                    } else if (data.status == 300) {
+                        Swal.fire({
+                            title: resourcereceipt.canhbao,
+                            text: data.msg,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: resourcereceipt.quetlaitatca,
+                            cancelButtonText: resourcereceipt.huy,
+                            cancelButtonColor: "#d33",
+                            showCloseButton: true,
+                            showDenyButton: true,
+                            denyButtonText: resourcereceipt.quetlaimatrung,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Quét lại tất cả.
+                                epcshow = [];
+                                $('td[class*="quantityscan"]').text("0").css('background', "red")
+                                $('#des').empty();
+                            } else if (result.dismiss === Swal.DismissReason.Deny) {
+                                // Tìm kiếm lấy mã trùng gửi...
+                                Swal.fire({
+                                    title: resourcereceipt.matrung,
+                                    html: data.epc,
+                                    icon: "info",
+                                    showCancelButton: true,
+                                    confirmButtonText: "Ok",
+                                    cancelButtonText: resourcereceipt.gui,
+                                    showCloseButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        //Ok
+                                        var amountS = $('.quantityscan' + data.c).eq(0);
+                                        var amount = $('#quantity' + data.c);
+                                        var bill = $('#BILL .quantityscan' + data.c);
+                                        epcshow = epcshow.filter(function (element) {
+                                            return element !== data.epc;
+                                        });
+                                        amountS.text(Number(amountS.text()) - 1);
+                                        if (Number(amountS.text()) < Number(amount.text())) {
+                                            amountS.css("background-color", 'red')
+                                            bill.css("background-color", 'red');
+                                        } else if (Number(amountS.text()) == Number(amount.text())) {
+                                            amountS.css("background-color", 'green')
+                                            bill.css("background-color", 'green');
+                                        } else {
+                                            amountS.css("background-color", 'yellow')
+                                            bill.css("background-color", 'yellow');
+                                        }
+                                        bill.text(amountS.text());
+                                    } else {
+                                        $.ajax({
+                                            url: "receipt/sendepc",
+                                            type: "get",
+                                            data: { epc: data.epc },
+                                            success: function (data) {
+
+                                            }
+                                        })
+                                    }
+                                });
+
+                            } else {
+                                //Hủy
+                                Swal.close();
+                            }
+                        });
                     }
                     else {
-                        toastr.error(data.msg)
+                        toastr.error(data.msg);
                     }
-
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
                 }
             })
         }
-        function setInfoPurchase(po, detailPo, id) {
-            $('input[name="datenhap"]').val(formatDate(po.createDate))
-            $('input[name="nameCustomer"]').val(po.nameCustomer)
-            $('input[name="nameWarehouse"]').val(po.nameWarehouse)
-            //hiển thị phiếu nhập hàng
-            $('span[name="phoneCustomer"]').append(po.phone)
-            $('span[name="nameCustomer"]').append(po.nameCustomer);
-            $('span[name="addressCustomer"]').append(po.addressCustomer);
-            $('span[name="idpurchaseorder"]').append(id);
-            $('span[name="datedh"]').append(formatDate(po.createDate));
-            $('span[name="warehouse"]').append(po.nameWarehouse);
-
-            for (var i = 0; i < detailPo.length; i++) {
-                var color = "";
-                var qtyScan = detailPo[i].quantityscan == null ? 0 : detailPo[i].quantityscan;
-                var qty = detailPo[i].quantity;
-                if (Number(qty) < Number(qtyScan)) {
-                    color = "yellow"
-                } else if (Number(qty) > Number(qtyScan)) {
-                    color = "red"
-                } else {
-                    color = "green"
-                }
-                let table = '<tr id="' + detailPo[i].idGoods.trim() + '" role="row" class="nhanhang" >';
-                table += '<td class="quantityscan' + detailPo[i].idGoods.trim() + '" style="background:' + color +'">' + qtyScan +'</td>'
-                table += '<td>' + Number(i + 1) + '</td>'
-                table += '<td id="idgoods">' + detailPo[i].idGoods + '</td>'
-                table += '<td>' + detailPo[i].nameGoods + '</td>'
-                table += '<td id="quantity' + detailPo[i].idGoods.trim() + '">' + detailPo[i].quantity + '</td>'
-                table += '<td>' + detailPo[i].nameGroupGoods + '</td>'
-                table += '<td>' + detailPo[i].nameUnit + '</td>'
-                table += '</tr>';
-                $('tbody[name="tbd"]').append(table);
-            }
-            if (/Android/i.test(navigator.userAgent)) {
-                $('div[name="HandheldRfid"]').show()
-                $('div[name="desktopRfid"]').hide()
-            } else {
-                $('div[name="HandheldRfid"]').hide()
-                $('div[name="desktopRfid"]').show()
-            }
-        }
-
-        //MC33
-        $(document).ready(function () {
-            if (/Android/i.test(navigator.userAgent)) {
-                $("#HandHeld").show();
-                $("#rfidhandheld").show();
-                $("#desktoprfid").hide();
-            } else {
-                $("#HandHeld").hide();
-                $("#rfidhandheld").hide();
-                $("#desktoprfid").show();
-            }
-        });
-
-        var d = new Date()
-        $('#id').val(d.Day)
-        $(document).ready(function () {
-            $('#id').val(d.getDate() + "" + (d.getMonth() + 1) + "" + d.getFullYear() + "" + d.getHours() + "" + d.getMinutes() + "" + d.getSeconds())
-        });
-        User()
-        function User() {
+        //-------------LastReceip----------
+        function LastReceipt() {
+            var id = $('#id').val().trim();
             $.ajax({
-                url: '/Receipt/UserNV',
+                url: '/receipt/ReceipLast',
                 type: 'get',
+                data: {
+                    id
+                },
+                beforeSend: function () {
+                    $("#wait").css("display", "block");
+                },
                 success: function (data) {
-                    $('#user1').empty();
-                    $('#user2').empty();
+                    $('span[name="idpn"]').empty()
+                    $('span[name="datepn"]').empty()
                     if (data.code == 200) {
-                        let table = '<option value="-1">@Resources.Resource.Chọn_Nhân_Viên_Kiểm_Hàng</option>'
-                        $.each(data.c, function (k, v) {
-                            table += '<option value="' + v.id + '">' + v.name + '</option>'
-                        });
-                        $('#user1').append(table);
-                        $('#user2').append(table);
-                    } else (
-                        alert(data.msg)
-                    )
+                        $.each(data.a, function (k, v) {
+                            $('span[name="idpn"]').append(v.id)
+                            $('span[name="datepn"]').append(v.datepn)
+                        })
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
                 }
             })
         }
-        // truyền tài nguyên resources sang js
-        var resourcereceipt = {
-                "canhbao":@Html.Raw(Json.Encode(Resources.Resource.Cảnh_báo.ToString())),
-                "quetlaitatca": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Tất_Cả.ToString())),
-                "huy": "@Resources.Resource.Hủy",
-                "quetlaimatrung": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Mã_Trùng.ToString())),
-                "matrung":@Html.Raw(Json.Encode(Resources.Resource.Mã_trùng.ToString())),
-                "gui": "@Resources.Resource.Gửi",
-                "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
-                "thieu": "@Resources.Resource.Thiếu",
-                "dư":"@Resources.Resource.Dư",
-        }
+
     </script>
-    <script src="~/Scripts/Receipt.js"></script>
-    <script src="~/Scripts/ebapi-modules.js"></script>
-    <script src="~/Scripts/elements.js"></script>
 }

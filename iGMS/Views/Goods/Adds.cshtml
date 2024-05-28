@@ -68,15 +68,15 @@
                     </div>
                 </div>
             </div>
-            <label class="col-xl-1 col-lg-1 col-form-label">@Resources.Resource.Số_Lượng_Tồn<span style="color:red"> (*) </span></label>
-            <div class="col-1" id="desktopRfid">
+            <label class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Số_Lượng_Tồn<span style="color:red"> (*) </span></label>
+            @*<div class="col-1" id="desktopRfid">
                 <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Quét</button>
                 <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét</button>
             </div>
             <div class="col-xl-1 col-lg-1" id="HandheldRfid">
                 <button type="submit" class="btn btn-success mr-2 on" onclick="RFIDHandHeld()">@Resources.Resource.Quét_HandHeld</button>
                 <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
-            </div>
+            </div>*@
             <div class="col-xl-4">
                 <div class="form-group fv-plugins-icon-container">
                     <div class="input-group ">
@@ -140,8 +140,6 @@
         </div>
     </div>
 </div>
-<input type="text" value="0" id="abc"/>
-<div id="cba"></div>
 @section scripts{
     <script>
         /*--------------- AddGoods--------------*/
@@ -168,76 +166,21 @@
         function sendAjaxRequest(good) {
             var idDetailWarehouse = $('#warehouse').val().trim()
             if (idDetailWarehouse == "-1") { toastr.warning('Chọn Kho hàng !!!'); return; };
-            $.each(errorEPC, function (k, v) {
-                epcshow = epcshow.filter(function (element) {
-                    return element !== v;
-                })
-            });
             $.ajax({
                 url: '/Goods/Add',
                 type: 'Post',
-                data: { good: good, idDetailWarehouse: idDetailWarehouse, arrayepc: JSON.stringify(epcshow) },
+                data: { good: good, idDetailWarehouse: idDetailWarehouse},
                 success: function (data) {
                     if (data.status == 200) {
                         toastr.success(data.msg);
                         setTimeout(function () { window.location.href = "/Goods/Index"; }, 1000);
-                    } else if (data.status == 300) {
-                        Swal.fire({
-                            title: "@Resources.Resource.Cảnh_báo",
-                            text: data.msg,
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "@Resources.Resource.Quét_Lại_Tất_Cả",
-                            cancelButtonText: "@Resources.Resource.Hủy",
-                            cancelButtonColor: "#d33",
-                            showCloseButton: true,
-                            showDenyButton: true,
-                            denyButtonText: "@Resources.Resource.Quét_Lại_Mã_Trùng",
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                //Quét lại tất cả.
-                                epcshow = [];
-                                $('#qtt').val(0);
-
-                            } else if (result.dismiss === Swal.DismissReason.Deny) {
-                                // Tìm kiếm lấy mã trùng gửi...
-                                Swal.fire({
-                                    title: "@Resources.Resource.Mã_trùng",
-                                    html: data.epc,
-                                    icon: "info",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Ok",
-                                    cancelButtonText: "@Resources.Resource.Gửi",
-                                    showCloseButton: true,
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        //Ok
-                                    } else {
-                                        // Gửi
-                                    }
-                                });
-
-                            } else {
-                                //Hủy
-                                Swal.close();
-                            }
-                        });
-                    }
+                    } 
                     else {
                         toastr.error(data.msg);
                     }
                 },
             });
         }
-        $(document).ready(function () {
-            if (/Android/i.test(navigator.userAgent)) {
-                $("#HandheldRfid").show()
-                $("#desktopRfid").hide()
-            } else {
-                $("#HandheldRfid").hide()
-                $("#desktopRfid").show()
-            }
-        });
         WareHouse()
         GroupGoods()
         Unit();
@@ -299,16 +242,35 @@
                 }
             })
         }
-        // lấy danh sách nhập hàng vào detail warehouse
-        var des = '';
-        var errorEPC = [];
         //Quét mã hàng hóa lấy số lượng thực tế
-        async function CompareReceipt(epc) {
-            await CheckIdGoodsInSystem(epc)
+        async function CompareReceipt(upc) {
+            await CheckIdGoodsInSystem(upc)
                 .then(function (data) {
+                    var idgood = $('#idgood').val().trim()
+                    if (idgood == "") {
+                        toastr.error("Chưa Nhập Mã Hàng");
+                        return;
+                    };
                     // Xử lý dữ liệu thành công
                     if (data?.status) {
-                        $('#qtt').val(Number($('#qtt').val()) + 1);
+                        if (idgood == upc) {
+                            $('#qtt').val(Number($('#qtt').val()) + 1);
+                        } else {
+                            var more = $('.more').map(function () {
+                                return this.id;
+                            }).get();
+                            var barcodes = upc
+                            if (more.includes("more" + barcodes + "")) {
+                                $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                            } else {
+                                var tr = `<tr class="more" id="more${barcodes}">
+                                    <td>${barcodes}</td>
+                                    <td>Undeclared data</td>
+                                    <td id="amountmore${barcodes}">1</td>
+                                    </tr>`
+                                                    $('#des').append(tr)
+                                                }
+                        }
                     } else {
                         var more = $('.more').map(function () {
                             return this.id;
@@ -324,9 +286,6 @@
                                       </tr>`
                             $('#des').append(tr)
                         }
-                        errorEPC.push(
-                            epc
-                        );
                     }
                       
                 })
@@ -337,12 +296,18 @@
           
         }
         //kiểm tra mã hàng đã có trong hệ thống
-        function CheckIdGoodsInSystem(epc) {
+        function CheckIdGoodsInSystem(upc) {
             return new Promise(function (resolve, reject) {
+                var warehouse = $('#warehouse').val()
+                if (warehouse == "-1") {
+                    toastr.error("Chưa Chọn Kho Hàng");
+                    return;
+                }
+
                 $.ajax({
                     url: '/Epcs/CheckIdGoodsInSystem',
                     type: 'get',
-                    data: { epc },
+                    data: { upc, warehouse },
                     success: function (data) {
                         if (data.code == 200) {
                             resolve(data);
@@ -359,92 +324,21 @@
             });
         }
 
-        var start;
-        function RFID() {
-            if ($('#warehouse').val().trim()=="-1") { toastr.warning('Chọn Kho hàng !!!'); return; };
-            DeleteEpc()
-            $('.on').css('display', 'none')
-            $('.off').css('display', 'block')
-            start = setInterval(function () { AllShowEPC() }, 200);
-        }
-        //stop scanner
-        function Stop() {
-            $('.on').css('display', 'block')
-            $('.off').css('display', 'none')
-            clearInterval(start);
-        }
-
-        function StopHH() {
-            $('.on').css('display', 'block')
-            $('.off').css('display', 'none')
-            rfid.disconnect();
-        }
-        var epcshow = [];
-        function AllShowEPC() {
-            $.ajax({
-                url: '/rfid/AllShowEPC',
-                type: 'get',
-                success: function (data) {
-                    if (data.code == 200) {
-                        $.each(data.a, function (k, v) {
-                            $.ajax({
-                                url: '/rfid/falseEPC',
-                                type: 'post',
-                                data: { epc: v.id },
-                                success: async function (data) {
-                                    if (data.code == 200) {
-                                        if (!epcshow.includes(v.id)) {
-                                            epcshow.push(v.id)
-                                            await CompareReceipt(v.id)
-                                        }
-                                    }
-                                }
-                            })
-                        })
-                    }
-                }
-            })
-        }
-        function DeleteEpc() {
-            $.ajax({
-                url: '/rfid/DeleteEPC',
-                type: 'post',
-            })
-        }
-        function RFIDHandHeld() {
-            $('.on').css('display', 'none')
-            $('.off').css('display', 'block')
-            rfid.statusEvent = "statusEvent(%json)";
-            rfid.tagEvent = "TagHandler(%json)";
-            RFIDEnumrate();
-        }
-        //RFID
-        async function TagHandler(tagarray) {
-            for (i = 0; i < tagarray.TagData.length; i++) {
-                var epc = tagarray.TagData[i].tagID
-                if (!epcshow.includes(epc)) {
-                    epcshow.push(epc)
-                     await CompareReceipt(epc)
-             
-                }
-            }
-        }
-        function RFIDEnumrate() {
-            rfid.transport = 'serial'
-            rfid.readerID = 'RFID1';
-            rfid.enumerate();
-            setTimeout(function () {
-                rfid.connect();
-                rfid.startTriggerType = "triggerPress";
-                rfid.performInventory();
-                rfid.beepOnRead = 1;
-            }, 1000);
-        }
+        $(document).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            startChar: [120],
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            minLength: 1,
+            onComplete: async function (barcode, qty) {
+                await CompareReceipt(barcode.trim())
+            }, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            onError: function (string) { alert('Error ' + string); }
+        });
 
     </script>
     <script src="~/assets/js/pages/crud/forms/widgets/select2.js"></script>
-    <script src="~/Scripts/ebapi-modules.js"></script>
-    <script src="~/Scripts/elements.js"></script>
-
-
 }

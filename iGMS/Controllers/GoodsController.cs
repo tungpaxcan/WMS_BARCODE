@@ -110,7 +110,7 @@ namespace WMS.Controllers
             }
         }
         [HttpPost]
-        public JsonResult Add(Good good, string idDetailWarehouse, string arrayepc)
+        public JsonResult Add(Good good, string idDetailWarehouse)
         {
             try
             {
@@ -118,8 +118,6 @@ namespace WMS.Controllers
                 var session = (ApiAccount)Session["user"];
                 var nameAdmin = session.UserName;
 
-                //---Ha
-                var epcs = JsonConvert.DeserializeObject<string[]>(arrayepc);
                 if (string.IsNullOrEmpty(good.Name))
                 {
                     return Json(new { status = 500, msg = rm.GetString("nhập tên hàng".ToString()) }, JsonRequestBehavior.AllowGet);
@@ -148,65 +146,41 @@ namespace WMS.Controllers
 
                         db.Goods.Add(good);
                         // lưu thông tin vào detail warehouse
-
-                        var maxInventory = db.WareHouses.Find(idDetailWarehouse).MaxInventory;
-                        var nameWareHouse = db.WareHouses.Find(idDetailWarehouse).Name;
-                        var inventoryForWarehouse = epcs.Length;
-
-                        if (inventoryForWarehouse == null)
-                        {
-                            inventoryForWarehouse = 0;
-                        }
-                        if (inventoryForWarehouse > maxInventory)
-                        {
-                            return Json(new { status = 500, msg = $"{rm.GetString("NhapKhoQuaSL")} {nameWareHouse}" }, JsonRequestBehavior.AllowGet);
-                        }
-                        //End
-                        if (nameWareHouse != null)
-                        {
-                            var newDetail = new DetailWareHouse
-                            {
-                                IdWareHouse = idDetailWarehouse,
-                                IdGoods = good.Id,
-                                Inventory = inventoryForWarehouse,
-                                Status = true
-                            };
-                            db.DetailWareHouses.Add(newDetail);
-                        }
-                        List<EPC> list = new List<EPC>();
-                        foreach(var item in epcs)
-                        {
-                            list.Add(new EPC
-                            {
-                                IdGoods = good.Id,
-                                IdEPC = item,
-                                IdWareHouse = idDetailWarehouse,
-                                Status = true
-                            });
-                        }
-                        db.EPCs.AddRange(list);
-                        db.SaveChanges();
-                        var allWareHouse = db.WareHouses.Where(w => w.Id != idDetailWarehouse).ToList();
-
-                        foreach (var warehouseToAdd in allWareHouse)
-                        {
-                            var newDetail = new DetailWareHouse
-                            {
-                                IdWareHouse = warehouseToAdd.Id,
-                                IdGoods = good.Id,
-                                Inventory = 0, // Số lượng tồn kho mặc định là 0
-                                Status = true
-                            };
-                            db.DetailWareHouses.Add(newDetail);
-                        }
-                        db.SaveChanges();
-
-                        return Json(new { status = 200, msg = rm.GetString("CreateSucess") }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        return Json(new { status = 500, msg = rm.GetString("mã hàng tồn tại").ToString() + " "+ good.Id }, JsonRequestBehavior.AllowGet);
+                        checkGoods.Inventory += good.Inventory;
                     }
+                    var warehouse = db.WareHouses.Find(idDetailWarehouse);
+                    if (warehouse != null)
+                    {
+                        if(good.Inventory > warehouse.MaxInventory)
+                        {
+                            return Json(new { status = 500, msg = $"{rm.GetString("NhapKhoQuaSL")} {warehouse.Name}" }, JsonRequestBehavior.AllowGet);
+                        }
+                        var detailWarehouse = db.DetailWareHouses.SingleOrDefault(x => x.IdWareHouse == idDetailWarehouse && x.IdGoods == good.Id);
+                        if (detailWarehouse != null)
+                        {
+                            detailWarehouse.Inventory += good.Inventory;
+                        }
+                        else
+                        {
+                            DetailWareHouse newDetailWareHouse = new DetailWareHouse()
+                            {
+                                IdWareHouse = idDetailWarehouse,
+                                IdGoods = good.Id,
+                                Inventory = good.Inventory,
+                                Status = true,
+                            };
+                            db.DetailWareHouses.Add(newDetailWareHouse);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = 500, msg = $"Kho Không Tồn Tại Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
+                    }
+                    db.SaveChangesAsync();
+                    return Json(new { status = 200, msg = rm.GetString("CreateSucess") }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -420,213 +394,213 @@ namespace WMS.Controllers
                 return Json(new { code = 500, msg = rm.GetString("false") + e.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        [HttpPost]
-        public JsonResult Upload()
-        {
-            try
-            {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
-                if (Request != null)
-                {
-                    HttpPostedFileBase file = Request.Files["UploadedFile"];
-                    if (file.ContentLength == 0)
-                    {
-                        return Json(new { status = 500, msg = "Vui Lòng Chọn File" }, JsonRequestBehavior.AllowGet);
-                    }
-                    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-                    {
-                        string fileName = file.FileName;
-                        string fileContentType = file.ContentType;
-                        byte[] fileBytes = new byte[file.ContentLength];
-                        var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
-                        using (var package = new ExcelPackage(file.InputStream))
-                        {
-                            ExcelWorksheet currentSheet = package.Workbook.Worksheets.First();
-                            var workSheet = currentSheet;
-                            var noOfCol = workSheet.Dimension.End.Column;
-                            var noOfRow = workSheet.Dimension.End.Row;
-                            List<Good> goodList = new List<Good>();
-                            List<DetailWareHouse> detailWareHouseList = new List<DetailWareHouse>();
-                            List<EPC> epcList = new List<EPC>();
-                            for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
-                            {
-                                var idEPCs = workSheet.Cells[rowIterator, 6]?.Value?.ToString();
-                                var idGoods = workSheet.Cells[rowIterator, 1]?.Value?.ToString();
-                                var Name = workSheet.Cells[rowIterator, 2].Value?.ToString();
-                                var Unit = workSheet.Cells[rowIterator, 3]?.Value == null ? "-1" : workSheet.Cells[rowIterator, 3].Value.ToString();
-                                var grGoods = workSheet.Cells[rowIterator, 4]?.Value == null ? "-1" : workSheet.Cells[rowIterator, 4].Value.ToString();
-                                var wareHouse = workSheet.Cells[rowIterator, 5].Value.ToString();
-                                var checkId = goodList.SingleOrDefault(x => x.Id == idGoods);
-                                var checkE = db.EPCs.FirstOrDefault(x => x.IdEPC == idEPCs);
-                                var checkUnit = db.Units.FirstOrDefault(x => x.Id.ToLower() == Unit.ToLower());
-                                var checkGrGoods = db.GroupGoods.FirstOrDefault(x => x.Id.ToLower() == grGoods.ToLower());
-                                var checkWareHouse = db.WareHouses.FirstOrDefault(x => x.Id.ToLower() == wareHouse.ToLower());
-                                if (wareHouse == null)
-                                {
-                                    return Json(new { status = 500, msg = $"Mã Kho Tại Dòng {rowIterator} Không Có Giá Trị" }, JsonRequestBehavior.AllowGet);
-                                }
-                                if (checkUnit == null && Unit != "-1")
-                                {
-                                    return Json(new { status = 500, msg = $"Mã Đơn Vị Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
-                                }
-                                if (checkGrGoods == null && grGoods != "-1")
-                                {
-                                    return Json(new { status = 500, msg = $"Mã Nhóm Hàng Hóa Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
-                                }
-                                if (checkWareHouse == null)
-                                {
-                                    return Json(new { status = 500, msg = $"Mã Kho Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
-                                }
-                                if (checkE != null)
-                                {
-                                    return Json(new { status = 500, msg = $"Mã EPC Ở Dòng {rowIterator} Đã Có Trong Hệ Thống Thuộc Kho {checkE.WareHouse.Name} (Mã Hàng {checkE.Good.Name})" }, JsonRequestBehavior.AllowGet);
-                                }
-                                if (checkId == null)
-                                {
-                                    Good good = new Good()
-                                    {
-                                        Id = idGoods,
-                                        Name = Name,
-                                        IdUnit = Unit,
-                                        IdGroupGood = grGoods,
-                                        CreateDate = DateTime.Now,
-                                        ModifyDate = DateTime.Now,
-                                        CreateBy = session.FullName,
-                                        ModifyBy = session.FullName,
-                                        Line = rowIterator,
-                                        Inventory = 1,
-                                    };
-                                    goodList.Add(good);
-                                }
-                                else
-                                {
-                                    checkId.Inventory++;
-                                    if (checkId.IdUnit != Unit)
-                                    {
-                                        return Json(new { status = 500, msg = $"Tên Đơn Vị Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
-                                    }
-                                    if (checkId.IdGroupGood != grGoods)
-                                    {
-                                        return Json(new { status = 500, msg = $"Nhóm Hàng Hóa Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
-                                    }
-                                    if (checkId.Name != Name)
-                                    {
-                                        return Json(new { status = 500, msg = $"Tên Hàng Hóa Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                                var checkDtWareHouse = detailWareHouseList.FirstOrDefault(x => x.IdWareHouse == checkWareHouse.Id && x.IdGoods == idGoods);
-                                if (checkDtWareHouse != null)
-                                {
-                                    checkDtWareHouse.Inventory++;
-                                }
-                                else
-                                {
-                                    DetailWareHouse detailWareHouse = new DetailWareHouse()
-                                    {
-                                        IdWareHouse = checkWareHouse.Id,
-                                        IdGoods = idGoods,
-                                        Inventory = 1,
-                                        Status = true
-                                    };
-                                    detailWareHouseList.Add(detailWareHouse);
-                                }
-                                var checkEpc = epcList.FirstOrDefault(x => x.IdEPC == idEPCs);
-                                if (checkEpc == null)
-                                {
-                                    EPC epc = new EPC()
-                                    {
-                                        IdEPC = idEPCs,
-                                        IdGoods = idGoods,
-                                        IdWareHouse = checkWareHouse.Id,
-                                        Line = rowIterator,
-                                        Status = true
-                                    };
-                                    epcList.Add(epc);
-                                }
-                                else
-                                {
-                                    return Json(new { status = 500, msg = $"Mã EPC {idEPCs} Tại Dòng {rowIterator} Trùng Với Dòng {checkEpc.Line} " }, JsonRequestBehavior.AllowGet);
-                                }
-                            }
-                            foreach (var item in goodList)
-                            {                               
-                                var arrayDetailWarehouse = detailWareHouseList.Where(x => x.IdGoods == item.Id).ToList();
-                                if(arrayDetailWarehouse.Count < 1)
-                                {
-                                    return Json(new { status = 500, msg = $"Mã Hàng {item.Name} Tại Dòng {item.Line} Không Có Mã Kho Khớp " }, JsonRequestBehavior.AllowGet);
-                                }else if(arrayDetailWarehouse.Count == 1)
-                                {
-                                    var idDetailWH = arrayDetailWarehouse.FirstOrDefault().IdWareHouse;
-                                    var arrayepc = JsonConvert.SerializeObject(epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == idDetailWH).Select(x => x.IdEPC).ToArray());
-                                    var reponse = Add(item, idDetailWH, arrayepc);
-                                    var stringReponse = JsonConvert.SerializeObject(reponse.Data);
-                                    var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
-                                    if (jsonReponse.status == 500)
-                                    {
-                                        return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                                else
-                                {
-                                    var detailWH = arrayDetailWarehouse.FirstOrDefault();
-                                    var idDetailWH = detailWH.IdWareHouse;
-                                    var arrayepc = JsonConvert.SerializeObject(epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == idDetailWH).Select(x => x.IdEPC).ToArray());
-                                    var reponse = Add(item, idDetailWH, arrayepc);
-                                    var stringReponse = JsonConvert.SerializeObject(reponse.Data);
-                                    var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
-                                    if (jsonReponse.status == 500)
-                                    {
-                                        return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
-                                    }
-                                    arrayDetailWarehouse.Remove(detailWH);//xóa phần tử đầu đã add của chi tiết kho
-                                    foreach (var w in arrayDetailWarehouse)
-                                    {
-                                        var filteredData = epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == w.IdWareHouse).ToList();
-                                        var reponseE = Edit(item, filteredData);
-                                        var stringReponseE = JsonConvert.SerializeObject(reponseE.Data);
-                                        var jsonReponseE = JsonConvert.DeserializeObject<reponses>(stringReponseE);
-                                        if (jsonReponseE.status == 500)
-                                        {
-                                            return Json(new { status = 500, msg = "Lỗi: " + jsonReponseE.msg }, JsonRequestBehavior.AllowGet);
-                                        }
-                                    }
-                                }
+        //[HttpPost]
+        //public JsonResult Upload()
+        //{
+        //    try
+        //    {
+        //        var session = (ApiAccount)Session["user"];
+        //        var nameAdmin = session.UserName;
+        //        if (Request != null)
+        //        {
+        //            HttpPostedFileBase file = Request.Files["UploadedFile"];
+        //            if (file.ContentLength == 0)
+        //            {
+        //                return Json(new { status = 500, msg = "Vui Lòng Chọn File" }, JsonRequestBehavior.AllowGet);
+        //            }
+        //            if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+        //            {
+        //                string fileName = file.FileName;
+        //                string fileContentType = file.ContentType;
+        //                byte[] fileBytes = new byte[file.ContentLength];
+        //                var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+        //                using (var package = new ExcelPackage(file.InputStream))
+        //                {
+        //                    ExcelWorksheet currentSheet = package.Workbook.Worksheets.First();
+        //                    var workSheet = currentSheet;
+        //                    var noOfCol = workSheet.Dimension.End.Column;
+        //                    var noOfRow = workSheet.Dimension.End.Row;
+        //                    List<Good> goodList = new List<Good>();
+        //                    List<DetailWareHouse> detailWareHouseList = new List<DetailWareHouse>();
+        //                    List<EPC> epcList = new List<EPC>();
+        //                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+        //                    {
+        //                        var idEPCs = workSheet.Cells[rowIterator, 6]?.Value?.ToString();
+        //                        var idGoods = workSheet.Cells[rowIterator, 1]?.Value?.ToString();
+        //                        var Name = workSheet.Cells[rowIterator, 2].Value?.ToString();
+        //                        var Unit = workSheet.Cells[rowIterator, 3]?.Value == null ? "-1" : workSheet.Cells[rowIterator, 3].Value.ToString();
+        //                        var grGoods = workSheet.Cells[rowIterator, 4]?.Value == null ? "-1" : workSheet.Cells[rowIterator, 4].Value.ToString();
+        //                        var wareHouse = workSheet.Cells[rowIterator, 5].Value.ToString();
+        //                        var checkId = goodList.SingleOrDefault(x => x.Id == idGoods);
+        //                        var checkE = db.EPCs.FirstOrDefault(x => x.IdEPC == idEPCs);
+        //                        var checkUnit = db.Units.FirstOrDefault(x => x.Id.ToLower() == Unit.ToLower());
+        //                        var checkGrGoods = db.GroupGoods.FirstOrDefault(x => x.Id.ToLower() == grGoods.ToLower());
+        //                        var checkWareHouse = db.WareHouses.FirstOrDefault(x => x.Id.ToLower() == wareHouse.ToLower());
+        //                        if (wareHouse == null)
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã Kho Tại Dòng {rowIterator} Không Có Giá Trị" }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                        if (checkUnit == null && Unit != "-1")
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã Đơn Vị Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                        if (checkGrGoods == null && grGoods != "-1")
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã Nhóm Hàng Hóa Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                        if (checkWareHouse == null)
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã Kho Tại Dòng {rowIterator} Không Có Trong Hệ Thống" }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                        if (checkE != null)
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã EPC Ở Dòng {rowIterator} Đã Có Trong Hệ Thống Thuộc Kho {checkE.WareHouse.Name} (Mã Hàng {checkE.Good.Name})" }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                        if (checkId == null)
+        //                        {
+        //                            Good good = new Good()
+        //                            {
+        //                                Id = idGoods,
+        //                                Name = Name,
+        //                                IdUnit = Unit,
+        //                                IdGroupGood = grGoods,
+        //                                CreateDate = DateTime.Now,
+        //                                ModifyDate = DateTime.Now,
+        //                                CreateBy = session.FullName,
+        //                                ModifyBy = session.FullName,
+        //                                Line = rowIterator,
+        //                                Inventory = 1,
+        //                            };
+        //                            goodList.Add(good);
+        //                        }
+        //                        else
+        //                        {
+        //                            checkId.Inventory++;
+        //                            if (checkId.IdUnit != Unit)
+        //                            {
+        //                                return Json(new { status = 500, msg = $"Tên Đơn Vị Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
+        //                            }
+        //                            if (checkId.IdGroupGood != grGoods)
+        //                            {
+        //                                return Json(new { status = 500, msg = $"Nhóm Hàng Hóa Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
+        //                            }
+        //                            if (checkId.Name != Name)
+        //                            {
+        //                                return Json(new { status = 500, msg = $"Tên Hàng Hóa Tại Dòng {rowIterator} Khác Với Dòng {checkId.Line}" }, JsonRequestBehavior.AllowGet);
+        //                            }
+        //                        }
+        //                        var checkDtWareHouse = detailWareHouseList.FirstOrDefault(x => x.IdWareHouse == checkWareHouse.Id && x.IdGoods == idGoods);
+        //                        if (checkDtWareHouse != null)
+        //                        {
+        //                            checkDtWareHouse.Inventory++;
+        //                        }
+        //                        else
+        //                        {
+        //                            DetailWareHouse detailWareHouse = new DetailWareHouse()
+        //                            {
+        //                                IdWareHouse = checkWareHouse.Id,
+        //                                IdGoods = idGoods,
+        //                                Inventory = 1,
+        //                                Status = true
+        //                            };
+        //                            detailWareHouseList.Add(detailWareHouse);
+        //                        }
+        //                        var checkEpc = epcList.FirstOrDefault(x => x.IdEPC == idEPCs);
+        //                        if (checkEpc == null)
+        //                        {
+        //                            EPC epc = new EPC()
+        //                            {
+        //                                IdEPC = idEPCs,
+        //                                IdGoods = idGoods,
+        //                                IdWareHouse = checkWareHouse.Id,
+        //                                Line = rowIterator,
+        //                                Status = true
+        //                            };
+        //                            epcList.Add(epc);
+        //                        }
+        //                        else
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã EPC {idEPCs} Tại Dòng {rowIterator} Trùng Với Dòng {checkEpc.Line} " }, JsonRequestBehavior.AllowGet);
+        //                        }
+        //                    }
+        //                    foreach (var item in goodList)
+        //                    {                               
+        //                        var arrayDetailWarehouse = detailWareHouseList.Where(x => x.IdGoods == item.Id).ToList();
+        //                        if(arrayDetailWarehouse.Count < 1)
+        //                        {
+        //                            return Json(new { status = 500, msg = $"Mã Hàng {item.Name} Tại Dòng {item.Line} Không Có Mã Kho Khớp " }, JsonRequestBehavior.AllowGet);
+        //                        }else if(arrayDetailWarehouse.Count == 1)
+        //                        {
+        //                            var idDetailWH = arrayDetailWarehouse.FirstOrDefault().IdWareHouse;
+        //                            var arrayepc = JsonConvert.SerializeObject(epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == idDetailWH).Select(x => x.IdEPC).ToArray());
+        //                            var reponse = Add(item, idDetailWH, arrayepc);
+        //                            var stringReponse = JsonConvert.SerializeObject(reponse.Data);
+        //                            var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
+        //                            if (jsonReponse.status == 500)
+        //                            {
+        //                                return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            var detailWH = arrayDetailWarehouse.FirstOrDefault();
+        //                            var idDetailWH = detailWH.IdWareHouse;
+        //                            var arrayepc = JsonConvert.SerializeObject(epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == idDetailWH).Select(x => x.IdEPC).ToArray());
+        //                            var reponse = Add(item, idDetailWH, arrayepc);
+        //                            var stringReponse = JsonConvert.SerializeObject(reponse.Data);
+        //                            var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
+        //                            if (jsonReponse.status == 500)
+        //                            {
+        //                                return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
+        //                            }
+        //                            arrayDetailWarehouse.Remove(detailWH);//xóa phần tử đầu đã add của chi tiết kho
+        //                            foreach (var w in arrayDetailWarehouse)
+        //                            {
+        //                                var filteredData = epcList.Where(x => x.IdGoods == item.Id && x.IdWareHouse == w.IdWareHouse).ToList();
+        //                                var reponseE = Edit(item, filteredData);
+        //                                var stringReponseE = JsonConvert.SerializeObject(reponseE.Data);
+        //                                var jsonReponseE = JsonConvert.DeserializeObject<reponses>(stringReponseE);
+        //                                if (jsonReponseE.status == 500)
+        //                                {
+        //                                    return Json(new { status = 500, msg = "Lỗi: " + jsonReponseE.msg }, JsonRequestBehavior.AllowGet);
+        //                                }
+        //                            }
+        //                        }
                                 
                                
-                                //if (isTrue)
-                                //{
-                                //    var reponse = Add(item, arrayDetailWarehouse, arrayepc);
-                                //    var stringReponse = JsonConvert.SerializeObject(reponse.Data);
-                                //    var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
-                                //    if (jsonReponse.status == 200)
-                                //    {
-                                //        Idold.Add(item.Id);
-                                //        isTrue = true;
-                                //    }
-                                //    else
-                                //    {
-                                //        foreach (var i in Idold)
-                                //        {
-                                //            Delete(i);
-                                //        }
+        //                        //if (isTrue)
+        //                        //{
+        //                        //    var reponse = Add(item, arrayDetailWarehouse, arrayepc);
+        //                        //    var stringReponse = JsonConvert.SerializeObject(reponse.Data);
+        //                        //    var jsonReponse = JsonConvert.DeserializeObject<reponses>(stringReponse);
+        //                        //    if (jsonReponse.status == 200)
+        //                        //    {
+        //                        //        Idold.Add(item.Id);
+        //                        //        isTrue = true;
+        //                        //    }
+        //                        //    else
+        //                        //    {
+        //                        //        foreach (var i in Idold)
+        //                        //        {
+        //                        //            Delete(i);
+        //                        //        }
 
-                                //        return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
-                                //    }
-                                //}
-                            }
-                        }
-                    }
-                }
+        //                        //        return Json(new { status = 500, msg = "Lỗi: " + jsonReponse.msg }, JsonRequestBehavior.AllowGet);
+        //                        //    }
+        //                        //}
+        //                    }
+        //                }
+        //            }
+        //        }
 
 
-                return Json(new { status = 200, msg = "Thành công " }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                return Json(new { status = 500, msg = "Thất bại" + e.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        //        return Json(new { status = 200, msg = "Thành công " }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Json(new { status = 500, msg = "Thất bại" + e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         public class reponses
         {
