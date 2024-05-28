@@ -93,8 +93,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 var date = DateTime.Now;
                 byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name);
                 string base64String = Convert.ToBase64String(bytes);
@@ -134,7 +134,7 @@ namespace WMS.Controllers
         //    List<string> logError = new List<string>();
         //    try
         //    {
-        //        var session = (ApiAccount)Session["user"];
+        //        var session = (User)Session["user"];
         //        var nameAdmin = session.UserName;
 
         //        if (Request != null)
@@ -220,8 +220,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 var d = db.WareHouses.Find(id);
                 d.Id = id;
                 d.Name = name;
@@ -291,7 +291,7 @@ namespace WMS.Controllers
         [HttpPost]
         public JsonResult Delete(string id)
         {
-            var session = (ApiAccount)Session["user"];
+            var session = (User)Session["user"];
             try
             {
                 var d = db.WareHouses.Find(id);
@@ -410,8 +410,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var user = (ApiAccount)Session["user"];
-                var username = user.UserName;
+                var user = (User)Session["user"];
+                var username = user.User1;
                 var warehouses = db.WareHouses.ToList();
                 var notifications = db.InventoryNotifies.ToList();
                 const int CONDITIONNOTIFY = 2;
@@ -534,8 +534,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var user = (ApiAccount)Session["user"];
-                var username = user.UserName;
+                var user = (User)Session["user"];
+                var username = user.User1;
 
                 foreach (var stockNotify in db.InventoryNotifies.Where(x => x.Status == true && x.UserName==username))
                 {

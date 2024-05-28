@@ -20,7 +20,9 @@ namespace WMS.Controllers
         public ActionResult Index()
         {
             ///--
-            var c = (ApiAccount)Session["user"];
+            ViewBag.Admin = Session["roleadmin"];
+
+            var c = Session["user"];
             SesionUser s = new SesionUser();
             s.InventoryNotification();
             s.PurchaseNotification();
@@ -63,7 +65,7 @@ namespace WMS.Controllers
         {
             try
             {
-                var user = (ApiAccount)Session["user"];
+                var user = (Models.User)Session["user"];
                 // hiển thị tên máy chủ và tên csdl
                 var server = "Không Có Kết Nối";
                 var database = "Không Có Kết Nối";
@@ -215,8 +217,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var user = (ApiAccount)Session["user"];
-                var username = user.UserName;
+                var user = (Models.User)Session["user"];
+                var username = user.User1;
 
                 if (!string.IsNullOrWhiteSpace(PageURL))
                 {
@@ -266,8 +268,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var user = (ApiAccount)Session["user"];
-                var username = user.UserName;
+                var user = (Models.User)Session["user"];
+                var username = user.User1;
 
                 var recentpage = db.RecentPages.Where(rp => rp.UserName == username).OrderByDescending(rp => rp.AccessedAt).ToList();
                 

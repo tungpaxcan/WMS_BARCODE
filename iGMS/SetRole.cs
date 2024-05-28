@@ -124,13 +124,13 @@ namespace WMS
             return check;
         }
 
-        public Boolean checkRole(string username, string role)
+        public Boolean checkRole(int roleId, string role)
         {
             var check = false;
             try
             {
                 var checkUser = (from i in db.Roles
-                                  where i.Username == username
+                                  where i.Id == roleId
                                   select i).FirstOrDefault();
                 if (checkUser == null)
                 {

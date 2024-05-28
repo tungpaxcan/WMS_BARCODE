@@ -349,6 +349,12 @@ $.ajax({
     }
 })
 
+$(document).on('click', 'a[name="SystemManagementItem"]', function (e) {
+
+    toastr.info("Đang trong quá trình update!")
+    e.preventDefault();
+})
+
 /*---------------SignOut----------------*/
 $(document).on('click', "a[name='signout']", function () {
     $.ajax({

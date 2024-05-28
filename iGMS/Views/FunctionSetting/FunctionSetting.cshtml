@@ -94,7 +94,8 @@
                                 "add": {
                                     "label": "Cài đặt API",
                                     "action": function (obj) {
-                                        // Lấy functionId từ thuộc tính original của node
+                                        toastr.info("Đang trong quá trình update");
+                                        /*// Lấy functionId từ thuộc tính original của node
                                         var idfunction = node.original.functionId;
                                         console.log(idfunction)
                                         // Lấy thông tin về node được chọn
@@ -104,7 +105,7 @@
                                         var menuName = menuNode.text;
                                         var namedunctionapi = node.original.namefunctionapi;
                                         // Chuyển hướng đến trang AddFunction với các tham số tương ứng
-                                        window.location.href = "/FunctionSetting/AddFunction?menuName=" + menuName + "&functionName=" + functionName + "&functionId=" + idfunction + "&namefunctionAPI=" + namedunctionapi;
+                                        window.location.href = "/FunctionSetting/AddFunction?menuName=" + menuName + "&functionName=" + functionName + "&functionId=" + idfunction + "&namefunctionAPI=" + namedunctionapi;*/
                                     }
                                 },
                             };
@@ -121,17 +122,17 @@
 
                         var idfunction = deselectedNode.original.functionId;
 
-                        updateFunctionStatus(idfunction, false);
+                        //updateFunctionStatus(idfunction, false);
                     }
                     else {
                         // Nếu nút bỏ chọn là một nút cha, cập nhật trạng thái của tất cả các nút con
-                        updateChildNodesStatus(deselectedNode, false);
+                        //updateChildNodesStatus(deselectedNode, false);
                     }
                 })
 
                 // Xử lý sự kiện changed.jstree khi click vào nút cha
-                $('#kt_tree_3').on('changed.jstree', function (e, data) {
-                    var selectedNodes = data.selected;
+                /*$('#kt_tree_3').on('changed.jstree', function (e, data) {
+                    //var selectedNodes = data.selected;
 
                     // Lặp qua mỗi node con đã chọn
                     if (selectedNodes) {
@@ -144,8 +145,20 @@
                                 updateFunctionStatus(functionId, true);
                             }
                         });
+
+                    swal.fire({
+                        text: "Đang trong quá trình update!",
+                        icon: "info",
+                        buttonsStyling: false,
+                        heightAuto: false,
+                        showConfirmButton: true,
+                        confirmButtonText: "OK",
+                        timer: 1500
+
+                    })
                     }
-                });
+
+                });*/
 
                 // Hàm đệ quy để cập nhật trạng thái của tất cả các nút con
                 function updateChildNodesStatus(parentNode, status) {

@@ -21,10 +21,26 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="example-password-input"  class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Đơn_Vị<span style="color:red"> (*) </span></label>
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Mã Đơn Vị<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group ">
+                    <input class="form-control" type="text" readonly placeholder="Mã Đơn Vị" id="id" value="@Model.Id" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Tên_Đơn_Vị<span style="color:red"> (*) </span></label>
             <div class="col-lg-10 col-xl-10">
                 <div class="input-group ">
                     <input class="form-control" type="text" placeholder="@Resources.Resource.Tên_Đơn_Vị" id="name" value="@Model.Name" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="example-password-input" class="col-xl-2 col-lg-2 col-form-label">Mô Tả Đơn Vị<span style="color:red"> (*) </span></label>
+            <div class="col-lg-10 col-xl-10">
+                <div class="input-group">
+                    <textarea class="form-control" id="description" rows="3" placeholder='Mô Tả Đơn Vị'>@Model.Description</textarea>
                 </div>
             </div>
         </div>

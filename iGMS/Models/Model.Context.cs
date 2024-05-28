@@ -53,7 +53,6 @@ namespace WMS.Models
         public virtual DbSet<Stock> Stocks { get; set; }
         public virtual DbSet<TypeCustomer> TypeCustomers { get; set; }
         public virtual DbSet<TypeStatu> TypeStatus { get; set; }
-        public virtual DbSet<Unit> Units { get; set; }
         public virtual DbSet<WareHouse> WareHouses { get; set; }
         public virtual DbSet<HeadFunction> HeadFunctions { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -61,5 +60,6 @@ namespace WMS.Models
         public virtual DbSet<DetailStockEpc> DetailStockEpcs { get; set; }
         public virtual DbSet<Function> Functions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Unit> Units { get; set; }
     }
 }

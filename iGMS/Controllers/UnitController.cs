@@ -52,6 +52,7 @@ namespace WMS.Controllers
                          {
                              id = b.Id,
                              name = b.Name,
+                             description = b.Description
                          }).ToList().Where(x => x.name.ToLower().Contains(seach));
                 var pages = a.Count() % pageSize == 0 ? a.Count() / pageSize : a.Count() / pageSize + 1;
                 var c = a.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -64,43 +65,46 @@ namespace WMS.Controllers
             }
         }
         [HttpPost]
-        public JsonResult Add(string name)
+        public JsonResult Add(string name, string id, string description)
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 if (string.IsNullOrEmpty(name))
                 {
                     return Json(new { code = 500, msg = rm.GetString("nhập tên đơn vị").ToString() }, JsonRequestBehavior.AllowGet);
                 }
                 var date = DateTime.Now;
-                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name);
+                /*byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name);
                 string base64String = Convert.ToBase64String(bytes);
                 var id = base64String + date.Year + date.Month + date.Day + date.Hour + date.Minute + date.Second + date.Millisecond;
-                id = id.Substring(id.Length - 16);
-                var ids = db.Units.Where(x => x.Id == id).ToList();
+                id = id.Substring(id.Length - 16);*/
+                var checkId = db.Units.Where(x => x.Id == id).FirstOrDefault();
                 var checkName = db.Units.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
                 
                 if (checkName != null)
                 {
                     return Json(new { code = 500, msg = rm.GetString("trùng tên đơn vị").ToString() }, JsonRequestBehavior.AllowGet);
+                }else if (checkId != null)
+                {
+                    return Json(new { code = 500, msg = rm.GetString("trùng mã đơn vị").ToString() }, JsonRequestBehavior.AllowGet);
                 }
-                
-                if (ids.Count == 0)
+                else
                 {
                     var d = new Unit()
                     {
-                        Id = id.Replace("=", ""),
+                        Id = id,
                         Name = name,
+                        Description = description,
+                        CreateDate = date,
+                        CreateBy = session.User1,
+                        ModifyDate = date,
+                        ModifyBy = session.User1,
                     };
                     db.Units.Add(d);
                     db.SaveChanges();
                     return Json(new { code = 200, msg = rm.GetString("CreateSucess") }, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(new { code = 300, msg = rm.GetString("Duplicate") }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -109,19 +113,23 @@ namespace WMS.Controllers
             }
         }
         [HttpPost]
-        public JsonResult Edit(string id,string name)
+        public JsonResult Edit(string id,string name, string description)
         {
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var date = DateTime.Now;
+                var nameAdmin = session.User1;
                 var d = db.Units.Find(id);
                 if (string.IsNullOrEmpty(name))
                 {
                     return Json(new { code = 500, msg = rm.GetString("nhập tên đơn vị").ToString() }, JsonRequestBehavior.AllowGet);
                 }
                 d.Name = name;
+                d.Description = description;
+                d.ModifyBy = session.User1;
+                d.ModifyDate = date;
                 db.SaveChanges();
                 return Json(new { code = 200, msg = rm.GetString("SucessEdit") }, JsonRequestBehavior.AllowGet);   
             }
@@ -135,7 +143,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
+
                 var d = db.Units.Find(id);
                 db.Units.Remove(d);
                 db.SaveChanges();

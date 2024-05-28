@@ -107,7 +107,8 @@ $('#seach').on('keyup', function (e) {
 });
 //----------------Add::WareHouses---------------------
 
-function CheckAddApi() {
+//----Add Api: In Progress----------------
+/*function CheckAddApi() {
     var name = $('#name').val().trim();
     var min = $('#min').val().trim();
     var max = $('#max').val().trim();
@@ -222,9 +223,27 @@ function AddApi(url, name, type, params, values, checkStatus, status, message) {
             $('.Loading').css("display", "none");//Request is complete so hide spinner
         }
     })
-}
+}*/
+//----Add Api: In Progress----------------
+function Add() {
+    var name = $('#name').val().trim();
+    var min = $('#min').val().trim();
+    var max = $('#max').val().trim();
+    $('.Loading').css("display", "block");
+    if (name.length <= 0) {
+        toastr.error(resourceAddWH.nhaptenkho)
+        return;
+    }
 
-function Add(name, min, max) {
+    if (min.length <= 0) {
+        toastr.error(resourceAddWH.nhapslmin)
+        return;
+    }
+    if (max.length <= 0) {
+        toastr.error(resourceAddWH.nhapslmax)
+        return;
+    }
+
     $.ajax({
         url: '/WareHouse/Add',
         type: 'post',
@@ -249,7 +268,9 @@ function Add(name, min, max) {
 }
 
 //----------------Edit::WareHouses---------------------
-function CheckEditApi() {
+
+//-------------Edit Api: In Progress------------
+/*function CheckEditApi() {
     $('.Loading').css("display", "block");
     var name = $('#name').val().trim();
     var id = $('#id').val().trim();
@@ -365,9 +386,28 @@ function EditApi(url, name, type, params, values, checkStatus, status, message) 
             $('.Loading').css("display", "none");//Request is complete so hide spinner
         }
     })
-}
+}*/
+//-------------Edit Api: In Progress------------
 
-function Edit(id, name, min, max) {
+function Edit() {
+    var name = $('#name').val().trim();
+    var id = $('#id').val().trim();
+    var min = $('#min').val().trim();
+    var max = $('#max').val().trim();
+    $('.Loading').css("display", "block");
+    if (name.length <= 0) {
+        toastr.error(resourceEditWH.nhaptenkho)
+        return;
+    }
+    if (min.length <= 0) {
+        toastr.error(resourceEditWH.nhapslmin)
+        return;
+    }
+    if (max.length <= 0) {
+        toastr.error(resourceEditWH.nhapslmax)
+        return;
+    }
+
     $.ajax({
         url: '/warehouse/Edit',
         type: 'post',
