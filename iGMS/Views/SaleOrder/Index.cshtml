@@ -23,7 +23,7 @@
             <div class="form-group row">
                 <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Chọn PO<span style="color:red"> (*) </span></label>
                 <div class="col-xl-10">
-                    <select class="form-control" data-id="kt_select2_1" id="po">
+                    <select class="form-control" data-id="kt_select2_1" id="po" name="po">
                     </select>
                 </div>
             </div>
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group row">
                 <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Trạng thái chia hàng xuất<span style="color:red"> (*) </span></label>
-                <div class="col-xl-10">
+                <div class="col-xl-4">
                     <div class="input-group ">
                         <span class="switch switch-lg">
                             <label>
@@ -80,6 +80,13 @@
                                 <span></span>
                             </label>
                         </span>
+                    </div>
+                </div>
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Danh Sách SO chờ quét<span style="color:red"> (*) </span></label>
+                <div class="col-xl-4">
+                    <div class="input-group ">
+                        <select class="form-control" data-id="kt_select2_1" id="SONotScanned">
+                        </select>
                     </div>
                 </div>
             </div>
@@ -211,32 +218,44 @@
         })
         $(document).on('change', '#po', function () {
             var id = $(this).val().trim();
-            if ($(this).val() == -1) {
-                $('#warehouse').val("")
-                $('input[name="customer"]').val("")
-                $('input[name="nameCustomer"]').val("")
-                $('input[name="address"]').val("")
-            } else {
-                $.ajax({
-                    url: '/Receipt/Detail',
-                    type: 'get',
-                    data: { id },
-                    success: function (data) {
-                        if (data.code == 200) {
-                            $.each(data.data, function (k, v) {
-                                $('#warehouse').val(v.nameWarehouse)
-                                $('input[name="customer"]').val(v.nameCustomer)
-                                $('input[name="nameCustomer"]').val(v.nameCustomer)
-                                $('input[name="address"]').val(v.addressCustomer)
-                                var option = `<option value="${v.idGoods}">${v.nameGoods}(${v.idGoods})</option>`
-                                $('#seachidgood').append(option);
+            $('#warehouse').val("")
+            $('input[name="customer"]').val("")
+            $('input[name="nameCustomer"]').val("")
+            $('input[name="address"]').val("")
+            $('#seachidgood').empty();
+            $('#SONotScanned').empty();
+            $('#tbd').empty();
+            $.ajax({
+                url: '/Receipt/Detail',
+                type: 'get',
+                data: { id },
+                success: function (data) {
+                    if (data.code == 200) {
+                        $.each(data.data, function (k, v) {
+                            $('#warehouse').val(v.nameWarehouse)
+                            $('input[name="customer"]').val(v.nameCustomer)
+                            $('input[name="nameCustomer"]').val(v.nameCustomer)
+                            $('input[name="address"]').val(v.addressCustomer)
+                            var option = `<option value="${v.idGoods}">${v.nameGoods}(${v.idGoods})</option>`
+                            $('#seachidgood').append(option);
+                            ListGoods(v.idGoods, v.quantity)
+                        })
+                        if (data.checkStatus) {
+                            $('#statusCut').prop('checked', true);
+                            $.each(data.dataSO, function (k, v) {
+                                var option = `<option value="${v.id}">${v.id}(${v.status})</option>`
+                                $('#SONotScanned').append(option);
                             })
                         } else {
-                            toastr.error(data.msg)
+                            $('#statusCut').prop('checked', false);
                         }
+                    } else {
+                        $('#statusCut').prop('checked', false);
+                        toastr.error(data.msg)
                     }
-                })
-            }
+                }
+            })
+
 
         })
         $(document).on('change', 'select[name="customer"]', function () {
@@ -263,9 +282,12 @@
         var seach = '';
         //Tìm kiếm mã hàng
         $('#seachidgood').on('change', function (e) {
-            seach = $('#seachidgood').val().trim();
-            ListGoods(seach)
-         
+            if ($('#statusCut').is(':checked')) {
+                seach = $('#seachidgood').val().trim();
+                ListGoods(seach,"")
+            } else {
+                toastr.warning("Không thể chọn hàng xuất")
+            }
         })
         function setArrayChecked() {
             var checkboxesChecked = [];
@@ -290,7 +312,7 @@
         }
 
         //hiển thị danh sách mã hàng
-        function ListGoods(id) {
+        function ListGoods(id,qty) {
             $.ajax({
                 url: '/Goods/Detail',
                 type: 'get',
@@ -313,7 +335,7 @@
                             table += '<td>' + (Stt) + '</td>'
                             table += '<td>' + data.goods.Id + '</td>'
                             table += '<td>' + data.goods.Name + '</td>'
-                            table += '<td><input type="number" value="1" name="sum" id="amount' + data.goods.Id + '" /></td>'
+                            table += '<td><input type="number" value="' + (qty == "" ? "1" : qty) + '" name="sum" id="amount' + data.goods.Id + '" /></td>'
                             table += '<td>' + data.goods.nameGroupGoods + '</td>'
                             table += '<td>' + data.goods.nameUnit + '</td>'
                             table += '<td name="delete"><i class="icon-2x text-dark-50 flaticon-delete-1"></i></td>'

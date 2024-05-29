@@ -238,17 +238,24 @@ namespace WMS.Controllers
                                 addressCustomer = p.Customer.AddRess,
                                 idGoods = d.Good.Id,
                                 nameGoods = d.Good.Name,
-                                quantity = d.Quantity,
+                                quantity = d.QuantityScan,
                                 groupGoods = d.Good.GroupGood.Name,
                                 unitGoods = d.Good.Unit.Name,
                             }).ToList();
+                var dataSO = (from s in db.SalesOrders
+                              join r in db.Receipts on s.PO equals r.Id
+                              select new
+                              {
+                                  id = s.Id,
+                                  status = s.Status == true ? "Đã Quét" : "Chưa Quét",
+                              }).ToList();
                 if(data.Count() <= 0)
                 {
                     return Json(new { code = 500, msg = "Không Có Dữ Liệu Cho PO Này" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(new { code = 200, data }, JsonRequestBehavior.AllowGet);
+                    return Json(new { code = 200, data, dataSO,checkStatus = dataSO.Count()>0?true:false }, JsonRequestBehavior.AllowGet);
                 }
                 
             }

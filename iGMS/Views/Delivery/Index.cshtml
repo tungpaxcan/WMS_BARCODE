@@ -74,20 +74,6 @@
                 <textarea class="form-control" type="text" placeholder="@Resources.Resource.Ghi_chú" name="GhiChu"></textarea>
             </div>
         </div>
-        <div class="form-group  row" id="desktoprfid">
-            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
-            <div class="col-lg-10 col-xl-10">
-                <button type="submit" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                <button type="submit" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
-            </div>
-        </div>
-        <div class="form-group row" id="rfidhandheld">
-            <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
-            <div class="col-lg-10 col-xl-10">
-                <button type="submit" class="btn btn-success mr-2" onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                <button type="submit" class="btn btn-secondary mr-2 "onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
-            </div>
-        </div>
         <div class="form-group" style="height: 500px;overflow-y: scroll;">
             <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
                 <thead>
@@ -270,6 +256,7 @@
             $.each(data.c, function (k, v) {
                 $('input[name="nameCustomer"]').val(v.customer)
                 $('input[name ="nameWarehouse"]').val(v.ware)
+                $('input[name ="nameWarehouse"]').attr('data-idwarehouse', v.idWare)
                 $('input[name ="datexuat"]').val(v.createdate)
                 //--------------------------------------------
                 $('span[name="idsalesorder"]').append(v.id)
@@ -300,13 +287,6 @@
                 table += '</tr>';
                 $('tbody[name="tbd"]').append(table)
             })
-            if (/Android/i.test(navigator.userAgent)) {
-                $('div[name="HandheldRfid"]').show()
-                $('div[name="desktopRfid"]').hide()
-            } else {
-                $('div[name="HandheldRfid"]').hide()
-                $('div[name="desktopRfid"]').show()
-            }
         }
 
         // get user NV
@@ -327,25 +307,217 @@
                 }
             })
         }
-        $(document).ready(function () {
-
-            if (/Android/i.test(navigator.userAgent)) {
-                $("#HandHeld").show()
-                $("#rfidhandheld").show()
-                $("#desktoprfid").hide()
-            } else {
-                $("#HandHeld").hide()
-                $("#rfidhandheld").hide()
-                $("#desktoprfid").show()
-            }
-        });
         var resourcedelivery = {
                 "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
                 "thieu": "@Resources.Resource.Thiếu",
                 "dư":"@Resources.Resource.Dư",
         }
+
+        $(document).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            startChar: [120],
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            minLength: 1,
+            onComplete: async function (barcode, qty) {
+                await CompareReceipt(barcode.trim())
+            }, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            onError: function (string) { alert('Error ' + string); }
+        });
+        async function CompareReceipt(upc) {
+            await CheckIdGoodsInSystem(upc)
+                .then(function (data) {
+                    if (data?.status) {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = upc
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                        } else {
+                            var tr = `<tr class="more" id="more${barcodes}">
+                                      <td>${barcodes}</td>
+                                      <td>Undeclared Data</td>
+                                      <td id="amountmore${barcodes}">1</td>
+                                      <td style="cursor: pointer;" name="location" id="location${upc}"><i class="nav-icon la la-search"></i></td>
+                                      </tr>`
+                            $('#des').append(tr)
+                        }
+                    } else {
+                        var barcode = upc;
+                        var nameWareHouse = data?.checkEpc?.Name;
+                        var nameWareHouseCurrent = $('#nameWarehouse').val()
+                        if (nameWareHouse != nameWareHouseCurrent) {
+                            var more = $('.more').map(function () {
+                                return this.id;
+                            }).get();
+                            if (more.includes("more" + upc + "")) {
+                                $('#amountmore' + upc + '').text(Number($('#amountmore' + upc + '').text()) + 1)
+                            } else {
+                                var tr = `<tr class="more" id="more${upc}">
+                                      <td>${barcode}</td>
+                                      <td>${nameWareHouse}</td>
+                                      <td id="amountmore${upc}">1</td>
+                                      <td style="cursor: pointer;" name="location" id="location${upc}"><i class="nav-icon la la-search"></i></td>
+                                      </tr>`
+                                $('#des').append(tr)
+                            }
+                        }
+                        var amountScan = $('.quantityscan' + barcode + '').eq(0).text();
+                        var amountQuantity = $('#quantity' + barcode + '').text();
+                        $('.quantityscan' + barcode + '').text(Number(amountScan) + 1);
+                        if (Number(amountScan) + 1 < Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'red')
+                        } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'green')
+                        } else {
+                            $('.quantityscan' + barcode + '').css("background-color", 'yellow')
+                        }
+
+                    }
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                })
+        }
+        function CheckIdGoodsInSystem(upc) {
+            return new Promise(function (resolve, reject) {
+                var warehouse = $('#nameWarehouse').attr('data-idwarehouse').trim()
+                if (warehouse == "-1") {
+                    toastr.error("Chưa Có Kho Hàng");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Epcs/CheckIdGoodsInSystem',
+                    type: 'get',
+                    data: { upc, warehouse },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            resolve(data);
+                        }
+                        else {
+                            toastr.error(data.msg)
+                            reject(data.msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+        //-------------------add--------------------
+        function Add(statusSave) {
+            var ArraySales = [];
+            var arrayRow = $('tbody').children(1).closest('tr.nhanhang');
+            for (let i = 0; i < arrayRow.length / 2; i++) {
+                var idgood = arrayRow.eq(i).attr('id');
+                var qtyScan = $('.quantityscan' + idgood + '').eq(0).text();
+                var qty = $('#quantity' + idgood + '').text();
+                ArraySales.push({
+                    "IdGoods": idgood,
+                    "Quantity": qty,
+                    "QuantityScan": qtyScan
+                })
+            }
+            var stringError = ""
+            $.each(ArraySales, function (k, v) {
+                var quantity = $('#quantity' + v.IdGoods + '').text();
+                var check = Number(quantity) - Number(v.QuantityScan)
+                if (check > 0) {
+                    stringError += resourcedelivery.mahh + " " + v.IdGoods + " " + resourcedelivery.thieu + " " + check + "\n";
+                } else if (check < 0) {
+                    stringError += resourcedelivery.mahh + " " + v.IdGoods + " " + resourcedelivery.dư + " " + Math.abs(check) + "\n"
+                }
+            })
+            if (stringError == "") {
+                Swal.fire({
+                    title: "Do you want to save the changes?",
+                    showDenyButton: true,
+                    icon: "warning"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkScanSurplus(ArraySales, statusSave);
+                    } else if (result.isDenied) {
+
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: stringError,
+                    showDenyButton: true,
+                    icon: "warning"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkScanSurplus(ArraySales, statusSave);
+                    } else if (result.isDenied) {
+
+                    }
+
+                })
+            }
+        }
+        function checkScanSurplus(ArraySales, statusSave) {
+            var id = $('#id').val().trim();
+            var idSaleOrder = $('input[name="idsalesorder"]').val();
+            var Des = $('[name="GhiChu"]').val();
+
+            $.ajax({
+                url: '/Delivery/Add',
+                type: 'post',
+                data: {
+                    statusSave, id, idSaleOrder, Des, ArraySales: JSON.stringify(ArraySales)
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        toastr.success(data.msg)
+                        $('#ghiChu').text(Des);
+                        $('#BILL').modal('show');
+                        Last();
+                    }
+                    else {
+                        toastr.error(data.msg);
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            })
+        }
+        //-------------Last----------
+        function Last() {
+            var id = $('#id').val().trim();
+            $.ajax({
+                url: '/delivery/Last',
+                type: 'get',
+                data: {
+                    id
+                },
+                beforeSend: function () {
+                    $("#wait").css("display", "block");
+                },
+                success: function (data) {
+                    $('span[name="idpx"]').empty()
+                    $('span[name="datepx"]').empty()
+                    if (data.code == 200) {
+                        $.each(data.a, function (k, v) {
+                            $('span[name="idpx"]').append(v.id)
+                            $('span[name="datepx"]').append(v.datepx)
+                        })
+
+                    }
+                },
+                complete: function () {
+                    $("#wait").css("display", "none");
+                }
+            })
+        }
+
+
     </script>
-    <script src="~/Scripts/Delivery.js"></script>
-    <script src="~/Scripts/ebapi-modules.js"></script>
-    <script src="~/Scripts/elements.js"></script>
 }

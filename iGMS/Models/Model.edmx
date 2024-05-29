@@ -102,7 +102,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdGoods" Type="varchar" MaxLength="20" />
           <Property Name="IdReceipt" Type="varchar" MaxLength="20" />
-          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="7" />
+          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="20" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
@@ -331,7 +331,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IdTypeStatus" Type="int" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" />
@@ -344,13 +344,15 @@
           <Property Name="Status" Type="bit" />
           <Property Name="Deliver" Type="nvarchar(max)" />
           <Property Name="IdCustomer" Type="varchar" MaxLength="100" />
+          <Property Name="ExpiryDate" Type="datetime" />
+          <Property Name="AnnouceDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Receipt">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="7" />
+          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="20" />
           <Property Name="IdUser1" Type="varchar" MaxLength="20" />
           <Property Name="IdUser2" Type="varchar" MaxLength="20" />
           <Property Name="Description" Type="nvarchar(max)" />
@@ -442,6 +444,7 @@
           <Property Name="ModifyDate" Type="datetime" />
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
+          <Property Name="PO" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Stock">
           <Key>
@@ -882,6 +885,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder">
+          <End Role="Receipt" Type="Self.Receipt" Multiplicity="0..1" />
+          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SalesOrder_WareHouse">
           <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
           <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
@@ -1071,6 +1086,10 @@
             <End Role="Customer" EntitySet="Customer" />
             <End Role="SalesOrder" EntitySet="SalesOrder" />
           </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="Self.FK_SalesOrder_PurchaseOrder">
+            <End Role="Receipt" EntitySet="Receipt" />
+            <End Role="SalesOrder" EntitySet="SalesOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_SalesOrder_WareHouse" Association="Self.FK_SalesOrder_WareHouse">
             <End Role="WareHouse" EntitySet="WareHouse" />
             <End Role="SalesOrder" EntitySet="SalesOrder" />
@@ -1192,7 +1211,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdReceipt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdPurchaseOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -1416,7 +1435,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="IdTypeStatus" Type="Int32" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -1434,13 +1453,16 @@
           <NavigationProperty Name="TypeStatu" Relationship="Self.FK_PurchaseOrder_TypeStatus" FromRole="PurchaseOrder" ToRole="TypeStatus" />
           <NavigationProperty Name="WareHouse" Relationship="Self.FK_PurchaseOrder_WareHouse" FromRole="PurchaseOrder" ToRole="WareHouse" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipt_PurchaseOrder" FromRole="PurchaseOrder" ToRole="Receipt" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="PurchaseOrder" ToRole="SalesOrder" />
         </EntityType>
         <EntityType Name="Receipt">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdPurchaseOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdUser1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdUser2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1451,6 +1473,7 @@
           <Property Name="Status" Type="Boolean" />
           <NavigationProperty Name="DetailGoodOrders" Relationship="Self.FK_DetailGoodOrder_Receipt" FromRole="Receipt" ToRole="DetailGoodOrder" />
           <NavigationProperty Name="PurchaseOrder" Relationship="Self.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder1" FromRole="Receipt" ToRole="SalesOrder" />
         </EntityType>
         <EntityType Name="RecentPage">
           <Key>
@@ -1497,6 +1520,9 @@
           <NavigationProperty Name="Deliveries" Relationship="Self.FK_Delivery_SalesOrder" FromRole="SalesOrder" ToRole="Delivery" />
           <NavigationProperty Name="DetailSaleOrders" Relationship="Self.FK_DetailSaleOrder_SalesOrder1" FromRole="SalesOrder" ToRole="DetailSaleOrder" />
           <NavigationProperty Name="WareHouse" Relationship="Self.FK_SalesOrder_WareHouse" FromRole="SalesOrder" ToRole="WareHouse" />
+          <Property Name="PO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="SalesOrder" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder1" FromRole="SalesOrder" ToRole="Receipt" />
         </EntityType>
         <EntityType Name="Stock">
           <Key>
@@ -2028,6 +2054,14 @@
             <End Role="Unit" EntitySet="Units" />
             <End Role="Good" EntitySet="Goods" />
           </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder1" Association="WMSModel.FK_SalesOrder_PurchaseOrder1">
+            <End Role="Receipt" EntitySet="Receipts" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="HeadFunction">
           <Key>
@@ -2228,6 +2262,30 @@
             </Principal>
             <Dependent Role="Good">
               <PropertyRef Name="IdUnit" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder">
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder1">
+          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2550,6 +2608,8 @@
           <EntitySetMapping Name="PurchaseOrders">
             <EntityTypeMapping TypeName="WMSModel.PurchaseOrder">
               <MappingFragment StoreEntitySet="PurchaseOrder">
+                <ScalarProperty Name="AnnouceDate" ColumnName="AnnouceDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
                 <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
@@ -2611,6 +2671,7 @@
           <EntitySetMapping Name="SalesOrders">
             <EntityTypeMapping TypeName="WMSModel.SalesOrder">
               <MappingFragment StoreEntitySet="SalesOrder">
+                <ScalarProperty Name="PO" ColumnName="PO" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
                 <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />

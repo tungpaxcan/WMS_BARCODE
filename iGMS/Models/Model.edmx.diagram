@@ -73,6 +73,8 @@
         <AssociationConnector Association="WMSModel.FK_Users_Role" />
         <EntityTypeShape EntityType="WMSModel.Unit" Width="1.5" PointX="14.375" PointY="11" />
         <AssociationConnector Association="WMSModel.FK_Goods_Unit" />
+        <AssociationConnector Association="WMSModel.FK_SalesOrder_PurchaseOrder" />
+        <AssociationConnector Association="WMSModel.FK_SalesOrder_PurchaseOrder1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

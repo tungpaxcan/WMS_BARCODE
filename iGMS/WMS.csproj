@@ -2693,7 +2693,6 @@
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\Delivery.js" />
     <Content Include="Scripts\ebapi-modules.js" />
     <Content Include="Scripts\EditAuth.js" />
     <Content Include="Scripts\EditUser.js" />

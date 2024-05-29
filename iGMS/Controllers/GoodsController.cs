@@ -115,8 +115,8 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.Name;
 
                 if (string.IsNullOrEmpty(good.Name))
                 {
@@ -141,8 +141,8 @@ namespace WMS.Controllers
                         }
                         good.CreateDate = DateTime.Now;
                         good.ModifyDate = DateTime.Now;
-                        good.CreateBy = session.FullName;
-                        good.ModifyBy = session.FullName;
+                        good.CreateBy = session.Name;
+                        good.ModifyBy = session.Name;
 
                         db.Goods.Add(good);
                         // lưu thông tin vào detail warehouse
@@ -194,7 +194,7 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
                 var editG = db.Goods.Find(id);
                 var detailTbd = db.DetailWareHouses.FirstOrDefault(x => x.IdGoods == id);
                 var e = (from b in db.Goods
@@ -224,7 +224,7 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
                 var editG = db.Goods.Find(good.Id);
                 if (editG.IdGroupGood == "-1")
                 {
@@ -247,7 +247,7 @@ namespace WMS.Controllers
                 editG.Description = good.Description;
                 editG.Inventory = good.Inventory;
                 editG.ModifyDate = DateTime.Now;
-                editG.ModifyBy = session.FullName;
+                editG.ModifyBy = session.Name;
                 if(filteredData?.Count > 0 || filteredData!=null)
                 {
                     var listWarehouse = filteredData.GroupBy(x => x.IdWareHouse)?.Select(x => x.Key).ToList();
@@ -288,7 +288,7 @@ namespace WMS.Controllers
         public JsonResult Delete(string id)
         {
             db.Configuration.ProxyCreationEnabled = false;
-            var session = (ApiAccount)Session["user"];
+            var session = (User)Session["user"];
             try
             {
                 var detailGoodOrder = db.DetailGoodOrders.Where(x => x.IdGoods == id).ToList();
@@ -399,7 +399,7 @@ namespace WMS.Controllers
         //{
         //    try
         //    {
-        //        var session = (ApiAccount)Session["user"];
+        //        var session = (User)Session["user"];
         //        var nameAdmin = session.UserName;
         //        if (Request != null)
         //        {
