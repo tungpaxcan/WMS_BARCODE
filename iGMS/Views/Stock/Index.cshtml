@@ -33,20 +33,6 @@
                     <select class="form-control" id="warehouse" name="warehouse"></select>
                 </div>
             </div>
-            <div class="form-group  row" id="desktoprfid">
-                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
-                <div class="col-lg-10 col-xl-10">
-                    <button type="button" class="btn btn-success mr-2 on" onclick="RFID()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                    <button type="button" class="btn btn-secondary mr-2 off" style="display:none" onclick=" Stop()">@Resources.Resource.Dừng_Quét_RFID</button>
-                </div>
-            </div>
-            <div class="form-group row" id="rfidhandheld">
-                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Bắt_Đầu_Quét_RFID</label>
-                <div class="col-lg-10 col-xl-10">
-                    <button type="button" class="btn btn-success mr-2" onclick="RFIDHandHeld()">@Resources.Resource.Bắt_Đầu_Quét_RFID</button>
-                    <button type="button" class="btn btn-secondary mr-2 "  onclick="StopHH()">@Resources.Resource.Dừng_Quét_HandHeld</button>
-                </div>
-            </div>
             <div class="row" style="height: 500px;overflow-y: scroll;">
                 <div class="col-sm-12">
                     <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
@@ -194,13 +180,7 @@
                         $.each(data.warehouses, function (k, v) {
                             table += '<option value="' + v.idWarehouse + '">' + v.nameWarehouse + '</option>'
                         });
-                        $.each(data.detailStockEpc, function (k, v) {
-                            epcshow.push(v.epc)
-                            detailEpcScan.push({
-                                "IdDetailStock": v.id,
-                                "IdEpc": v.epc
-                            })
-                        })
+                        
                         if (/Android/i.test(navigator.userAgent)) {
                             $('div[name="HandheldRfid"]').show()
                             $('div[name="desktopRfid"]').hide()
@@ -278,8 +258,35 @@
                 }
             });
         }
+
+        var resourcereceipt = {
+        "canhbao":@Html.Raw(Json.Encode(Resources.Resource.Cảnh_báo.ToString())),
+        "quetlaitatca": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Tất_Cả.ToString())),
+        "huy": "@Resources.Resource.Hủy",
+        "quetlaimatrung": @Html.Raw(Json.Encode(Resources.Resource.Quét_Lại_Mã_Trùng.ToString())),
+        "matrung":@Html.Raw(Json.Encode(Resources.Resource.Mã_trùng.ToString())),
+        "gui": "@Resources.Resource.Gửi",
+        "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
+        "thieu": "@Resources.Resource.Thiếu",
+        "dư":"@Resources.Resource.Dư",
+   }
+   $(document).scannerDetection({
+       timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+       startChar: [120],
+       endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+       avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+       ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+       minLength: 1,
+       onComplete: async function (barcode, qty) {
+           await CompareReceipt(barcode.trim())
+       }, // main callback function
+       scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+       scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+       onError: function (string) { alert('Error ' + string); }
+   });
+
         function Add(statusSave) {
-            Stop();
+            //Stop();
             var idStock = $('input[name="seachStock"]').val();
             $.ajax({
                 url: '/Stock/Add',
@@ -304,15 +311,57 @@
             })
         }
 
-        //Quét mã hàng hóa lấy số lượng thực tế của kho
-        async function CompareReceipt(epc) {
-            await CheckIdGoodsInSystem(epc)
+        ///Quét mã hàng hóa lấy số lượng thực tế của kho
+
+        /*async function CompareReceipt(upc) {
+            await CheckIdGoodsInSystem(upc)
                 .then(function (data) {
                     if (data?.status) {
                         var more = $('.more').map(function () {
                             return this.id;
                         }).get();
-                        var barcodes = epc
+                        var barcodes = upc
+                        if (more.includes("more" + barcodes + "")) {
+                            $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
+                        } else {
+                            var tr = `<tr class="more" id="more${barcodes}">
+                              <td>${barcodes}</td>
+                              <td>Undeclared Data</td>
+                              <td id="amountmore${barcodes}">1</td>
+                               <td style="cursor: pointer;" name="location" id="location${barcodes}"><i class="nav-icon la la-search"></i></td>
+                              </tr>`
+                            $('#des').append(tr)
+                        }
+                    } else {
+                        var barcode = upc;
+                        var amountScan = $('.quantityscan' + barcode + '').eq(0).text();
+                        var amountQuantity = $('#quantity' + barcode + '').text();
+                        $('.quantityscan' + barcode + '').text(Number(amountScan) + 1);
+                        if (Number(amountScan) + 1 < Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'red')
+                        } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
+                            $('.quantityscan' + barcode + '').css("background-color", 'green')
+                        } else {
+                            $('.quantityscan' + barcode + '').css("background-color", 'yellow')
+                        }
+
+                    }
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi
+                    toastr.error(error);
+                })
+
+        }*/
+
+        async function CompareReceipt(upc) {
+            await CheckIdGoodsInSystem(upc)
+                .then(function (data) {
+                    if (data?.status) {
+                        var more = $('.more').map(function () {
+                            return this.id;
+                        }).get();
+                        var barcodes = upc
                         if (more.includes("more" + barcodes + "")) {
                             $('#amountmore' + barcodes + '').text(Number($('#amountmore' + barcodes + '').text()) + 1)
                         } else {
@@ -320,79 +369,38 @@
                                         <td>${barcodes}</td>
                                         <td>Undeclared Data</td>
                                         <td id="amountmore${barcodes}">1</td>
-                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
+                                        <td style="cursor: pointer;" name="location" id="location${upc}"><i class="nav-icon la la-search"></i></td>
                                         </tr>`
                             $('#des').append(tr)
                         }
-                        errorEPC.push(
-                            epc
-                        );
                     } else {
-                        var statusEpc = data?.checkEpc?.Status
-                        var barcode = data?.checkEpc?.IdGoods;
-                        var nameWareHouse = data?.checkEpc?.Name;
-                        var nameWareHouseCurrent = $('#warehouse :selected').text()
-                        if (statusEpc) {
-                            if (nameWareHouse != nameWareHouseCurrent) {
-                                var more = $('.more').map(function () {
-                                    return this.id;
-                                }).get();
-                                if (more.includes("more" + epc + "")) {
-                                    $('#amountmore' + epc + '').text(Number($('#amountmore' + epc + '').text()) + 1)
-                                } else {
-                                    var tr = `<tr class="more" id="more${epc}">
-                                        <td>${barcode}</td>
-                                        <td>${nameWareHouse}</td>
-                                        <td id="amountmore${epc}">1</td>
-                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
-                                        </tr>`
-                                    $('#des').append(tr)
-                                }
-                            }
-                            var amountScan = $('.numberStock' + barcode + '').eq(0).text();
-                            var amountQuantity = $('#qttInventory' + barcode + '').text();
-                            var idDeStock = $('#qttInventory' + barcode + '').closest('tr').attr('id');
-                            $('.numberStock' + barcode + '').text(Number(amountScan) + 1);
-                            if (Number(amountScan) + 1 < Number(amountQuantity)) {
-                                $('.numberStock' + barcode + '').css("background-color", 'red')
-                            } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
-                                $('.numberStock' + barcode + '').css("background-color", 'green')
-                            } else {
-                                $('.numberStock' + barcode + '').css("background-color", 'yellow')
-                            }
-                            detailEpcScan.push({
-                                "IdDetailStock": idDeStock,
-                                "IdEpc": epc
-                            })
+                        console.log("hello")
+                        var barcode = upc;
+                        var amountScan = $('.numberStock' + barcode + '').eq(0).text();
+                        var amountQuantity = $('#qttInventory' + barcode + '').text();
+                        var idDeStock = $('#qttInventory' + barcode + '').closest('tr').attr('id');
+                        $('.numberStock' + barcode + '').text(Number(amountScan) + 1);
+                        if (Number(amountScan) + 1 < Number(amountQuantity)) {
+                            $('.numberStock' + barcode + '').css("background-color", 'red')
+                        } else if (Number(amountScan) + 1 == Number(amountQuantity)) {
+                            $('.numberStock' + barcode + '').css("background-color", 'green')
                         } else {
-                            var more = $('.more').map(function () {
-                                return this.id;
-                            }).get();
-                            var barcodes = data?.checkEpc?.IdGoods
-                            if (more.includes("more" + epc + "")) {
-                                $('#amountmore' + epc + '').text(Number($('#amountmore' + epc + '').text()) + 1)
-                            } else {
-                                var tr = `<tr class="more" id="more${epc}">
-                                        <td>${barcodes}</td>
-                                        <td>Goods Not Imported</td>
-                                        <td id="amountmore${epc}">1</td>
-                                        <td style="cursor: pointer;" name="location" id="location${epc}"><i class="nav-icon la la-search"></i></td>
-                                        </tr>`
-                                $('#des').append(tr)
-                            }
-                            errorEPC.push(
-                                epc
-                            );
+                            $('.numberStock' + barcode + '').css("background-color", 'yellow')
                         }
+                        detailEpcScan.push({
+                            "IdDetailStock": idDeStock,
+                            "IdEpc": upc
+                        })
                     }
 
                 })
                 .catch(function (error) {
                     // Xử lý lỗi
+                    console.log(error);
                     toastr.error(error);
                 })
         }
-        $(document).on('click', 'td[name="location"]', function () {
+        /*$(document).on('click', 'td[name="location"]', function () {
             var epc = $(this).attr('id').substring(8)
             localStorage.setItem("locationEpc", epc)
             $.ajax({
@@ -400,13 +408,15 @@
                 type: 'get',
                 data: {epc}
             })
-        })
-        function CheckIdGoodsInSystem(epc) {
+        })*/
+        function CheckIdGoodsInSystem(upc) {
             return new Promise(function (resolve, reject) {
+                var warehouse = $("#warehouse").val();
+                console.log("Do cai nay ma", warehouse)
                 $.ajax({
                     url: '/Epcs/CheckIdGoodsInSystem',
                     type: 'get',
-                    data: { epc },
+                    data: { upc, warehouse },
                     success: function (data) {
                         if (data.code == 200) {
                             resolve(data);
@@ -422,7 +432,10 @@
                 });
             });
         }
-        var start;
+
+        // Hiển thị ra bill
+
+        /*var start;
         function RFID() {
             DeleteEpc();
             $('.on').css('display', 'none')
@@ -461,7 +474,7 @@
                 }
             })
         }
-        function DeleteEpc() {
+        /*function DeleteEpc() {
             $.ajax({
                 url: '/rfid/DeleteEPC',
                 type: 'post',
@@ -499,7 +512,7 @@
         function StopHH() {
             rfid.stop();
             rfid.disconnect();
-        }
+        }*/
     </script>
 
 

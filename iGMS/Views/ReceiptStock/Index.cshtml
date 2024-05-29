@@ -517,15 +517,18 @@
                 success: function (data) {
                     if (data.code == 200) {
                         $('#tbodytable').empty();
-                        data.detailsList.forEach(function (detailArray) {
-                            var detail = detailArray[0]; // Lấy phần tử đầu tiên trong mảng
-                            var newRowHTML = '<tr>' +
-                                '<td>' + detail.nameWareHouse + '</td>' +
-                                '<td>' + detail.nameGoods + '</td>' +
-                                '<td>' + detail.qttInventory + '</td>' +
-                                '</tr>';
-                            $('#tbodytable').append(newRowHTML);
-                        });
+                        console.log(data.detailsList);
+                        if (data.detailsList[0].length > 0) {
+                            data.detailsList.forEach(function (detailArray) {
+                                var detail = detailArray[0]; // Lấy phần tử đầu tiên trong mảng
+                                var newRowHTML = '<tr>' +
+                                    '<td>' + detail.nameWareHouse + '</td>' +
+                                    '<td>' + detail.nameGoods + '</td>' +
+                                    '<td>' + detail.qttInventory + '</td>' +
+                                    '</tr>';
+                                $('#tbodytable').append(newRowHTML);
+                            });
+                        }
                     } else {
                         toastr.warning(data.msg);
                     }
@@ -578,8 +581,6 @@
                 processData: false,
                 success: function (data) {
                     if (data.code == 200) {
-
-                        return;
                         toastr.success(data.msg);
                         selectedWarehouses = [];
                         $('#ghiChu').text(Des);

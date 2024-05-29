@@ -162,8 +162,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 if (!string.IsNullOrEmpty(idStock))
                 {
                     var stock = (from p in db.Stocks
@@ -250,8 +250,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 if (!string.IsNullOrEmpty(idStock))
                 {
                     var detailEpcScans = JsonConvert.DeserializeObject<DetailStockEpc[]>(detailEpcScan);
@@ -263,7 +263,7 @@ namespace WMS.Controllers
                     else
                     {
                         existingStock.ModifyDate = DateTime.Now;
-                        existingStock.ModifyBy = session.UserName;
+                        existingStock.ModifyBy = session.User1;
                         existingStock.Status = statusSave == 1 ? true : false;
                     }
                     var arrayDetailStock =  detailEpcScans.GroupBy(x => x.IdDetailStock).ToList();

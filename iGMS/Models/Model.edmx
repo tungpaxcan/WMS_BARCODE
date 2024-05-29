@@ -19,6 +19,19 @@
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="ChatMe">
+          <Property Name="Id" Type="int" />
+          <Property Name="Text" Type="nvarchar(max)" />
+          <Property Name="IdUserSend" Type="varchar" MaxLength="250" />
+          <Property Name="IdUserReceipt" Type="varchar" MaxLength="250" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
+        </EntityType>-->
         <EntityType Name="ChildrenFolder">
           <Key>
             <PropertyRef Name="Id" />
@@ -100,7 +113,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="IdReceipt" Type="varchar" MaxLength="20" />
           <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="20" />
           <Property Name="Description" Type="nvarchar(max)" />
@@ -117,7 +130,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="IdSaleOrder" Type="varchar" MaxLength="7" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" />
@@ -135,7 +148,7 @@
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="IdStock" Type="varchar" MaxLength="20" />
           <Property Name="QuantityInvetory" Type="float" />
           <Property Name="QuantityStock" Type="float" />
@@ -160,7 +173,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="Inventory" Type="float" />
           <Property Name="Status" Type="bit" />
         </EntityType>
@@ -169,7 +182,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="IdReceipt" Type="varchar" MaxLength="20" />
           <Property Name="IdEPC" Type="varchar" MaxLength="35" />
           <Property Name="Status" Type="bit" />
@@ -208,7 +221,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
           <Property Name="IdUnit" Type="varchar" MaxLength="20" />
           <Property Name="IdGroupGood" Type="varchar" MaxLength="20" />
@@ -451,7 +464,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="IdGoods" Type="varchar" MaxLength="20" />
+          <Property Name="IdGoods" Type="varchar" MaxLength="50" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
@@ -459,6 +472,16 @@
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
           <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="TypeCustomer">
           <Key>
@@ -965,6 +988,7 @@
           <EntitySet Name="SaleOrderNotify" EntityType="Self.SaleOrderNotify" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SalesOrder" EntityType="Self.SalesOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Stock" EntityType="Self.Stock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeCustomer" EntityType="Self.TypeCustomer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeStatus" EntityType="Self.TypeStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Unit" EntityType="Self.Unit" Schema="dbo" store:Type="Tables" />
@@ -1107,6 +1131,177 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="WMSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Backups" EntityType="WMSModel.Backup" />
+          <EntitySet Name="ChildrenFolders" EntityType="WMSModel.ChildrenFolder" />
+          <EntitySet Name="Customers" EntityType="WMSModel.Customer" />
+          <EntitySet Name="Deliveries" EntityType="WMSModel.Delivery" />
+          <EntitySet Name="DetailEPCs" EntityType="WMSModel.DetailEPC" />
+          <EntitySet Name="DetailGoodOrders" EntityType="WMSModel.DetailGoodOrder" />
+          <EntitySet Name="DetailSaleOrders" EntityType="WMSModel.DetailSaleOrder" />
+          <EntitySet Name="DetailStocks" EntityType="WMSModel.DetailStock" />
+          <EntitySet Name="DetailStockEpcs" EntityType="WMSModel.DetailStockEpc" />
+          <EntitySet Name="DetailWareHouses" EntityType="WMSModel.DetailWareHouse" />
+          <EntitySet Name="EPCs" EntityType="WMSModel.EPC" />
+          <EntitySet Name="Functions" EntityType="WMSModel.Function" />
+          <EntitySet Name="Genders" EntityType="WMSModel.Gender" />
+          <EntitySet Name="Goods" EntityType="WMSModel.Good" />
+          <EntitySet Name="GroupGoods" EntityType="WMSModel.GroupGood" />
+          <EntitySet Name="HeadFunctions" EntityType="WMSModel.HeadFunction" />
+          <EntitySet Name="InventoryNotifies" EntityType="WMSModel.InventoryNotify" />
+          <EntitySet Name="Menus" EntityType="WMSModel.Menu" />
+          <EntitySet Name="Methods" EntityType="WMSModel.Method" />
+          <EntitySet Name="ModelSettings" EntityType="WMSModel.ModelSetting" />
+          <EntitySet Name="ParamFunctions" EntityType="WMSModel.ParamFunction" />
+          <EntitySet Name="ParentFolders" EntityType="WMSModel.ParentFolder" />
+          <EntitySet Name="PurchaseNotifies" EntityType="WMSModel.PurchaseNotify" />
+          <EntitySet Name="PurchaseOrders" EntityType="WMSModel.PurchaseOrder" />
+          <EntitySet Name="Receipts" EntityType="WMSModel.Receipt" />
+          <EntitySet Name="RecentPages" EntityType="WMSModel.RecentPage" />
+          <EntitySet Name="Roles" EntityType="WMSModel.Role" />
+          <EntitySet Name="RoleAdmins" EntityType="WMSModel.RoleAdmin" />
+          <EntitySet Name="SaleOrderNotifies" EntityType="WMSModel.SaleOrderNotify" />
+          <EntitySet Name="SalesOrders" EntityType="WMSModel.SalesOrder" />
+          <EntitySet Name="Stocks" EntityType="WMSModel.Stock" />
+          <EntitySet Name="sysdiagrams" EntityType="WMSModel.sysdiagram" />
+          <EntitySet Name="TypeCustomers" EntityType="WMSModel.TypeCustomer" />
+          <EntitySet Name="TypeStatus" EntityType="WMSModel.TypeStatu" />
+          <EntitySet Name="Units" EntityType="WMSModel.Unit" />
+          <EntitySet Name="Users" EntityType="WMSModel.User" />
+          <EntitySet Name="WareHouses" EntityType="WMSModel.WareHouse" />
+          <AssociationSet Name="FK_ChildrenFolder_ParentFolder" Association="WMSModel.FK_ChildrenFolder_ParentFolder">
+            <End Role="ParentFolder" EntitySet="ParentFolders" />
+            <End Role="ChildrenFolder" EntitySet="ChildrenFolders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_GroupGoods" Association="WMSModel.FK_Customer_GroupGoods">
+            <End Role="GroupGood" EntitySet="GroupGoods" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_TypeCustomer" Association="WMSModel.FK_Customer_TypeCustomer">
+            <End Role="TypeCustomer" EntitySet="TypeCustomers" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_Customer" Association="WMSModel.FK_PurchaseOrder_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_Customer" Association="WMSModel.FK_SalesOrder_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Delivery_SalesOrder" Association="WMSModel.FK_Delivery_SalesOrder">
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+            <End Role="Delivery" EntitySet="Deliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Delivery_WareHouse" Association="WMSModel.FK_Delivery_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="Delivery" EntitySet="Deliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailGoodOrder_Goods" Association="WMSModel.FK_DetailGoodOrder_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailGoodOrder_PurchaseOrder" Association="WMSModel.FK_DetailGoodOrder_PurchaseOrder">
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailGoodOrder_Receipt" Association="WMSModel.FK_DetailGoodOrder_Receipt">
+            <End Role="Receipt" EntitySet="Receipts" />
+            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailSaleOrder_Goods" Association="WMSModel.FK_DetailSaleOrder_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="DetailSaleOrder" EntitySet="DetailSaleOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailSaleOrder_SalesOrder1" Association="WMSModel.FK_DetailSaleOrder_SalesOrder1">
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+            <End Role="DetailSaleOrder" EntitySet="DetailSaleOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStock_Goods" Association="WMSModel.FK_DetailStock_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStock_Stock" Association="WMSModel.FK_DetailStock_Stock">
+            <End Role="Stock" EntitySet="Stocks" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStock_WareHouse" Association="WMSModel.FK_DetailStock_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStockEpc_DetailStock" Association="WMSModel.FK_DetailStockEpc_DetailStock">
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+            <End Role="DetailStockEpc" EntitySet="DetailStockEpcs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailWareHouse_Goods" Association="WMSModel.FK_DetailWareHouse_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="DetailWareHouse" EntitySet="DetailWareHouses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailWareHouse_WareHouse" Association="WMSModel.FK_DetailWareHouse_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="DetailWareHouse" EntitySet="DetailWareHouses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EPC_Goods" Association="WMSModel.FK_EPC_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="EPC" EntitySet="EPCs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EPC_WareHouse1" Association="WMSModel.FK_EPC_WareHouse1">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="EPC" EntitySet="EPCs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Function_Menu" Association="WMSModel.FK_Function_Menu">
+            <End Role="Menu" EntitySet="Menus" />
+            <End Role="Function" EntitySet="Functions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ObjectFolder_Function" Association="WMSModel.FK_ObjectFolder_Function">
+            <End Role="Function" EntitySet="Functions" />
+            <End Role="ParentFolder" EntitySet="ParentFolders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ParamFunction_Function" Association="WMSModel.FK_ParamFunction_Function">
+            <End Role="Function" EntitySet="Functions" />
+            <End Role="ParamFunction" EntitySet="ParamFunctions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Goods_GroupGoods" Association="WMSModel.FK_Goods_GroupGoods">
+            <End Role="GroupGood" EntitySet="GroupGoods" />
+            <End Role="Good" EntitySet="Goods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Goods_Unit" Association="WMSModel.FK_Goods_Unit">
+            <End Role="Unit" EntitySet="Units" />
+            <End Role="Good" EntitySet="Goods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Goods_WareHouse" Association="WMSModel.FK_Goods_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="Good" EntitySet="Goods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_TypeStatus" Association="WMSModel.FK_PurchaseOrder_TypeStatus">
+            <End Role="TypeStatu" EntitySet="TypeStatus" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_WareHouse" Association="WMSModel.FK_PurchaseOrder_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Receipt_PurchaseOrder" Association="WMSModel.FK_Receipt_PurchaseOrder">
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="Receipt" EntitySet="Receipts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
+            <End Role="Receipt" EntitySet="Receipts" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Role" Association="WMSModel.FK_Users_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_RoleAdmin" Association="WMSModel.FK_Users_RoleAdmin">
+            <End Role="RoleAdmin" EntitySet="RoleAdmins" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_WareHouse" Association="WMSModel.FK_SalesOrder_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Backup">
           <Key>
             <PropertyRef Name="Id" />
@@ -1125,17 +1320,17 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="IdParent" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ParentFolder" Relationship="Self.FK_ChildrenFolder_ParentFolder" FromRole="ChildrenFolder" ToRole="ParentFolder" />
+          <NavigationProperty Name="ParentFolder" Relationship="WMSModel.FK_ChildrenFolder_ParentFolder" FromRole="ChildrenFolder" ToRole="ParentFolder" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="IdUser" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="IdGroupGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdGeneral" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -1174,16 +1369,16 @@
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="GroupGood" Relationship="Self.FK_Customer_GroupGoods" FromRole="Customer" ToRole="GroupGoods" />
-          <NavigationProperty Name="TypeCustomer" Relationship="Self.FK_Customer_TypeCustomer" FromRole="Customer" ToRole="TypeCustomer" />
-          <NavigationProperty Name="SalesOrders" Relationship="Self.FK_SalesOrder_Customer" FromRole="Customer" ToRole="SalesOrder" />
+          <NavigationProperty Name="GroupGood" Relationship="WMSModel.FK_Customer_GroupGoods" FromRole="Customer" ToRole="GroupGood" />
+          <NavigationProperty Name="TypeCustomer" Relationship="WMSModel.FK_Customer_TypeCustomer" FromRole="Customer" ToRole="TypeCustomer" />
           <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_Customer" FromRole="Customer" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_Customer" FromRole="Customer" ToRole="SalesOrder" />
         </EntityType>
         <EntityType Name="Delivery">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdSalesOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
           <Property Name="AddRess" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -1193,14 +1388,14 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="SalesOrder" Relationship="Self.FK_Delivery_SalesOrder" FromRole="Delivery" ToRole="SalesOrder" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_Delivery_WareHouse" FromRole="Delivery" ToRole="WareHouse" />
+          <NavigationProperty Name="SalesOrder" Relationship="WMSModel.FK_Delivery_SalesOrder" FromRole="Delivery" ToRole="SalesOrder" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_Delivery_WareHouse" FromRole="Delivery" ToRole="WareHouse" />
         </EntityType>
         <EntityType Name="DetailEPC">
           <Key>
             <PropertyRef Name="IdEPC" />
           </Key>
-          <Property Name="IdEPC" Type="String" MaxLength="35" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdEPC" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="false" />
           <Property Name="FXConnect" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="Boolean" />
         </EntityType>
@@ -1209,7 +1404,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IdReceipt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1220,7 +1415,7 @@
           <Property Name="Status" Type="Boolean" />
           <Property Name="Quantity" Type="Double" />
           <Property Name="QuantityScan" Type="Double" />
-          <NavigationProperty Name="Good" Relationship="Self.FK_DetailGoodOrder_Goods" FromRole="DetailGoodOrder" ToRole="Goods" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailGoodOrder_Goods" FromRole="DetailGoodOrder" ToRole="Good" />
           <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_DetailGoodOrder_PurchaseOrder" FromRole="DetailGoodOrder" ToRole="PurchaseOrder" />
           <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_DetailGoodOrder_Receipt" FromRole="DetailGoodOrder" ToRole="Receipt" />
         </EntityType>
@@ -1229,7 +1424,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IdSaleOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
@@ -1240,16 +1435,16 @@
           <Property Name="Quantity" Type="Double" />
           <Property Name="QuantityScan" Type="Double" />
           <Property Name="IdDelivery" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Good" Relationship="Self.FK_DetailSaleOrder_Goods" FromRole="DetailSaleOrder" ToRole="Goods" />
-          <NavigationProperty Name="SalesOrder" Relationship="Self.FK_DetailSaleOrder_SalesOrder1" FromRole="DetailSaleOrder" ToRole="SalesOrder" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailSaleOrder_Goods" FromRole="DetailSaleOrder" ToRole="Good" />
+          <NavigationProperty Name="SalesOrder" Relationship="WMSModel.FK_DetailSaleOrder_SalesOrder1" FromRole="DetailSaleOrder" ToRole="SalesOrder" />
         </EntityType>
         <EntityType Name="DetailStock">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IdStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="QuantityInvetory" Type="Double" />
           <Property Name="QuantityStock" Type="Double" />
@@ -1258,10 +1453,20 @@
           <Property Name="Residual" Type="Double" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Good" Relationship="Self.FK_DetailStock_Goods" FromRole="DetailStock" ToRole="Goods" />
-          <NavigationProperty Name="Stock" Relationship="Self.FK_DetailStock_Stock" FromRole="DetailStock" ToRole="Stock" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_DetailStock_WareHouse" FromRole="DetailStock" ToRole="WareHouse" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="DetailStock" ToRole="Good" />
+          <NavigationProperty Name="Stock" Relationship="WMSModel.FK_DetailStock_Stock" FromRole="DetailStock" ToRole="Stock" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="DetailStock" ToRole="WareHouse" />
           <NavigationProperty Name="DetailStockEpcs" Relationship="WMSModel.FK_DetailStockEpc_DetailStock" FromRole="DetailStock" ToRole="DetailStockEpc" />
+        </EntityType>
+        <EntityType Name="DetailStockEpc">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdDetailStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdEpc" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="DetailStock" Relationship="WMSModel.FK_DetailStockEpc_DetailStock" FromRole="DetailStockEpc" ToRole="DetailStock" />
         </EntityType>
         <EntityType Name="DetailWareHouse">
           <Key>
@@ -1269,32 +1474,50 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Inventory" Type="Double" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Good" Relationship="Self.FK_DetailWareHouse_Goods" FromRole="DetailWareHouse" ToRole="Goods" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_DetailWareHouse_WareHouse" FromRole="DetailWareHouse" ToRole="WareHouse" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailWareHouse_Goods" FromRole="DetailWareHouse" ToRole="Good" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_DetailWareHouse_WareHouse" FromRole="DetailWareHouse" ToRole="WareHouse" />
         </EntityType>
         <EntityType Name="EPC">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IdReceipt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdEPC" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="Boolean" />
           <Property Name="IdDelivery" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Good" Relationship="Self.FK_EPC_Goods" FromRole="EPC" ToRole="Goods" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_EPC_WareHouse1" FromRole="EPC" ToRole="WareHouse" />
           <Property Name="Line" Type="Int32" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_EPC_Goods" FromRole="EPC" ToRole="Good" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_EPC_WareHouse1" FromRole="EPC" ToRole="WareHouse" />
+        </EntityType>
+        <EntityType Name="Function">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IdMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="NameFunctionAPI" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StatusReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NameReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Method" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ReturnValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Menu" Relationship="WMSModel.FK_Function_Menu" FromRole="Function" ToRole="Menu" />
+          <NavigationProperty Name="ParentFolders" Relationship="WMSModel.FK_ObjectFolder_Function" FromRole="Function" ToRole="ParentFolder" />
+          <NavigationProperty Name="ParamFunctions" Relationship="WMSModel.FK_ParamFunction_Function" FromRole="Function" ToRole="ParamFunction" />
         </EntityType>
         <EntityType Name="Gender">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -1306,7 +1529,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="IdUnit" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdGroupGood" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -1320,21 +1543,21 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="DetailGoodOrders" Relationship="Self.FK_DetailGoodOrder_Goods" FromRole="Goods" ToRole="DetailGoodOrder" />
-          <NavigationProperty Name="DetailSaleOrders" Relationship="Self.FK_DetailSaleOrder_Goods" FromRole="Goods" ToRole="DetailSaleOrder" />
-          <NavigationProperty Name="DetailStocks" Relationship="Self.FK_DetailStock_Goods" FromRole="Goods" ToRole="DetailStock" />
-          <NavigationProperty Name="DetailWareHouses" Relationship="Self.FK_DetailWareHouse_Goods" FromRole="Goods" ToRole="DetailWareHouse" />
-          <NavigationProperty Name="EPCs" Relationship="Self.FK_EPC_Goods" FromRole="Goods" ToRole="EPC" />
-          <NavigationProperty Name="GroupGood" Relationship="Self.FK_Goods_GroupGoods" FromRole="Goods" ToRole="GroupGoods" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_Goods_WareHouse" FromRole="Goods" ToRole="WareHouse" />
           <Property Name="Line" Type="Int32" />
+          <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_Goods" FromRole="Good" ToRole="DetailGoodOrder" />
+          <NavigationProperty Name="DetailSaleOrders" Relationship="WMSModel.FK_DetailSaleOrder_Goods" FromRole="Good" ToRole="DetailSaleOrder" />
+          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="Good" ToRole="DetailStock" />
+          <NavigationProperty Name="DetailWareHouses" Relationship="WMSModel.FK_DetailWareHouse_Goods" FromRole="Good" ToRole="DetailWareHouse" />
+          <NavigationProperty Name="EPCs" Relationship="WMSModel.FK_EPC_Goods" FromRole="Good" ToRole="EPC" />
+          <NavigationProperty Name="GroupGood" Relationship="WMSModel.FK_Goods_GroupGoods" FromRole="Good" ToRole="GroupGood" />
           <NavigationProperty Name="Unit" Relationship="WMSModel.FK_Goods_Unit" FromRole="Good" ToRole="Unit" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_Goods_WareHouse" FromRole="Good" ToRole="WareHouse" />
         </EntityType>
         <EntityType Name="GroupGood">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
@@ -1342,8 +1565,16 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_GroupGoods" FromRole="GroupGoods" ToRole="Customer" />
-          <NavigationProperty Name="Goods" Relationship="Self.FK_Goods_GroupGoods" FromRole="GroupGoods" ToRole="Goods" />
+          <NavigationProperty Name="Customers" Relationship="WMSModel.FK_Customer_GroupGoods" FromRole="GroupGood" ToRole="Customer" />
+          <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_GroupGoods" FromRole="GroupGood" ToRole="Good" />
+        </EntityType>
+        <EntityType Name="HeadFunction">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
         </EntityType>
         <EntityType Name="InventoryNotify">
           <Key>
@@ -1366,7 +1597,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Functions" Relationship="WMSModel.FK_Function_Menu" FromRole="Menu" ToRole="Function" />
         </EntityType>
@@ -1387,7 +1618,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
         </EntityType>
@@ -1410,11 +1641,11 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="IdFunction" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Datatype" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ChildrenFolders" Relationship="Self.FK_ChildrenFolder_ParentFolder" FromRole="ParentFolder" ToRole="ChildrenFolder" />
+          <NavigationProperty Name="ChildrenFolders" Relationship="WMSModel.FK_ChildrenFolder_ParentFolder" FromRole="ParentFolder" ToRole="ChildrenFolder" />
           <NavigationProperty Name="Function" Relationship="WMSModel.FK_ObjectFolder_Function" FromRole="ParentFolder" ToRole="Function" />
         </EntityType>
         <EntityType Name="PurchaseNotify">
@@ -1431,719 +1662,6 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="modifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="RecentPage">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PageURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="AccessedAt" Type="DateTime" Precision="3" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="UserName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="SaleOrderNotify">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdSaleOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
-          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="SalesOrder">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdTypeStatus" Type="Int32" />
-          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IdCustomer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IdUser" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Customer" Relationship="Self.FK_SalesOrder_Customer" FromRole="SalesOrder" ToRole="Customer" />
-          <NavigationProperty Name="Deliveries" Relationship="Self.FK_Delivery_SalesOrder" FromRole="SalesOrder" ToRole="Delivery" />
-          <NavigationProperty Name="DetailSaleOrders" Relationship="Self.FK_DetailSaleOrder_SalesOrder1" FromRole="SalesOrder" ToRole="DetailSaleOrder" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_SalesOrder_WareHouse" FromRole="SalesOrder" ToRole="WareHouse" />
-          <Property Name="PO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="SalesOrder" ToRole="Receipt" />
-        </EntityType>
-        <EntityType Name="Stock">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="DetailStocks" Relationship="Self.FK_DetailStock_Stock" FromRole="Stock" ToRole="DetailStock" />
-        </EntityType>
-        <EntityType Name="TypeCustomer">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Des" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_TypeCustomer" FromRole="TypeCustomer" ToRole="Customer" />
-        </EntityType>
-        <EntityType Name="TypeStatu">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_TypeStatus" FromRole="TypeStatu" ToRole="PurchaseOrder" />
-        </EntityType>
-        <EntityType Name="WareHouse">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="MinInventory" Type="Int32" />
-          <Property Name="MaxInventory" Type="Int32" />
-          <NavigationProperty Name="Deliveries" Relationship="Self.FK_Delivery_WareHouse" FromRole="WareHouse" ToRole="Delivery" />
-          <NavigationProperty Name="DetailStocks" Relationship="Self.FK_DetailStock_WareHouse" FromRole="WareHouse" ToRole="DetailStock" />
-          <NavigationProperty Name="DetailWareHouses" Relationship="Self.FK_DetailWareHouse_WareHouse" FromRole="WareHouse" ToRole="DetailWareHouse" />
-          <NavigationProperty Name="EPCs" Relationship="Self.FK_EPC_WareHouse1" FromRole="WareHouse" ToRole="EPC" />
-          <NavigationProperty Name="Goods" Relationship="Self.FK_Goods_WareHouse" FromRole="WareHouse" ToRole="Goods" />
-          <NavigationProperty Name="SalesOrders" Relationship="Self.FK_SalesOrder_WareHouse" FromRole="WareHouse" ToRole="SalesOrder" />
-          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="WareHouse" ToRole="PurchaseOrder" />
-        </EntityType>
-        <Association Name="FK_ChildrenFolder_ParentFolder">
-          <End Role="ParentFolder" Type="Self.ParentFolder" Multiplicity="0..1" />
-          <End Role="ChildrenFolder" Type="Self.ChildrenFolder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ParentFolder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ChildrenFolder">
-              <PropertyRef Name="IdParent" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Customer_GroupGoods">
-          <End Role="GroupGoods" Type="Self.GroupGood" Multiplicity="0..1" />
-          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GroupGoods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Customer">
-              <PropertyRef Name="IdGroupGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Customer_TypeCustomer">
-          <End Role="TypeCustomer" Type="Self.TypeCustomer" Multiplicity="0..1" />
-          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TypeCustomer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Customer">
-              <PropertyRef Name="IdTypeCustomer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SalesOrder_Customer">
-          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
-          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SalesOrder">
-              <PropertyRef Name="IdCustomer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Delivery_SalesOrder">
-          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="0..1" />
-          <End Role="Delivery" Type="Self.Delivery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SalesOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Delivery">
-              <PropertyRef Name="IdSalesOrder" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Delivery_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="Delivery" Type="Self.Delivery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Delivery">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailGoodOrder_Goods">
-          <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
-          <End Role="DetailGoodOrder" Type="Self.DetailGoodOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Goods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailGoodOrder">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailSaleOrder_Goods">
-          <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
-          <End Role="DetailSaleOrder" Type="Self.DetailSaleOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Goods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailSaleOrder">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailSaleOrder_SalesOrder1">
-          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="0..1" />
-          <End Role="DetailSaleOrder" Type="Self.DetailSaleOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SalesOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailSaleOrder">
-              <PropertyRef Name="IdSaleOrder" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_Goods">
-          <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
-          <End Role="DetailStock" Type="Self.DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Goods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_Stock">
-          <End Role="Stock" Type="Self.Stock" Multiplicity="0..1" />
-          <End Role="DetailStock" Type="Self.DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Stock">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdStock" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="DetailStock" Type="Self.DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailWareHouse_Goods">
-          <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
-          <End Role="DetailWareHouse" Type="Self.DetailWareHouse" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Goods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailWareHouse">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailWareHouse_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="DetailWareHouse" Type="Self.DetailWareHouse" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailWareHouse">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EPC_Goods">
-          <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
-          <End Role="EPC" Type="Self.EPC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Goods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="EPC">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EPC_WareHouse1">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="EPC" Type="Self.EPC" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="EPC">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Goods_GroupGoods">
-          <End Role="GroupGoods" Type="Self.GroupGood" Multiplicity="0..1" />
-          <End Role="Goods" Type="Self.Good" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GroupGoods">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Goods">
-              <PropertyRef Name="IdGroupGood" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Goods_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="Goods" Type="Self.Good" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Goods">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SalesOrder_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SalesOrder">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="WMSEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Backups" EntityType="Self.Backup" />
-          <EntitySet Name="ChildrenFolders" EntityType="Self.ChildrenFolder" />
-          <EntitySet Name="Customers" EntityType="Self.Customer" />
-          <EntitySet Name="Deliveries" EntityType="Self.Delivery" />
-          <EntitySet Name="DetailEPCs" EntityType="Self.DetailEPC" />
-          <EntitySet Name="DetailGoodOrders" EntityType="Self.DetailGoodOrder" />
-          <EntitySet Name="DetailSaleOrders" EntityType="Self.DetailSaleOrder" />
-          <EntitySet Name="DetailStocks" EntityType="Self.DetailStock" />
-          <EntitySet Name="DetailWareHouses" EntityType="Self.DetailWareHouse" />
-          <EntitySet Name="EPCs" EntityType="Self.EPC" />
-          <EntitySet Name="Genders" EntityType="Self.Gender" />
-          <EntitySet Name="Goods" EntityType="Self.Good" />
-          <EntitySet Name="GroupGoods" EntityType="Self.GroupGood" />
-          <EntitySet Name="InventoryNotifies" EntityType="Self.InventoryNotify" />
-          <EntitySet Name="Menus" EntityType="Self.Menu" />
-          <EntitySet Name="Methods" EntityType="Self.Method" />
-          <EntitySet Name="ModelSettings" EntityType="Self.ModelSetting" />
-          <EntitySet Name="ParamFunctions" EntityType="Self.ParamFunction" />
-          <EntitySet Name="ParentFolders" EntityType="Self.ParentFolder" />
-          <EntitySet Name="PurchaseNotifies" EntityType="Self.PurchaseNotify" />
-          <EntitySet Name="RecentPages" EntityType="Self.RecentPage" />
-          <EntitySet Name="SaleOrderNotifies" EntityType="Self.SaleOrderNotify" />
-          <EntitySet Name="SalesOrders" EntityType="Self.SalesOrder" />
-          <EntitySet Name="Stocks" EntityType="Self.Stock" />
-          <EntitySet Name="TypeCustomers" EntityType="Self.TypeCustomer" />
-          <EntitySet Name="TypeStatus" EntityType="Self.TypeStatu" />
-          <EntitySet Name="WareHouses" EntityType="Self.WareHouse" />
-          <AssociationSet Name="FK_ChildrenFolder_ParentFolder" Association="Self.FK_ChildrenFolder_ParentFolder">
-            <End Role="ParentFolder" EntitySet="ParentFolders" />
-            <End Role="ChildrenFolder" EntitySet="ChildrenFolders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Customer_GroupGoods" Association="Self.FK_Customer_GroupGoods">
-            <End Role="GroupGoods" EntitySet="GroupGoods" />
-            <End Role="Customer" EntitySet="Customers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Customer_TypeCustomer" Association="Self.FK_Customer_TypeCustomer">
-            <End Role="TypeCustomer" EntitySet="TypeCustomers" />
-            <End Role="Customer" EntitySet="Customers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SalesOrder_Customer" Association="Self.FK_SalesOrder_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Delivery_SalesOrder" Association="Self.FK_Delivery_SalesOrder">
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-            <End Role="Delivery" EntitySet="Deliveries" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Delivery_WareHouse" Association="Self.FK_Delivery_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="Delivery" EntitySet="Deliveries" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailGoodOrder_Goods" Association="Self.FK_DetailGoodOrder_Goods">
-            <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailSaleOrder_Goods" Association="Self.FK_DetailSaleOrder_Goods">
-            <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailSaleOrder" EntitySet="DetailSaleOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailSaleOrder_SalesOrder1" Association="Self.FK_DetailSaleOrder_SalesOrder1">
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-            <End Role="DetailSaleOrder" EntitySet="DetailSaleOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_Goods" Association="Self.FK_DetailStock_Goods">
-            <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_Stock" Association="Self.FK_DetailStock_Stock">
-            <End Role="Stock" EntitySet="Stocks" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_WareHouse" Association="Self.FK_DetailStock_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailWareHouse_Goods" Association="Self.FK_DetailWareHouse_Goods">
-            <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailWareHouse" EntitySet="DetailWareHouses" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailWareHouse_WareHouse" Association="Self.FK_DetailWareHouse_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="DetailWareHouse" EntitySet="DetailWareHouses" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EPC_Goods" Association="Self.FK_EPC_Goods">
-            <End Role="Goods" EntitySet="Goods" />
-            <End Role="EPC" EntitySet="EPCs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EPC_WareHouse1" Association="Self.FK_EPC_WareHouse1">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="EPC" EntitySet="EPCs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Goods_GroupGoods" Association="Self.FK_Goods_GroupGoods">
-            <End Role="GroupGoods" EntitySet="GroupGoods" />
-            <End Role="Goods" EntitySet="Goods" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Goods_WareHouse" Association="Self.FK_Goods_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="Goods" EntitySet="Goods" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SalesOrder_WareHouse" Association="Self.FK_SalesOrder_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-          </AssociationSet>
-          <EntitySet Name="HeadFunctions" EntityType="WMSModel.HeadFunction" />
-          <EntitySet Name="Users" EntityType="WMSModel.User" />
-          <EntitySet Name="RoleAdmins" EntityType="WMSModel.RoleAdmin" />
-          <AssociationSet Name="FK_Users_RoleAdmin" Association="WMSModel.FK_Users_RoleAdmin">
-            <End Role="RoleAdmin" EntitySet="RoleAdmins" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <EntitySet Name="DetailStockEpcs" EntityType="WMSModel.DetailStockEpc" />
-          <AssociationSet Name="FK_DetailStockEpc_DetailStock" Association="WMSModel.FK_DetailStockEpc_DetailStock">
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-            <End Role="DetailStockEpc" EntitySet="DetailStockEpcs" />
-          </AssociationSet>
-          <EntitySet Name="Functions" EntityType="WMSModel.Function" />
-          <AssociationSet Name="FK_Function_Menu" Association="WMSModel.FK_Function_Menu">
-            <End Role="Menu" EntitySet="Menus" />
-            <End Role="Function" EntitySet="Functions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ObjectFolder_Function" Association="WMSModel.FK_ObjectFolder_Function">
-            <End Role="Function" EntitySet="Functions" />
-            <End Role="ParentFolder" EntitySet="ParentFolders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ParamFunction_Function" Association="WMSModel.FK_ParamFunction_Function">
-            <End Role="Function" EntitySet="Functions" />
-            <End Role="ParamFunction" EntitySet="ParamFunctions" />
-          </AssociationSet>
-          <EntitySet Name="Roles" EntityType="WMSModel.Role" />
-          <AssociationSet Name="FK_Users_Role" Association="WMSModel.FK_Users_Role">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <EntitySet Name="Units" EntityType="WMSModel.Unit" />
-          <AssociationSet Name="FK_Goods_Unit" Association="WMSModel.FK_Goods_Unit">
-            <End Role="Unit" EntitySet="Units" />
-            <End Role="Good" EntitySet="Goods" />
-          </AssociationSet>
-          <EntitySet Name="PurchaseOrders" EntityType="WMSModel.PurchaseOrder" />
-          <EntitySet Name="Receipts" EntityType="WMSModel.Receipt" />
-          <AssociationSet Name="FK_PurchaseOrder_Customer" Association="WMSModel.FK_PurchaseOrder_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailGoodOrder_PurchaseOrder" Association="WMSModel.FK_DetailGoodOrder_PurchaseOrder">
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailGoodOrder_Receipt" Association="WMSModel.FK_DetailGoodOrder_Receipt">
-            <End Role="Receipt" EntitySet="Receipts" />
-            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrder_TypeStatus" Association="WMSModel.FK_PurchaseOrder_TypeStatus">
-            <End Role="TypeStatu" EntitySet="TypeStatus" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrder_WareHouse" Association="WMSModel.FK_PurchaseOrder_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Receipt_PurchaseOrder" Association="WMSModel.FK_Receipt_PurchaseOrder">
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-            <End Role="Receipt" EntitySet="Receipts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
-            <End Role="Receipt" EntitySet="Receipts" />
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-          </AssociationSet>
-          </EntityContainer>
-        <EntityType Name="HeadFunction">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="User1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Pass" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="AddRess" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Birth" Type="DateTime" Precision="3" />
-          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RoleAdmin" Type="Int32" />
-          <Property Name="Role" Type="Int32" />
-          <Property Name="WorkingHour" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="LoginTime" Type="DateTime" Precision="3" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="FailPass" Type="Int32" />
-          <NavigationProperty Name="RoleAdmin1" Relationship="WMSModel.FK_Users_RoleAdmin" FromRole="User" ToRole="RoleAdmin" />
-          <NavigationProperty Name="Role1" Relationship="WMSModel.FK_Users_Role" FromRole="User" ToRole="Role" />
-        </EntityType>
-        <EntityType Name="RoleAdmin">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ManageMainCategories" Type="Boolean" />
-          <Property Name="PurchaseManager" Type="Boolean" />
-          <Property Name="SalesManager" Type="Boolean" />
-          <Property Name="WarehouseManagement" Type="Boolean" />
-          <Property Name="SystemManagement" Type="Boolean" />
-          <Property Name="AccountManager" Type="Boolean" />
-          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Users" Relationship="WMSModel.FK_Users_RoleAdmin" FromRole="RoleAdmin" ToRole="User" />
-        </EntityType>
-        <Association Name="FK_Users_RoleAdmin">
-          <End Type="WMSModel.RoleAdmin" Role="RoleAdmin" Multiplicity="0..1" />
-          <End Type="WMSModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="RoleAdmin">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="RoleAdmin" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="DetailStockEpc">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdDetailStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdEpc" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="DetailStock" Relationship="WMSModel.FK_DetailStockEpc_DetailStock" FromRole="DetailStockEpc" ToRole="DetailStock" />
-        </EntityType>
-        <Association Name="FK_DetailStockEpc_DetailStock">
-          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="0..1" />
-          <End Type="WMSModel.DetailStockEpc" Role="DetailStockEpc" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DetailStock">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStockEpc">
-              <PropertyRef Name="IdDetailStock" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Function">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IdMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="NameFunctionAPI" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StatusReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NameReturnJson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Method" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="ReturnValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Menu" Relationship="WMSModel.FK_Function_Menu" FromRole="Function" ToRole="Menu" />
-          <NavigationProperty Name="ParentFolders" Relationship="WMSModel.FK_ObjectFolder_Function" FromRole="Function" ToRole="ParentFolder" />
-          <NavigationProperty Name="ParamFunctions" Relationship="WMSModel.FK_ParamFunction_Function" FromRole="Function" ToRole="ParamFunction" />
-        </EntityType>
-        <Association Name="FK_Function_Menu">
-          <End Type="WMSModel.Menu" Role="Menu" Multiplicity="0..1" />
-          <End Type="WMSModel.Function" Role="Function" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Menu">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Function">
-              <PropertyRef Name="IdMenu" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ObjectFolder_Function">
-          <End Type="WMSModel.Function" Role="Function" Multiplicity="0..1" />
-          <End Type="WMSModel.ParentFolder" Role="ParentFolder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Function">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ParentFolder">
-              <PropertyRef Name="IdFunction" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ParamFunction_Function">
-          <End Type="WMSModel.Function" Role="Function" Multiplicity="0..1" />
-          <End Type="WMSModel.ParamFunction" Role="ParamFunction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Function">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ParamFunction">
-              <PropertyRef Name="IdFunction" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Role">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AddWareHouse" Type="Boolean" />
-          <Property Name="EditWareHouse" Type="Boolean" />
-          <Property Name="DeleteWareHouse" Type="Boolean" />
-          <Property Name="AddGoods" Type="Boolean" />
-          <Property Name="EditGoods" Type="Boolean" />
-          <Property Name="DeleteGoods" Type="Boolean" />
-          <Property Name="AddCustomer" Type="Boolean" />
-          <Property Name="EditCustomer" Type="Boolean" />
-          <Property Name="DeleteCustomer" Type="Boolean" />
-          <Property Name="AddTypeCustomer" Type="Boolean" />
-          <Property Name="EditTypeCustomer" Type="Boolean" />
-          <Property Name="DeleteTypeCustomer" Type="Boolean" />
-          <Property Name="AddUser" Type="Boolean" />
-          <Property Name="EditUser" Type="Boolean" />
-          <Property Name="EditPassWord" Type="Boolean" />
-          <Property Name="DeleteUser" Type="Boolean" />
-          <Property Name="BackUpSQL" Type="Boolean" />
-          <Property Name="AddGroupGoods" Type="Boolean" />
-          <Property Name="EditGroupGoods" Type="Boolean" />
-          <Property Name="DeleteGroupGoods" Type="Boolean" />
-          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EditAuth" Type="Boolean" />
-          <NavigationProperty Name="Users" Relationship="WMSModel.FK_Users_Role" FromRole="Role" ToRole="User" />
-        </EntityType>
-        <Association Name="FK_Users_Role">
-          <End Type="WMSModel.Role" Role="Role" Multiplicity="0..1" />
-          <End Type="WMSModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="Role" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Unit">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_Unit" FromRole="Unit" ToRole="Good" />
-        </EntityType>
-        <Association Name="FK_Goods_Unit">
-          <End Type="WMSModel.Unit" Role="Unit" Multiplicity="0..1" />
-          <End Type="WMSModel.Good" Role="Good" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Unit">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Good">
-              <PropertyRef Name="IdUnit" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PurchaseOrder">
           <Key>
             <PropertyRef Name="Id" />
@@ -2181,12 +1699,253 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_Receipt" FromRole="Receipt" ToRole="DetailGoodOrder" />
           <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
           <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="Receipt" ToRole="SalesOrder" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
-          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="RecentPage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PageURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AccessedAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="UserName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddWareHouse" Type="Boolean" />
+          <Property Name="EditWareHouse" Type="Boolean" />
+          <Property Name="DeleteWareHouse" Type="Boolean" />
+          <Property Name="AddGoods" Type="Boolean" />
+          <Property Name="EditGoods" Type="Boolean" />
+          <Property Name="DeleteGoods" Type="Boolean" />
+          <Property Name="AddCustomer" Type="Boolean" />
+          <Property Name="EditCustomer" Type="Boolean" />
+          <Property Name="DeleteCustomer" Type="Boolean" />
+          <Property Name="AddTypeCustomer" Type="Boolean" />
+          <Property Name="EditTypeCustomer" Type="Boolean" />
+          <Property Name="DeleteTypeCustomer" Type="Boolean" />
+          <Property Name="AddUser" Type="Boolean" />
+          <Property Name="EditUser" Type="Boolean" />
+          <Property Name="EditPassWord" Type="Boolean" />
+          <Property Name="DeleteUser" Type="Boolean" />
+          <Property Name="BackUpSQL" Type="Boolean" />
+          <Property Name="AddGroupGoods" Type="Boolean" />
+          <Property Name="EditGroupGoods" Type="Boolean" />
+          <Property Name="DeleteGroupGoods" Type="Boolean" />
+          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EditAuth" Type="Boolean" />
+          <NavigationProperty Name="Users" Relationship="WMSModel.FK_Users_Role" FromRole="Role" ToRole="User" />
+        </EntityType>
+        <EntityType Name="RoleAdmin">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ManageMainCategories" Type="Boolean" />
+          <Property Name="PurchaseManager" Type="Boolean" />
+          <Property Name="SalesManager" Type="Boolean" />
+          <Property Name="WarehouseManagement" Type="Boolean" />
+          <Property Name="SystemManagement" Type="Boolean" />
+          <Property Name="AccountManager" Type="Boolean" />
+          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="WMSModel.FK_Users_RoleAdmin" FromRole="RoleAdmin" ToRole="User" />
+        </EntityType>
+        <EntityType Name="SaleOrderNotify">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdSaleOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SalesOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IdTypeStatus" Type="Int32" />
+          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IdCustomer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IdUser" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="PO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Customer" Relationship="WMSModel.FK_SalesOrder_Customer" FromRole="SalesOrder" ToRole="Customer" />
+          <NavigationProperty Name="Deliveries" Relationship="WMSModel.FK_Delivery_SalesOrder" FromRole="SalesOrder" ToRole="Delivery" />
+          <NavigationProperty Name="DetailSaleOrders" Relationship="WMSModel.FK_DetailSaleOrder_SalesOrder1" FromRole="SalesOrder" ToRole="DetailSaleOrder" />
+          <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="SalesOrder" ToRole="Receipt" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_SalesOrder_WareHouse" FromRole="SalesOrder" ToRole="WareHouse" />
+        </EntityType>
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_Stock" FromRole="Stock" ToRole="DetailStock" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TypeCustomer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Des" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="Customers" Relationship="WMSModel.FK_Customer_TypeCustomer" FromRole="TypeCustomer" ToRole="Customer" />
+        </EntityType>
+        <EntityType Name="TypeStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_TypeStatus" FromRole="TypeStatu" ToRole="PurchaseOrder" />
+        </EntityType>
+        <EntityType Name="Unit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_Unit" FromRole="Unit" ToRole="Good" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="User1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Pass" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="AddRess" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Birth" Type="DateTime" Precision="3" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RoleAdmin" Type="Int32" />
+          <Property Name="Role" Type="Int32" />
+          <Property Name="WorkingHour" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LoginTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="FailPass" Type="Int32" />
+          <NavigationProperty Name="Role1" Relationship="WMSModel.FK_Users_Role" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="RoleAdmin1" Relationship="WMSModel.FK_Users_RoleAdmin" FromRole="User" ToRole="RoleAdmin" />
+        </EntityType>
+        <EntityType Name="WareHouse">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="MinInventory" Type="Int32" />
+          <Property Name="MaxInventory" Type="Int32" />
+          <NavigationProperty Name="Deliveries" Relationship="WMSModel.FK_Delivery_WareHouse" FromRole="WareHouse" ToRole="Delivery" />
+          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="WareHouse" ToRole="DetailStock" />
+          <NavigationProperty Name="DetailWareHouses" Relationship="WMSModel.FK_DetailWareHouse_WareHouse" FromRole="WareHouse" ToRole="DetailWareHouse" />
+          <NavigationProperty Name="EPCs" Relationship="WMSModel.FK_EPC_WareHouse1" FromRole="WareHouse" ToRole="EPC" />
+          <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_WareHouse" FromRole="WareHouse" ToRole="Good" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="WareHouse" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_WareHouse" FromRole="WareHouse" ToRole="SalesOrder" />
+        </EntityType>
+        <Association Name="FK_ChildrenFolder_ParentFolder">
+          <End Type="WMSModel.ParentFolder" Role="ParentFolder" Multiplicity="0..1" />
+          <End Type="WMSModel.ChildrenFolder" Role="ChildrenFolder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParentFolder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChildrenFolder">
+              <PropertyRef Name="IdParent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_GroupGoods">
+          <End Type="WMSModel.GroupGood" Role="GroupGood" Multiplicity="0..1" />
+          <End Type="WMSModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupGood">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="IdGroupGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_TypeCustomer">
+          <End Type="WMSModel.TypeCustomer" Role="TypeCustomer" Multiplicity="0..1" />
+          <End Type="WMSModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeCustomer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="IdTypeCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PurchaseOrder_Customer">
           <End Type="WMSModel.Customer" Role="Customer" Multiplicity="0..1" />
           <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="*" />
@@ -2196,6 +1955,54 @@
             </Principal>
             <Dependent Role="PurchaseOrder">
               <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_Customer">
+          <End Type="WMSModel.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Delivery_SalesOrder">
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="0..1" />
+          <End Type="WMSModel.Delivery" Role="Delivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Delivery">
+              <PropertyRef Name="IdSalesOrder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Delivery_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.Delivery" Role="Delivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Delivery">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailGoodOrder_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailGoodOrder" Role="DetailGoodOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailGoodOrder">
+              <PropertyRef Name="IdGoods" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2220,6 +2027,198 @@
             </Principal>
             <Dependent Role="DetailGoodOrder">
               <PropertyRef Name="IdReceipt" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailSaleOrder_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailSaleOrder" Role="DetailSaleOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailSaleOrder">
+              <PropertyRef Name="IdGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailSaleOrder_SalesOrder1">
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailSaleOrder" Role="DetailSaleOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailSaleOrder">
+              <PropertyRef Name="IdSaleOrder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStock_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStock_Stock">
+          <End Type="WMSModel.Stock" Role="Stock" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdStock" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStock_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStockEpc_DetailStock">
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStockEpc" Role="DetailStockEpc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DetailStock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStockEpc">
+              <PropertyRef Name="IdDetailStock" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailWareHouse_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailWareHouse" Role="DetailWareHouse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailWareHouse">
+              <PropertyRef Name="IdGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailWareHouse_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailWareHouse" Role="DetailWareHouse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailWareHouse">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EPC_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.EPC" Role="EPC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EPC">
+              <PropertyRef Name="IdGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EPC_WareHouse1">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.EPC" Role="EPC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EPC">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Function_Menu">
+          <End Type="WMSModel.Menu" Role="Menu" Multiplicity="0..1" />
+          <End Type="WMSModel.Function" Role="Function" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Function">
+              <PropertyRef Name="IdMenu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ObjectFolder_Function">
+          <End Type="WMSModel.Function" Role="Function" Multiplicity="0..1" />
+          <End Type="WMSModel.ParentFolder" Role="ParentFolder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Function">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParentFolder">
+              <PropertyRef Name="IdFunction" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ParamFunction_Function">
+          <End Type="WMSModel.Function" Role="Function" Multiplicity="0..1" />
+          <End Type="WMSModel.ParamFunction" Role="ParamFunction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Function">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParamFunction">
+              <PropertyRef Name="IdFunction" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Goods_GroupGoods">
+          <End Type="WMSModel.GroupGood" Role="GroupGood" Multiplicity="0..1" />
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupGood">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Good">
+              <PropertyRef Name="IdGroupGood" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Goods_Unit">
+          <End Type="WMSModel.Unit" Role="Unit" Multiplicity="0..1" />
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Unit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Good">
+              <PropertyRef Name="IdUnit" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Goods_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Good">
+              <PropertyRef Name="IdWareHouse" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2271,6 +2270,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Users_Role">
+          <End Type="WMSModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="WMSModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="Role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_RoleAdmin">
+          <End Type="WMSModel.RoleAdmin" Role="RoleAdmin" Multiplicity="0..1" />
+          <End Type="WMSModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoleAdmin">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2280,462 +2315,147 @@
           <EntitySetMapping Name="Backups">
             <EntityTypeMapping TypeName="WMSModel.Backup">
               <MappingFragment StoreEntitySet="Backup">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Server" ColumnName="Server" />
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Server" ColumnName="Server" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ChildrenFolders">
             <EntityTypeMapping TypeName="WMSModel.ChildrenFolder">
               <MappingFragment StoreEntitySet="ChildrenFolder">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdParent" ColumnName="IdParent" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdParent" ColumnName="IdParent" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="WMSModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
-                <ScalarProperty Name="IdGroupGoods" ColumnName="IdGroupGoods" />
-                <ScalarProperty Name="IdGeneral" ColumnName="IdGeneral" />
-                <ScalarProperty Name="IdInternal" ColumnName="IdInternal" />
-                <ScalarProperty Name="IdTypeCustomer" ColumnName="IdTypeCustomer" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="NameTransaction" ColumnName="NameTransaction" />
-                <ScalarProperty Name="Money" ColumnName="Money" />
-                <ScalarProperty Name="Point" ColumnName="Point" />
-                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
-                <ScalarProperty Name="TaxCode" ColumnName="TaxCode" />
-                <ScalarProperty Name="Fax" ColumnName="Fax" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Represent" ColumnName="Represent" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
-                <ScalarProperty Name="Website" ColumnName="Website" />
-                <ScalarProperty Name="STK1" ColumnName="STK1" />
-                <ScalarProperty Name="Bank1" ColumnName="Bank1" />
-                <ScalarProperty Name="STK2" ColumnName="STK2" />
-                <ScalarProperty Name="Bank2" ColumnName="Bank2" />
-                <ScalarProperty Name="DebtLimit" ColumnName="DebtLimit" />
-                <ScalarProperty Name="NumberDaysOwed" ColumnName="NumberDaysOwed" />
-                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
-                <ScalarProperty Name="DatePay" ColumnName="DatePay" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="MembershipCard" ColumnName="MembershipCard" />
-                <ScalarProperty Name="CustomerResources" ColumnName="CustomerResources" />
-                <ScalarProperty Name="Career" ColumnName="Career" />
-                <ScalarProperty Name="PaymentMethods" ColumnName="PaymentMethods" />
-                <ScalarProperty Name="AccountingAccountCode" ColumnName="AccountingAccountCode" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="AccountingAccountCode" ColumnName="AccountingAccountCode" />
+                <ScalarProperty Name="PaymentMethods" ColumnName="PaymentMethods" />
+                <ScalarProperty Name="Career" ColumnName="Career" />
+                <ScalarProperty Name="CustomerResources" ColumnName="CustomerResources" />
+                <ScalarProperty Name="MembershipCard" ColumnName="MembershipCard" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="DatePay" ColumnName="DatePay" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="NumberDaysOwed" ColumnName="NumberDaysOwed" />
+                <ScalarProperty Name="DebtLimit" ColumnName="DebtLimit" />
+                <ScalarProperty Name="Bank2" ColumnName="Bank2" />
+                <ScalarProperty Name="STK2" ColumnName="STK2" />
+                <ScalarProperty Name="Bank1" ColumnName="Bank1" />
+                <ScalarProperty Name="STK1" ColumnName="STK1" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Represent" ColumnName="Represent" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="TaxCode" ColumnName="TaxCode" />
+                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
+                <ScalarProperty Name="Point" ColumnName="Point" />
+                <ScalarProperty Name="Money" ColumnName="Money" />
+                <ScalarProperty Name="NameTransaction" ColumnName="NameTransaction" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdTypeCustomer" ColumnName="IdTypeCustomer" />
+                <ScalarProperty Name="IdInternal" ColumnName="IdInternal" />
+                <ScalarProperty Name="IdGeneral" ColumnName="IdGeneral" />
+                <ScalarProperty Name="IdGroupGoods" ColumnName="IdGroupGoods" />
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Deliveries">
             <EntityTypeMapping TypeName="WMSModel.Delivery">
               <MappingFragment StoreEntitySet="Delivery">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdSalesOrder" ColumnName="IdSalesOrder" />
-                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
+                <ScalarProperty Name="IdSalesOrder" ColumnName="IdSalesOrder" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DetailEPCs">
             <EntityTypeMapping TypeName="WMSModel.DetailEPC">
               <MappingFragment StoreEntitySet="DetailEPC">
-                <ScalarProperty Name="IdEPC" ColumnName="IdEPC" />
-                <ScalarProperty Name="FXConnect" ColumnName="FXConnect" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FXConnect" ColumnName="FXConnect" />
+                <ScalarProperty Name="IdEPC" ColumnName="IdEPC" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DetailGoodOrders">
             <EntityTypeMapping TypeName="WMSModel.DetailGoodOrder">
               <MappingFragment StoreEntitySet="DetailGoodOrder">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="IdReceipt" ColumnName="IdReceipt" />
-                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="QuantityScan" ColumnName="QuantityScan" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
+                <ScalarProperty Name="IdReceipt" ColumnName="IdReceipt" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DetailSaleOrders">
             <EntityTypeMapping TypeName="WMSModel.DetailSaleOrder">
               <MappingFragment StoreEntitySet="DetailSaleOrder">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="IdSaleOrder" ColumnName="IdSaleOrder" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="QuantityScan" ColumnName="QuantityScan" />
                 <ScalarProperty Name="IdDelivery" ColumnName="IdDelivery" />
+                <ScalarProperty Name="QuantityScan" ColumnName="QuantityScan" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IdSaleOrder" ColumnName="IdSaleOrder" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DetailStocks">
             <EntityTypeMapping TypeName="WMSModel.DetailStock">
               <MappingFragment StoreEntitySet="DetailStock">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="IdStock" ColumnName="IdStock" />
-                <ScalarProperty Name="QuantityInvetory" ColumnName="QuantityInvetory" />
-                <ScalarProperty Name="QuantityStock" ColumnName="QuantityStock" />
-                <ScalarProperty Name="Suffice" ColumnName="Suffice" />
-                <ScalarProperty Name="Incomplete" ColumnName="Incomplete" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Residual" ColumnName="Residual" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DetailWareHouses">
-            <EntityTypeMapping TypeName="WMSModel.DetailWareHouse">
-              <MappingFragment StoreEntitySet="DetailWareHouse">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EPCs">
-            <EntityTypeMapping TypeName="WMSModel.EPC">
-              <MappingFragment StoreEntitySet="EPC">
-                <ScalarProperty Name="Line" ColumnName="Line" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="IdReceipt" ColumnName="IdReceipt" />
-                <ScalarProperty Name="IdEPC" ColumnName="IdEPC" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="IdDelivery" ColumnName="IdDelivery" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Genders">
-            <EntityTypeMapping TypeName="WMSModel.Gender">
-              <MappingFragment StoreEntitySet="Gender">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Goods">
-            <EntityTypeMapping TypeName="WMSModel.Good">
-              <MappingFragment StoreEntitySet="Goods">
-                <ScalarProperty Name="Line" ColumnName="Line" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="IdUnit" ColumnName="IdUnit" />
-                <ScalarProperty Name="IdGroupGood" ColumnName="IdGroupGood" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
-                <ScalarProperty Name="MinimumInventory" ColumnName="MinimumInventory" />
-                <ScalarProperty Name="MaximumInventory" ColumnName="MaximumInventory" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GroupGoods">
-            <EntityTypeMapping TypeName="WMSModel.GroupGood">
-              <MappingFragment StoreEntitySet="GroupGoods">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="InventoryNotifies">
-            <EntityTypeMapping TypeName="WMSModel.InventoryNotify">
-              <MappingFragment StoreEntitySet="InventoryNotify">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="Goods" ColumnName="Goods" />
-                <ScalarProperty Name="NewInventory" ColumnName="NewInventory" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Menus">
-            <EntityTypeMapping TypeName="WMSModel.Menu">
-              <MappingFragment StoreEntitySet="Menu">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Methods">
-            <EntityTypeMapping TypeName="WMSModel.Method">
-              <MappingFragment StoreEntitySet="Method">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ModelSettings">
-            <EntityTypeMapping TypeName="WMSModel.ModelSetting">
-              <MappingFragment StoreEntitySet="ModelSetting">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ParamFunctions">
-            <EntityTypeMapping TypeName="WMSModel.ParamFunction">
-              <MappingFragment StoreEntitySet="ParamFunction">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdFunction" ColumnName="IdFunction" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Method" ColumnName="Method" />
-                <ScalarProperty Name="DataTypes" ColumnName="DataTypes" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ParentFolders">
-            <EntityTypeMapping TypeName="WMSModel.ParentFolder">
-              <MappingFragment StoreEntitySet="ParentFolder">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdFunction" ColumnName="IdFunction" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Datatype" ColumnName="Datatype" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseNotifies">
-            <EntityTypeMapping TypeName="WMSModel.PurchaseNotify">
-              <MappingFragment StoreEntitySet="PurchaseNotify">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
-                <ScalarProperty Name="NameWareHouse" ColumnName="NameWareHouse" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="modifyBy" ColumnName="modifyBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="RecentPages">
-            <EntityTypeMapping TypeName="WMSModel.RecentPage">
-              <MappingFragment StoreEntitySet="RecentPages">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="PageURL" ColumnName="PageURL" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="AccessedAt" ColumnName="AccessedAt" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SaleOrderNotifies">
-            <EntityTypeMapping TypeName="WMSModel.SaleOrderNotify">
-              <MappingFragment StoreEntitySet="SaleOrderNotify">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdSaleOrder" ColumnName="IdSaleOrder" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SalesOrders">
-            <EntityTypeMapping TypeName="WMSModel.SalesOrder">
-              <MappingFragment StoreEntitySet="SalesOrder">
-                <ScalarProperty Name="PO" ColumnName="PO" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
-                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Stocks">
-            <EntityTypeMapping TypeName="WMSModel.Stock">
-              <MappingFragment StoreEntitySet="Stock">
-                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Incomplete" ColumnName="Incomplete" />
+                <ScalarProperty Name="Suffice" ColumnName="Suffice" />
+                <ScalarProperty Name="QuantityStock" ColumnName="QuantityStock" />
+                <ScalarProperty Name="QuantityInvetory" ColumnName="QuantityInvetory" />
+                <ScalarProperty Name="IdStock" ColumnName="IdStock" />
                 <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
                 <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TypeCustomers">
-            <EntityTypeMapping TypeName="WMSModel.TypeCustomer">
-              <MappingFragment StoreEntitySet="TypeCustomer">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Des" ColumnName="Des" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TypeStatus">
-            <EntityTypeMapping TypeName="WMSModel.TypeStatu">
-              <MappingFragment StoreEntitySet="TypeStatus">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WareHouses">
-            <EntityTypeMapping TypeName="WMSModel.WareHouse">
-              <MappingFragment StoreEntitySet="WareHouse">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="MinInventory" ColumnName="MinInventory" />
-                <ScalarProperty Name="MaxInventory" ColumnName="MaxInventory" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="HeadFunctions">
-            <EntityTypeMapping TypeName="WMSModel.HeadFunction">
-              <MappingFragment StoreEntitySet="HeadFunction">
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="WMSModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="FailPass" ColumnName="FailPass" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="LoginTime" ColumnName="LoginTime" />
-                <ScalarProperty Name="WorkingHour" ColumnName="WorkingHour" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
-                <ScalarProperty Name="RoleAdmin" ColumnName="RoleAdmin" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Birth" ColumnName="Birth" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Pass" ColumnName="Pass" />
-                <ScalarProperty Name="User1" ColumnName="User" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="RoleAdmins">
-            <EntityTypeMapping TypeName="WMSModel.RoleAdmin">
-              <MappingFragment StoreEntitySet="RoleAdmin">
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="AccountManager" ColumnName="AccountManager" />
-                <ScalarProperty Name="SystemManagement" ColumnName="SystemManagement" />
-                <ScalarProperty Name="WarehouseManagement" ColumnName="WarehouseManagement" />
-                <ScalarProperty Name="SalesManager" ColumnName="SalesManager" />
-                <ScalarProperty Name="PurchaseManager" ColumnName="PurchaseManager" />
-                <ScalarProperty Name="ManageMainCategories" ColumnName="ManageMainCategories" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2746,6 +2466,31 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="IdEpc" ColumnName="IdEpc" />
                 <ScalarProperty Name="IdDetailStock" ColumnName="IdDetailStock" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetailWareHouses">
+            <EntityTypeMapping TypeName="WMSModel.DetailWareHouse">
+              <MappingFragment StoreEntitySet="DetailWareHouse">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EPCs">
+            <EntityTypeMapping TypeName="WMSModel.EPC">
+              <MappingFragment StoreEntitySet="EPC">
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="IdDelivery" ColumnName="IdDelivery" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IdEPC" ColumnName="IdEPC" />
+                <ScalarProperty Name="IdReceipt" ColumnName="IdReceipt" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2766,44 +2511,148 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="WMSModel.Role">
-              <MappingFragment StoreEntitySet="Role">
-                <ScalarProperty Name="EditAuth" ColumnName="EditAuth" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="DeleteGroupGoods" ColumnName="DeleteGroupGoods" />
-                <ScalarProperty Name="EditGroupGoods" ColumnName="EditGroupGoods" />
-                <ScalarProperty Name="AddGroupGoods" ColumnName="AddGroupGoods" />
-                <ScalarProperty Name="BackUpSQL" ColumnName="BackUpSQL" />
-                <ScalarProperty Name="DeleteUser" ColumnName="DeleteUser" />
-                <ScalarProperty Name="EditPassWord" ColumnName="EditPassWord" />
-                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
-                <ScalarProperty Name="AddUser" ColumnName="AddUser" />
-                <ScalarProperty Name="DeleteTypeCustomer" ColumnName="DeleteTypeCustomer" />
-                <ScalarProperty Name="EditTypeCustomer" ColumnName="EditTypeCustomer" />
-                <ScalarProperty Name="AddTypeCustomer" ColumnName="AddTypeCustomer" />
-                <ScalarProperty Name="DeleteCustomer" ColumnName="DeleteCustomer" />
-                <ScalarProperty Name="EditCustomer" ColumnName="EditCustomer" />
-                <ScalarProperty Name="AddCustomer" ColumnName="AddCustomer" />
-                <ScalarProperty Name="DeleteGoods" ColumnName="DeleteGoods" />
-                <ScalarProperty Name="EditGoods" ColumnName="EditGoods" />
-                <ScalarProperty Name="AddGoods" ColumnName="AddGoods" />
-                <ScalarProperty Name="DeleteWareHouse" ColumnName="DeleteWareHouse" />
-                <ScalarProperty Name="EditWareHouse" ColumnName="EditWareHouse" />
-                <ScalarProperty Name="AddWareHouse" ColumnName="AddWareHouse" />
+          <EntitySetMapping Name="Genders">
+            <EntityTypeMapping TypeName="WMSModel.Gender">
+              <MappingFragment StoreEntitySet="Gender">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Units">
-            <EntityTypeMapping TypeName="WMSModel.Unit">
-              <MappingFragment StoreEntitySet="Unit">
+          <EntitySetMapping Name="Goods">
+            <EntityTypeMapping TypeName="WMSModel.Good">
+              <MappingFragment StoreEntitySet="Goods">
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="MaximumInventory" ColumnName="MaximumInventory" />
+                <ScalarProperty Name="MinimumInventory" ColumnName="MinimumInventory" />
+                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdGroupGood" ColumnName="IdGroupGood" />
+                <ScalarProperty Name="IdUnit" ColumnName="IdUnit" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupGoods">
+            <EntityTypeMapping TypeName="WMSModel.GroupGood">
+              <MappingFragment StoreEntitySet="GroupGoods">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
                 <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HeadFunctions">
+            <EntityTypeMapping TypeName="WMSModel.HeadFunction">
+              <MappingFragment StoreEntitySet="HeadFunction">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryNotifies">
+            <EntityTypeMapping TypeName="WMSModel.InventoryNotify">
+              <MappingFragment StoreEntitySet="InventoryNotify">
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="NewInventory" ColumnName="NewInventory" />
+                <ScalarProperty Name="Goods" ColumnName="Goods" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Menus">
+            <EntityTypeMapping TypeName="WMSModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Methods">
+            <EntityTypeMapping TypeName="WMSModel.Method">
+              <MappingFragment StoreEntitySet="Method">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModelSettings">
+            <EntityTypeMapping TypeName="WMSModel.ModelSetting">
+              <MappingFragment StoreEntitySet="ModelSetting">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParamFunctions">
+            <EntityTypeMapping TypeName="WMSModel.ParamFunction">
+              <MappingFragment StoreEntitySet="ParamFunction">
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="DataTypes" ColumnName="DataTypes" />
+                <ScalarProperty Name="Method" ColumnName="Method" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdFunction" ColumnName="IdFunction" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParentFolders">
+            <EntityTypeMapping TypeName="WMSModel.ParentFolder">
+              <MappingFragment StoreEntitySet="ParentFolder">
+                <ScalarProperty Name="Datatype" ColumnName="Datatype" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdFunction" ColumnName="IdFunction" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseNotifies">
+            <EntityTypeMapping TypeName="WMSModel.PurchaseNotify">
+              <MappingFragment StoreEntitySet="PurchaseNotify">
+                <ScalarProperty Name="modifyBy" ColumnName="modifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="NameWareHouse" ColumnName="NameWareHouse" />
+                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2841,6 +2690,203 @@
                 <ScalarProperty Name="IdUser2" ColumnName="IdUser2" />
                 <ScalarProperty Name="IdUser1" ColumnName="IdUser1" />
                 <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecentPages">
+            <EntityTypeMapping TypeName="WMSModel.RecentPage">
+              <MappingFragment StoreEntitySet="RecentPages">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AccessedAt" ColumnName="AccessedAt" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PageURL" ColumnName="PageURL" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="WMSModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="EditAuth" ColumnName="EditAuth" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="DeleteGroupGoods" ColumnName="DeleteGroupGoods" />
+                <ScalarProperty Name="EditGroupGoods" ColumnName="EditGroupGoods" />
+                <ScalarProperty Name="AddGroupGoods" ColumnName="AddGroupGoods" />
+                <ScalarProperty Name="BackUpSQL" ColumnName="BackUpSQL" />
+                <ScalarProperty Name="DeleteUser" ColumnName="DeleteUser" />
+                <ScalarProperty Name="EditPassWord" ColumnName="EditPassWord" />
+                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
+                <ScalarProperty Name="AddUser" ColumnName="AddUser" />
+                <ScalarProperty Name="DeleteTypeCustomer" ColumnName="DeleteTypeCustomer" />
+                <ScalarProperty Name="EditTypeCustomer" ColumnName="EditTypeCustomer" />
+                <ScalarProperty Name="AddTypeCustomer" ColumnName="AddTypeCustomer" />
+                <ScalarProperty Name="DeleteCustomer" ColumnName="DeleteCustomer" />
+                <ScalarProperty Name="EditCustomer" ColumnName="EditCustomer" />
+                <ScalarProperty Name="AddCustomer" ColumnName="AddCustomer" />
+                <ScalarProperty Name="DeleteGoods" ColumnName="DeleteGoods" />
+                <ScalarProperty Name="EditGoods" ColumnName="EditGoods" />
+                <ScalarProperty Name="AddGoods" ColumnName="AddGoods" />
+                <ScalarProperty Name="DeleteWareHouse" ColumnName="DeleteWareHouse" />
+                <ScalarProperty Name="EditWareHouse" ColumnName="EditWareHouse" />
+                <ScalarProperty Name="AddWareHouse" ColumnName="AddWareHouse" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleAdmins">
+            <EntityTypeMapping TypeName="WMSModel.RoleAdmin">
+              <MappingFragment StoreEntitySet="RoleAdmin">
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="AccountManager" ColumnName="AccountManager" />
+                <ScalarProperty Name="SystemManagement" ColumnName="SystemManagement" />
+                <ScalarProperty Name="WarehouseManagement" ColumnName="WarehouseManagement" />
+                <ScalarProperty Name="SalesManager" ColumnName="SalesManager" />
+                <ScalarProperty Name="PurchaseManager" ColumnName="PurchaseManager" />
+                <ScalarProperty Name="ManageMainCategories" ColumnName="ManageMainCategories" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleOrderNotifies">
+            <EntityTypeMapping TypeName="WMSModel.SaleOrderNotify">
+              <MappingFragment StoreEntitySet="SaleOrderNotify">
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="IdSaleOrder" ColumnName="IdSaleOrder" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SalesOrders">
+            <EntityTypeMapping TypeName="WMSModel.SalesOrder">
+              <MappingFragment StoreEntitySet="SalesOrder">
+                <ScalarProperty Name="PO" ColumnName="PO" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stocks">
+            <EntityTypeMapping TypeName="WMSModel.Stock">
+              <MappingFragment StoreEntitySet="Stock">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="WMSModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeCustomers">
+            <EntityTypeMapping TypeName="WMSModel.TypeCustomer">
+              <MappingFragment StoreEntitySet="TypeCustomer">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Des" ColumnName="Des" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeStatus">
+            <EntityTypeMapping TypeName="WMSModel.TypeStatu">
+              <MappingFragment StoreEntitySet="TypeStatus">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Units">
+            <EntityTypeMapping TypeName="WMSModel.Unit">
+              <MappingFragment StoreEntitySet="Unit">
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="WMSModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="FailPass" ColumnName="FailPass" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="LoginTime" ColumnName="LoginTime" />
+                <ScalarProperty Name="WorkingHour" ColumnName="WorkingHour" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="RoleAdmin" ColumnName="RoleAdmin" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Birth" ColumnName="Birth" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AddRess" ColumnName="AddRess" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="User1" ColumnName="User" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WareHouses">
+            <EntityTypeMapping TypeName="WMSModel.WareHouse">
+              <MappingFragment StoreEntitySet="WareHouse">
+                <ScalarProperty Name="MaxInventory" ColumnName="MaxInventory" />
+                <ScalarProperty Name="MinInventory" ColumnName="MinInventory" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

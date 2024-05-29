@@ -100,8 +100,8 @@ namespace WMS.Controllers
         public async Task<JsonResult> Add()
         {
             try
-            {
-                var session = (ApiAccount)Session["user"];
+             {
+                var session = (User)Session["user"];
                 if (Request.Form.Count > 0)
                 {
                     if (Request.Form["warehouse"] == "-1")
@@ -115,9 +115,9 @@ namespace WMS.Controllers
                     Stock stock = new Stock()
                     {
                         Description = Request.Form["des"],
-                        CreateBy = session.FullName,
+                        CreateBy = session.Name,
                         CreateDate = DateTime.Now,
-                        ModifyBy = session.FullName,
+                        ModifyBy = session.Name,
                         ModifyDate = DateTime.Now,
                         Status = false,
                     };
@@ -291,8 +291,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 if (!string.IsNullOrEmpty(id))
                 {
                     var stock = (from p in db.Stocks

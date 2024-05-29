@@ -648,6 +648,9 @@
     <Compile Include="Models\Stock.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TypeCustomer.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
