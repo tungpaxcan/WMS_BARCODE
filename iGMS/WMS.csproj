@@ -2724,9 +2724,7 @@
     <Content Include="Scripts\PurchaseOrder.js" />
     <Content Include="Scripts\QRCODE.js" />
     <Content Include="Scripts\QRCODE.min.js" />
-    <Content Include="Scripts\Receipt.js" />
     <Content Include="Scripts\Register.js" />
-    <Content Include="Scripts\SaleOrder.js" />
     <Content Include="Scripts\Unit.js" />
     <Content Include="Scripts\Validate.js" />
     <Content Include="Scripts\WareHouse.js" />
