@@ -2693,7 +2693,6 @@
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\Delivery.js" />
     <Content Include="Scripts\ebapi-modules.js" />
     <Content Include="Scripts\EditAuth.js" />
     <Content Include="Scripts\EditUser.js" />
@@ -2724,9 +2723,7 @@
     <Content Include="Scripts\PurchaseOrder.js" />
     <Content Include="Scripts\QRCODE.js" />
     <Content Include="Scripts\QRCODE.min.js" />
-    <Content Include="Scripts\Receipt.js" />
     <Content Include="Scripts\Register.js" />
-    <Content Include="Scripts\SaleOrder.js" />
     <Content Include="Scripts\Unit.js" />
     <Content Include="Scripts\Validate.js" />
     <Content Include="Scripts\WareHouse.js" />

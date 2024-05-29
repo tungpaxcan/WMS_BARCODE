@@ -383,6 +383,66 @@ namespace WMS.Controllers
             {
                 return Json(new { code = 500, msg ="lỗi" +e.Message }, JsonRequestBehavior.AllowGet);
             }
+        }  
+        [HttpGet]
+        public JsonResult ListPO()
+        {
+            try
+            {
+                var data = (from r in db.Receipts where r.Status == true
+                            select new
+                            {
+                                id = r.Id,
+                            }).ToList();
+                return Json(new { code = 200 ,data }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { code = 500, msg ="lỗi" +e.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult Detail(string id)
+        {
+            try
+            {
+                var data = (from r in db.Receipts
+                            where r.Status == true && r.Id == id
+                            join p in db.PurchaseOrders on r.IdPurchaseOrder equals p.Id
+                            join d in db.DetailGoodOrders on r.Id equals d.IdReceipt
+                            select new
+                            {
+                                nameWarehouse = p.WareHouse.Name,
+                                idWarehouse = p.WareHouse.Id,
+                                nameCustomer = p.Customer.Name,
+                                addressCustomer = p.Customer.AddRess,
+                                idGoods = d.Good.Id,
+                                nameGoods = d.Good.Name,
+                                quantity = d.QuantityScan,
+                                groupGoods = d.Good.GroupGood.Name,
+                                unitGoods = d.Good.Unit.Name,
+                            }).ToList();
+                var dataSO = (from s in db.SalesOrders
+                              join r in db.Receipts on s.PO equals r.Id
+                              select new
+                              {
+                                  id = s.Id,
+                                  status = s.Status == true ? "Đã Quét" : "Chưa Quét",
+                              }).ToList();
+                if(data.Count() <= 0)
+                {
+                    return Json(new { code = 500, msg = "Không Có Dữ Liệu Cho PO Này" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { code = 200, data, dataSO,checkStatus = dataSO.Count()>0?true:false }, JsonRequestBehavior.AllowGet);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return Json(new { code = 500, msg = "lỗi" + e.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

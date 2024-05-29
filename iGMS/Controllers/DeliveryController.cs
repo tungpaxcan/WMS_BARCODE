@@ -20,19 +20,18 @@ namespace WMS.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult Add(int statusSave,string id, string idSaleOrder, string Des, string ArraySales, string ArrayEPC)
+        public JsonResult Add(int statusSave,string id, string idSaleOrder, string Des, string ArraySales)
         {
             try
             {
                 if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(idSaleOrder))
                 {
-                    var session = (ApiAccount)Session["user"];
+                    var session = (User)Session["user"];
                     var salesOrder = db.SalesOrders.Find(idSaleOrder);
                     var existingDelivery = db.Deliveries.Find(id);
-                    var idwarehouse = salesOrder.IdWareHouse;
+                    var idwarehouse = salesOrder.Receipt.PurchaseOrder.WareHouse.Id;
                     var InventoryStatus = db.ModelSettings.Find("inventorystatus").Status;
                     var detailSaleOrder = JsonConvert.DeserializeObject<DetailSaleOrder[]>(ArraySales);
-                    var epcs = JsonConvert.DeserializeObject<string[]>(ArrayEPC);
                     // lưu vào delivery
                     if (existingDelivery == null)
                     {
@@ -43,8 +42,8 @@ namespace WMS.Controllers
                             CreateDate = DateTime.Now,
                             ModifyDate = DateTime.Now,
                             Description = Des == "" ? null : Des,
-                            CreateBy = session.FullName,
-                            ModifyBy = session.FullName,
+                            CreateBy = session.Name,
+                            ModifyBy = session.Name,
                             Status = statusSave == 1 ? true : false,
                         };
                         db.Deliveries.Add(newDelivery);
@@ -70,7 +69,7 @@ namespace WMS.Controllers
                         foreach (var detail in detailSaleOrder)
                         {
                             
-                            var de = db.DetailSaleOrders.SingleOrDefault(d =>d.SalesOrder.IdWareHouse == idwarehouse && d.IdSaleOrder == idSaleOrder && d.IdGoods == detail.IdGoods);
+                            var de = db.DetailSaleOrders.SingleOrDefault(d =>d.SalesOrder.Receipt.PurchaseOrder.WareHouse.Id == idwarehouse && d.IdSaleOrder == idSaleOrder && d.IdGoods == detail.IdGoods);
                             if (de == null)
                             {
                                 return Json(new { status = 500, msg = rm.GetString("Mã Hàng Trong Danh Sách Chưa Có Trong Phiếu Xuất").ToString() }, JsonRequestBehavior.AllowGet);
@@ -96,20 +95,8 @@ namespace WMS.Controllers
                                     de.QuantityScan = detail.QuantityScan;
                                     de.Status = statusSave == 1 ? true : false;
                                     de.ModifyDate = DateTime.Now;
-                                    de.ModifyBy = session.FullName;
+                                    de.ModifyBy = session.Name;
                                 }
-                            }
-                        }
-                        foreach (var epc in epcs)
-                        {
-                            var e = db.EPCs.FirstOrDefault(d => d.IdEPC == epc && d.IdWareHouse == idwarehouse && d.Status == true);
-                            if (e == null)
-                            {
-                                return Json(new { status = 500,c = idgoods, msg = rm.GetString("Mã Hàng") + idgoods + rm.GetString("Có Mã EPC Là") + epc + rm.GetString("Không Tồn Tại") }, JsonRequestBehavior.AllowGet);
-                            }
-                            else
-                            {
-                                db.EPCs.Remove(e);
                             }
                         }
                         db.SaveChanges();

@@ -74,6 +74,7 @@
                         <tr role="row">
                             <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.STT</th>
                             <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Phiếu_Xuất</th>
+                            <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">PO</th>
                             <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Tên_Kho</th>
                             <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 190px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Tên_Khách_Hàng</th>
                             <th class="sorting" tabindex="0" aria-controls="kt_datatable" rowspan="1" colspan="1" style="width: 170px;" aria-label="Company Email: activate to sort column ascending">@Resources.Resource.Trạng_Thái</th>
@@ -196,6 +197,7 @@
                             var table = '<tr id="' + v.id.trim() + '" role="row" class="xuatphieu">';
                             table += '<td>' + (Stt) + '</td>';
                             table += '<td style="cursor:pointer" name="ClickToExport">' + v.id.trim() + '</td>';
+                            table += '<td>' + v.idPO + '</td>';
                             table += '<td>' + v.namewarehouse + '</td>';
                             table += '<td>' + v.namecustomer + '</td>';
                             table += '<td>' + v.status + '</td>';

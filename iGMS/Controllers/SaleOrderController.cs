@@ -69,7 +69,7 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
                 if (Request.Form.Count > 0)
                 {
                     if (Request.Form["warehouse"] == "-1")
@@ -81,18 +81,18 @@ namespace WMS.Controllers
                         return Json(new { code = 500, msg = rm.GetString("Chọn Khách Hàng Để Tiếp Tục").ToString() }, JsonRequestBehavior.AllowGet);
                     }
                     var ttSum = int.Parse(Request.Form["tt"]);
-                    var idWareHouse = Request.Form["warehouse"];
+                    var po = Request.Form["po"];
+                    var idWareHouse = db.Receipts.SingleOrDefault(x => x.Id == po).PurchaseOrder.WareHouse.Id;
                     var minInvetory = db.WareHouses.Find(idWareHouse).MinInventory;
                     var maxInvetory = db.WareHouses.Find(idWareHouse).MaxInventory;
                     SalesOrder salesOrder = new SalesOrder()
                     {
-                        IdWareHouse = Request.Form["warehouse"],
-                        IdCustomer = Request.Form["customer"],
+                        PO = po,
                         Name = Request.Form["name"],
                         Description = Request.Form["des"],
-                        CreateBy = session.FullName,
+                        CreateBy = session.Name,
                         CreateDate = DateTime.Now,
-                        ModifyBy = session.FullName,
+                        ModifyBy = session.Name,
                         ModifyDate = DateTime.Now,
                         Status = false,
                     };
@@ -109,6 +109,7 @@ namespace WMS.Controllers
                     int ttGoodsWare = 0;
                     int ttReadySale = 0;
                     int ttCurrent = 0;
+                    int quantityPO = 0;
                     foreach (string key in Request.Form)
                     {
                         if (key.StartsWith("data"))
@@ -134,7 +135,9 @@ namespace WMS.Controllers
                             {
                                 idGoods = Request.Form[key];
                                 var listReadySale = db.DetailSaleOrders
-                                   .Where(d => d.Status == false && d.SalesOrder.IdWareHouse == idWareHouse && d.IdGoods == idGoods).ToList();
+                                   .Where(d => d.Status == false && d.SalesOrder.Receipt.PurchaseOrder.WareHouse.Id == idWareHouse && d.IdGoods == idGoods).ToList();
+                                 quantityPO = (int)db.DetailGoodOrders
+                            .SingleOrDefault(d => d.PurchaseOrder.WareHouse.Id == idWareHouse && d.IdGoods == idGoods && d.IdReceipt == po).QuantityScan;
                                 var GoodsWare = db.DetailWareHouses
                                     .Where(d => d.IdWareHouse == idWareHouse && d.IdGoods == idGoods).ToList();
                                 if (GoodsWare != null)
@@ -160,10 +163,15 @@ namespace WMS.Controllers
                             {
                                 return Json(new { code = 500, msg =$"{rm.GetString("Mã Hàng")} {idGoods} {rm.GetString("Trong")} {nameWareHouse} {rm.GetString("Không Đủ Để Xuất")}"}, JsonRequestBehavior.AllowGet);
                             }
+                       
+                            if (quantityPO - ttReadySale < ttCurrent)
+                            {
+                                return Json(new { code = 500, msg =$"Không đủ hàng trong PO để xuất"}, JsonRequestBehavior.AllowGet);
+                            }
                             data[index].CreateDate = DateTime.Now;
                             data[index].ModifyDate = DateTime.Now;
-                            data[index].CreateBy = session.FullName;
-                            data[index].ModifyBy = session.FullName;
+                            data[index].CreateBy = session.Name;
+                            data[index].ModifyBy = session.Name;
                             data[index].IdSaleOrder = id;
                             data[index].Status = false;
                         }
@@ -190,8 +198,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.Name;
                 if (!string.IsNullOrEmpty(id))
                 {
                     var c = (from b in db.SalesOrders.Where(x => x.Id == id)
@@ -199,9 +207,10 @@ namespace WMS.Controllers
                              {
                                  id = b.Id,
                                  createdate = b.CreateDate.Value.Day + "/" + b.CreateDate.Value.Month + "/" + b.CreateDate.Value.Year,
-                                 customer = b.Customer.Name,
-                                 address = b.Customer.AddRess,
-                                 ware = b.WareHouse.Name,
+                                 customer = b.Receipt.PurchaseOrder.Customer.Name,
+                                 address = b.Receipt.PurchaseOrder.Customer.AddRess,
+                                 ware = b.Receipt.PurchaseOrder.WareHouse.Name,
+                                 idWare = b.Receipt.PurchaseOrder.WareHouse.Id,
                                  status = b.Status,
                              }).ToList();
 
@@ -265,13 +274,14 @@ namespace WMS.Controllers
                                              idwarehouse = b.Id,
                                              namewarehouse = b.Name,
                                              createdate = r.SalesOrder.CreateDate,
-                                             namecustomer = r.SalesOrder.Customer.Name,
+                                             namecustomer = r.SalesOrder.Receipt.PurchaseOrder.Customer.Name,
+                                             idPO = r.SalesOrder.PO,
                                              status = notScannedYet
                                          };
                 var wNotScannedYet = queryNotScannedYet.OrderByDescending(x => x.createdate).ToList();
                 var queryPuchase = from x in db.SalesOrders
-                                   join b in db.WareHouses on x.IdWareHouse equals b.Id
-                                   where x.IdWareHouse.Contains(idwarehouse) &&
+                                   join b in db.WareHouses on x.Receipt.PurchaseOrder.WareHouse.Id equals b.Id
+                                   where x.Receipt.PurchaseOrder.WareHouse.Id.Contains(idwarehouse) &&
                                          x.Id.Contains(id) &&
                                          x.CreateDate >= s &&
                                          x.CreateDate <= e &&
@@ -282,7 +292,8 @@ namespace WMS.Controllers
                                        idwarehouse = b.Id,
                                        namewarehouse = b.Name,
                                        createdate = x.CreateDate,
-                                       namecustomer = x.Customer.Name,
+                                       namecustomer = x.Receipt.PurchaseOrder.Customer.Name,
+                                       idPO = x.PO,
                                        status = x.Status == true ? scanned : notScanned
                                    };
 
