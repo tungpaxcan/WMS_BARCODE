@@ -41,7 +41,7 @@ namespace WMS.Controllers
             return View(user);
         }
 
-        public ActionResult EditAuth(string id)
+        /*public ActionResult EditAuth(string id)
         {
             if (id.Length == 0)
             {
@@ -119,7 +119,7 @@ namespace WMS.Controllers
                 //return HttpNotFound();
             //}
             return View();
-        }
+        }*/
 
         public ActionResult EditPass(string id)
         {
@@ -631,7 +631,7 @@ namespace WMS.Controllers
             }
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public JsonResult EditAuth()
         {
             try
@@ -783,7 +783,7 @@ namespace WMS.Controllers
             {
                 return Json(new { code = 500, msg = "Lỗi: " + e.Message }, JsonRequestBehavior.AllowGet);
             }
-        }
+        }*/
 
         [HttpPost]
         public JsonResult EditPassword()

@@ -22,6 +22,11 @@ namespace WMS.Models
     
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
+        public string CreateBy { get; set; }
+        public Nullable<System.DateTime> ModifyDate { get; set; }
+        public string ModifyBy { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Good> Goods { get; set; }

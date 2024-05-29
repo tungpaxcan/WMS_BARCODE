@@ -489,6 +489,11 @@
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="350" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -1302,9 +1307,9 @@
           <NavigationProperty Name="DetailWareHouses" Relationship="Self.FK_DetailWareHouse_Goods" FromRole="Goods" ToRole="DetailWareHouse" />
           <NavigationProperty Name="EPCs" Relationship="Self.FK_EPC_Goods" FromRole="Goods" ToRole="EPC" />
           <NavigationProperty Name="GroupGood" Relationship="Self.FK_Goods_GroupGoods" FromRole="Goods" ToRole="GroupGoods" />
-          <NavigationProperty Name="Unit" Relationship="Self.FK_Goods_Unit" FromRole="Goods" ToRole="Unit" />
           <NavigationProperty Name="WareHouse" Relationship="Self.FK_Goods_WareHouse" FromRole="Goods" ToRole="WareHouse" />
           <Property Name="Line" Type="Int32" />
+          <NavigationProperty Name="Unit" Relationship="WMSModel.FK_Goods_Unit" FromRole="Good" ToRole="Unit" />
         </EntityType>
         <EntityType Name="GroupGood">
           <Key>
@@ -1535,14 +1540,6 @@
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <NavigationProperty Name="PurchaseOrders" Relationship="Self.FK_PurchaseOrder_TypeStatus" FromRole="TypeStatus" ToRole="PurchaseOrder" />
-        </EntityType>
-        <EntityType Name="Unit">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Goods" Relationship="Self.FK_Goods_Unit" FromRole="Unit" ToRole="Goods" />
         </EntityType>
         <EntityType Name="WareHouse">
           <Key>
@@ -1806,18 +1803,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Goods_Unit">
-          <End Role="Unit" Type="Self.Unit" Multiplicity="0..1" />
-          <End Role="Goods" Type="Self.Good" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Unit">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Goods">
-              <PropertyRef Name="IdUnit" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Goods_WareHouse">
           <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
           <End Role="Goods" Type="Self.Good" Multiplicity="*" />
@@ -1907,7 +1892,6 @@
           <EntitySet Name="Stocks" EntityType="Self.Stock" />
           <EntitySet Name="TypeCustomers" EntityType="Self.TypeCustomer" />
           <EntitySet Name="TypeStatus" EntityType="Self.TypeStatu" />
-          <EntitySet Name="Units" EntityType="Self.Unit" />
           <EntitySet Name="WareHouses" EntityType="Self.WareHouse" />
           <AssociationSet Name="FK_ChildrenFolder_ParentFolder" Association="Self.FK_ChildrenFolder_ParentFolder">
             <End Role="ParentFolder" EntitySet="ParentFolders" />
@@ -1989,10 +1973,6 @@
             <End Role="GroupGoods" EntitySet="GroupGoods" />
             <End Role="Goods" EntitySet="Goods" />
           </AssociationSet>
-          <AssociationSet Name="FK_Goods_Unit" Association="Self.FK_Goods_Unit">
-            <End Role="Unit" EntitySet="Units" />
-            <End Role="Goods" EntitySet="Goods" />
-          </AssociationSet>
           <AssociationSet Name="FK_Goods_WareHouse" Association="Self.FK_Goods_WareHouse">
             <End Role="WareHouse" EntitySet="WareHouses" />
             <End Role="Goods" EntitySet="Goods" />
@@ -2042,6 +2022,11 @@
           <AssociationSet Name="FK_Users_Role" Association="WMSModel.FK_Users_Role">
             <End Role="Role" EntitySet="Roles" />
             <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <EntitySet Name="Units" EntityType="WMSModel.Unit" />
+          <AssociationSet Name="FK_Goods_Unit" Association="WMSModel.FK_Goods_Unit">
+            <End Role="Unit" EntitySet="Units" />
+            <End Role="Good" EntitySet="Goods" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="HeadFunction">
@@ -2218,6 +2203,31 @@
             </Principal>
             <Dependent Role="User">
               <PropertyRef Name="Role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Unit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_Unit" FromRole="Unit" ToRole="Good" />
+        </EntityType>
+        <Association Name="FK_Goods_Unit">
+          <End Type="WMSModel.Unit" Role="Unit" Multiplicity="0..1" />
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Unit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Good">
+              <PropertyRef Name="IdUnit" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2660,14 +2670,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Units">
-            <EntityTypeMapping TypeName="WMSModel.Unit">
-              <MappingFragment StoreEntitySet="Unit">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="WareHouses">
             <EntityTypeMapping TypeName="WMSModel.WareHouse">
               <MappingFragment StoreEntitySet="WareHouse">
@@ -2783,6 +2785,19 @@
                 <ScalarProperty Name="DeleteWareHouse" ColumnName="DeleteWareHouse" />
                 <ScalarProperty Name="EditWareHouse" ColumnName="EditWareHouse" />
                 <ScalarProperty Name="AddWareHouse" ColumnName="AddWareHouse" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Units">
+            <EntityTypeMapping TypeName="WMSModel.Unit">
+              <MappingFragment StoreEntitySet="Unit">
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

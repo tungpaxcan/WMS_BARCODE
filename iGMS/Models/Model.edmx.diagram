@@ -33,7 +33,6 @@
         <EntityTypeShape EntityType="WMSModel.Stock" Width="1.5" PointX="3.75" PointY="29.875" IsExpanded="true" />
         <EntityTypeShape EntityType="WMSModel.TypeCustomer" Width="1.5" PointX="1.5" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="WMSModel.TypeStatu" Width="1.5" PointX="3.75" PointY="26" IsExpanded="true" />
-        <EntityTypeShape EntityType="WMSModel.Unit" Width="1.5" PointX="6.75" PointY="27.625" IsExpanded="true" />
         <EntityTypeShape EntityType="WMSModel.WareHouse" Width="1.5" PointX="0.75" PointY="17.25" IsExpanded="true" />
         <AssociationConnector Association="WMSModel.FK_ChildrenFolder_ParentFolder" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_Customer_GroupGoods" ManuallyRouted="false" />
@@ -55,7 +54,6 @@
         <AssociationConnector Association="WMSModel.FK_EPC_Goods" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_EPC_WareHouse1" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_Goods_GroupGoods" ManuallyRouted="false" />
-        <AssociationConnector Association="WMSModel.FK_Goods_Unit" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_Goods_WareHouse" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_PurchaseOrder_TypeStatus" ManuallyRouted="false" />
         <AssociationConnector Association="WMSModel.FK_PurchaseOrder_WareHouse" ManuallyRouted="false" />
@@ -73,6 +71,8 @@
         <AssociationConnector Association="WMSModel.FK_ParamFunction_Function" />
         <EntityTypeShape EntityType="WMSModel.Role" Width="1.5" PointX="11.75" PointY="7.875" />
         <AssociationConnector Association="WMSModel.FK_Users_Role" />
+        <EntityTypeShape EntityType="WMSModel.Unit" Width="1.5" PointX="14.375" PointY="11" />
+        <AssociationConnector Association="WMSModel.FK_Goods_Unit" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

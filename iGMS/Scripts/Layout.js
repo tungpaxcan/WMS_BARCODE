@@ -7,7 +7,7 @@ $(function UserSession() {
         success: function (data) {
             if (data.code == 200) {
                 $('span[name="userSession"]').append(data.user.FullName);
-                $('span[name="firstUserSession"]').append(data.user.UserName);
+                $('span[name="firstUserSession"]').append(data.Name);
                 $('span[name="nameServer"]').append(data.server);
                 $('span[name="nameData"]').append(data.database);
 /*                $('span[name="firstUserSession"]').append(data.user.substring(0,1));*/

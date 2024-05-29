@@ -51,7 +51,7 @@ namespace WMS.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EPC> EPCs { get; set; }
         public virtual GroupGood GroupGood { get; set; }
-        public virtual Unit Unit { get; set; }
         public virtual WareHouse WareHouse { get; set; }
+        public virtual Unit Unit { get; set; }
     }
 }

@@ -151,7 +151,7 @@ namespace WMS.Controllers
                             checkUser.FailPass = 0;
                             db.SaveChanges();
 
-                            var apiAccount = new ApiAccount();
+                            /*var apiAccount = new ApiAccount();
                             if(checkUser.Id == "NV0000001")
                             {
                                 apiAccount.FullName = checkUser.Name;
@@ -179,8 +179,8 @@ namespace WMS.Controllers
                                 apiRole.RoleDes = "Nhân viên";
                                 listApiRole.Add(apiRole);
                                 apiAccount.ApiRoles = listApiRole;
-                            }
-                            Session["user"] = apiAccount;
+                            }*/
+                            Session["user"] = checkUser;
                             Session["roleadmin"] = db.RoleAdmins.Find(checkUser.RoleAdmin);
                             Session["role"] = db.Roles.Find(checkUser.Role);
                             return Json(new { code = 200, msg = "Đăng Nhập Thành Công", url = "/Home/Index" }, JsonRequestBehavior.AllowGet);

@@ -57,8 +57,8 @@ var KTLogin = function () {
 
             validation.validate().then(function (status) {
                 if (status == 'Valid') {
-                    //SignIn();
-                    checkLoginAPI();
+                    SignIniGMS();
+                    //checkLoginAPI();
                 } else {
                     swal.fire({
                         text: "Xin Lỗi, Nhập Đủ Dữ Liệu.",
@@ -144,7 +144,8 @@ var KTLogin = function () {
         //        })
         //    }
         //}
-        function checkLoginAPI() {
+
+        /*function checkLoginAPI() {
             var form = new FormData();
             form.append("name", "/Login/Login");
 
@@ -175,11 +176,11 @@ var KTLogin = function () {
                     toastr.error("Lỗi:", e);
                 }
             })
-        }
-        
-        function SignIn(url, name, type, params, values) {
+        }*/
+
+        /*function SignIn(url, name, type, params, values) {
             var formdata = $('#kt_login_signin_form').serialize();
-            /* var host = localStorage.getItem("host")*/
+            var host = localStorage.getItem("host")
             var getValue = formdata.split("&");
             if (type.toLowerCase() === "get") {
                 var input = "";
@@ -250,9 +251,9 @@ var KTLogin = function () {
                     });
                 }
             })
-        }
+        }*/
 
-        function SignInV1() {
+        function SignIniGMS() {
             var formdata = $('#kt_login_signin_form').serialize()
             /* var host = localStorage.getItem("host")*/
             $.ajax({
@@ -263,10 +264,21 @@ var KTLogin = function () {
                 contentType: false,
                 processData: false,
                 success: function (data) {
-                    console.log(data);
                     if (data.code === 200) {
                         console.log("Login local");
-                        window.location.href = "/";
+                        swal.fire({
+                            title: "Thành Công",
+                            text: data.msg,
+                            icon: "success",
+                            buttonsStyling: false,
+                            heightAuto: false,
+                            showConfirmButton: false,
+                            timer: 1500
+
+                        })
+                        setTimeout(() => {
+                            window.location.href = "/";
+                        }, 1000);
                     } else {
                         swal.fire({
                             title: "Có lỗi!",
@@ -301,7 +313,7 @@ var KTLogin = function () {
             })
         }
 
-        function saveSession(data) {
+        /*function saveSession(data) {
             var UserData = data;
             var UserName = UserData.user;
             var FullName = UserData.fullName
@@ -359,7 +371,9 @@ var KTLogin = function () {
                     });
                 }
             })
-        }
+        }*/
+
+
         // Handle forgot button
         $('#kt_login_forgot').on('click', function (e) {
             e.preventDefault();

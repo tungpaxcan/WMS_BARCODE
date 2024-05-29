@@ -87,7 +87,27 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var User = (ApiAccount)Session["user"];
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if(roleAdmin != null)
+                {
+                    if (roleAdmin.PurchaseManager == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
+                }
+                
+                /*var User = (User)Session["user"];
                 var checkRole = new SetRole();
                 //if (User.DepartmentName == "CUNG ỨNG - XUẤT NHẬP KHẨU" || User.ApiRoles.Any(role=>role.RoleName == "Admin" || role.RoleName == "BillManager" || role.RoleName == "Manager"))
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
@@ -121,7 +141,8 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
-                }
+                }*/
+
             }
             catch (Exception e)
             {
@@ -134,8 +155,29 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if (roleAdmin != null)
+                {
+                    if (roleAdmin.WarehouseManagement == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
+                }
+
+                /*db.Configuration.ProxyCreationEnabled = false;
                 var checkRole = new SetRole();
-                var User = (ApiAccount)Session["user"];
+                var User = (User)Session["user"];
                 //if(User.DepartmentName == "BỘ PHẬN KHO XƯỞNG" || User.DepartmentName == "KHO VP HCM" || User.DepartmentName == "KHO - GIAO NHẬN (NX)" || User.ApiRoles.Any(role => role.RoleName =="Admin" || role.RoleName== "Manager"))
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
                 {
@@ -168,7 +210,7 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
-                }
+                }*/
             }
             catch (Exception e)
             {
@@ -180,9 +222,9 @@ namespace WMS.Controllers
         {
             try
             {
-                db.Configuration.ProxyCreationEnabled = false;
+                /*db.Configuration.ProxyCreationEnabled = false;
                 var checkRole = new SetRole();
-                var User = (ApiAccount)Session["user"];
+                var User = (User)Session["user"];
                 //if (User.DepartmentName == "KINH DOANH BARCODE END USER" || User.DepartmentName == "KINH DOANH BARCODE DEALER" || User.DepartmentName == "KINH DOANH HÓA CHẤT END USER" || User.DepartmentName== "KINH DOANH HÓA CHẤT DEALER" 
                 //   || User.DepartmentName == "SALE ADMIN" || User.DepartmentName == "SALE ADMIN ĐỆ NHẤT" || User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "BillManager" ||  role.RoleName == "Manager"))
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
@@ -216,6 +258,27 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
+                }*/
+
+                db.Configuration.ProxyCreationEnabled = false;
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if (roleAdmin != null)
+                {
+                    if (roleAdmin.SalesManager == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -228,9 +291,9 @@ namespace WMS.Controllers
         {
             try
             {
-                db.Configuration.ProxyCreationEnabled = false;
+                /*db.Configuration.ProxyCreationEnabled = false;
                 var checkRole = new SetRole();
-                var User = (ApiAccount)Session["user"];
+                var User = (User)Session["user"];
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
                 {
                     return Json(new { code = 300 }, JsonRequestBehavior.AllowGet);
@@ -262,6 +325,27 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
+                }*/
+
+                db.Configuration.ProxyCreationEnabled = false;
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if (roleAdmin != null)
+                {
+                    if (roleAdmin.SystemManagement == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -274,8 +358,8 @@ namespace WMS.Controllers
         {
             try
             {
-                db.Configuration.ProxyCreationEnabled = false;
-                var User = (ApiAccount)Session["user"];
+                /*db.Configuration.ProxyCreationEnabled = false;
+                var User = (User)Session["user"];
                 var checkRole = new SetRole();
                 //if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
@@ -309,6 +393,27 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
+                }*/
+
+                db.Configuration.ProxyCreationEnabled = false;
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if (roleAdmin != null)
+                {
+                    if (roleAdmin.AccountManager == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -322,8 +427,8 @@ namespace WMS.Controllers
         {
             try
             {
-                db.Configuration.ProxyCreationEnabled = false;
-                var User = (ApiAccount)Session["user"];
+                /*db.Configuration.ProxyCreationEnabled = false;
+                var User = (User)Session["user"];
                 var checkRole = new SetRole();
                 //if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
                 if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
@@ -357,6 +462,27 @@ namespace WMS.Controllers
                             return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
                         }
                     }
+                }*/
+
+                db.Configuration.ProxyCreationEnabled = false;
+                var user = (User)Session["user"];
+                var roleAdmin = (from i in db.RoleAdmins
+                                 where i.Id == user.RoleAdmin
+                                 select i).FirstOrDefault();
+                if (roleAdmin != null)
+                {
+                    if (roleAdmin.ManageMainCategories == true)
+                    {
+                        return Json(new { code = 200 }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { code = 400 }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { code = 500 }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -368,31 +494,55 @@ namespace WMS.Controllers
         [HttpPost]
         public JsonResult CheckRole()
         {
-            var User = (ApiAccount)Session["user"];
-            //if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
-            var href = Request.Form["href"];
-            var id = Request.Form["id"];
-            if (String.IsNullOrEmpty(href))
+            try
             {
-                return Json(new { code = 400 });
-            }
-            else
-            {
-                if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
+                var User = (User)Session["user"];
+                //if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
+                var href = Request.Form["href"];
+                var id = Request.Form["id"];
+                var checkRole = new SetRole();
+                if (String.IsNullOrEmpty(href))
                 {
-                    return Json(new { code = 200, success = true });
+                    return Json(new { code = 400 });
                 }
                 else
                 {
-                    var userId = User.UserName;
-                    var userRole = (from i in db.Roles
-                                    where i.Username == userId
-                                    select i).FirstOrDefault();
-                    if (userRole != null)
+                    /*if (User.ApiRoles.Any(role => role.RoleName == "Admin" || role.RoleName == "Manager"))
                     {
-                        var checkRole = new SetRole();
+                        return Json(new { code = 200, success = true });
+                    }
+                    else
+                    {
+                        var userId = User.UserName;
+                        var userRole = (from i in db.Roles
+                                        where i.Username == userId
+                                        select i).FirstOrDefault();
+                        if (userRole != null)
+                        {
+                            var checkRole = new SetRole();
+                            var nameFunction = Request.Form["function"];
+                            if (checkRole.checkRole(userRole.Username, nameFunction))
+                            {
+                                return Json(new { code = 200, success = true });
+                            }
+                            else
+                            {
+                                return Json(new { code = 200, success = false });
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { code = 500 });
+                        }
+                    }*/
+
+                    var role = (from i in db.Roles
+                                where i.Id == User.Role
+                                select i).FirstOrDefault();
+                    if (role != null)
+                    {
                         var nameFunction = Request.Form["function"];
-                        if (checkRole.checkRole(userRole.Username, nameFunction))
+                        if (checkRole.checkRole((int)User.Role, nameFunction))
                         {
                             return Json(new { code = 200, success = true });
                         }
@@ -403,9 +553,13 @@ namespace WMS.Controllers
                     }
                     else
                     {
-                        return Json(new { code = 500 });
+                        return Json(new { code = 400 });
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                return Json(new { code = 500, msg = "Sai !!!" + e.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 

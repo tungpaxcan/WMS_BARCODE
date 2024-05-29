@@ -29,6 +29,11 @@ function Unit(pagenum, page, seach) {
                     table += '<td>' + (STT++) + '</td>'
                     table += '<td>' + v.id + '</td>'
                     table += '<td>' + v.name + '</td>'
+                    if (v.description == null) {
+                        table += '<td>'+'</td>';
+                    } else {
+                        table += '<td>' + v.description + '</td>';
+                    }
                     table += '<td class="action" nowrap="nowrap">';
                     table += '<div class="dropdown dropdown-inline">';
                     table += '<a href="" class="btn btn-sm btn-clean btn-icon" data-toggle="dropdown">';
@@ -107,12 +112,14 @@ $('#seach').on('keyup', function (e) {
 //----------------Add::Unit---------------------
 function Add() {
     var name = $('#name').val().trim();
+    var id = $('#id').val().trim();
+    var description = $('#description').val().trim();
     $('.Loading').css("display", "block");
     $.ajax({
         url: '/unit/Add',
         type: 'post',
         data: {
-            name
+            name, id, description
         },
         success: function (data) {
             if (data.code == 200) {
@@ -136,13 +143,14 @@ function Add() {
 function Edit() {
     var name = $('#name').val().trim();
     var id = $('#id').val().trim();
+    var description = $('#description').val().trim();
     $('.Loading').css("display", "block");
     console.log(name,id)
     $.ajax({
         url: '/unit/Edit',
         type: 'post',
         data: {
-            id, name
+            id, name, description
         },
         success: function (data) {
             if (data.code == 200) {
@@ -163,6 +171,7 @@ function Edit() {
 
 //----------------Delete::Unit---------------------
 $(document).on('click', 'a[name="delete"]', function () {
+    var id = $(this).closest('tr').attr('id');
     var formData = new FormData();
     formData.append("href", '/GroupGoods/Delete');
     formData.append("function", 'Unit');
@@ -177,7 +186,7 @@ $(document).on('click', 'a[name="delete"]', function () {
         success: function (response) {
             if (response.code === 200) {
                 if (response.success) {
-                    var id = $(this).closest('tr').attr('id');
+                    
                     Swal.fire({
                         title: resources.DeleteWarning,
                         text: resources.ConfirmDeleteWarning,
