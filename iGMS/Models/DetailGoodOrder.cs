@@ -28,7 +28,7 @@ namespace WMS.Models
         public Nullable<double> QuantityScan { get; set; }
     
         public virtual Good Good { get; set; }
-        public virtual PurchaseOrder PurchaseOrder { get; set; }
         public virtual Receipt Receipt { get; set; }
+        public virtual PurchaseOrder PurchaseOrder { get; set; }
     }
 }

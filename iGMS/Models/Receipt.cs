@@ -18,6 +18,7 @@ namespace WMS.Models
         public Receipt()
         {
             this.DetailGoodOrders = new HashSet<DetailGoodOrder>();
+            this.SalesOrders = new HashSet<SalesOrder>();
         }
     
         public string Id { get; set; }
@@ -33,6 +34,8 @@ namespace WMS.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DetailGoodOrder> DetailGoodOrders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SalesOrder> SalesOrders { get; set; }
         public virtual PurchaseOrder PurchaseOrder { get; set; }
     }
 }

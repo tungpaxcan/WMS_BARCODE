@@ -102,7 +102,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdGoods" Type="varchar" MaxLength="20" />
           <Property Name="IdReceipt" Type="varchar" MaxLength="20" />
-          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="7" />
+          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="20" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
@@ -331,7 +331,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="IdTypeStatus" Type="int" />
           <Property Name="IdWareHouse" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" />
@@ -344,13 +344,16 @@
           <Property Name="Status" Type="bit" />
           <Property Name="Deliver" Type="nvarchar(max)" />
           <Property Name="IdCustomer" Type="varchar" MaxLength="100" />
+          <Property Name="ExpiryDate" Type="datetime" />
+          <Property Name="AnnouceDate" Type="datetime" />
+          <Property Name="ScanDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Receipt">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="7" />
+          <Property Name="IdPurchaseOrder" Type="varchar" MaxLength="20" />
           <Property Name="IdUser1" Type="varchar" MaxLength="20" />
           <Property Name="IdUser2" Type="varchar" MaxLength="20" />
           <Property Name="Description" Type="nvarchar(max)" />
@@ -442,6 +445,7 @@
           <Property Name="ModifyDate" Type="datetime" />
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
+          <Property Name="PO" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="Stock">
           <Key>
@@ -882,6 +886,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder">
+          <End Role="Receipt" Type="Self.Receipt" Multiplicity="0..1" />
+          <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SalesOrder_WareHouse">
           <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
           <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
@@ -1071,6 +1087,10 @@
             <End Role="Customer" EntitySet="Customer" />
             <End Role="SalesOrder" EntitySet="SalesOrder" />
           </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="Self.FK_SalesOrder_PurchaseOrder">
+            <End Role="Receipt" EntitySet="Receipt" />
+            <End Role="SalesOrder" EntitySet="SalesOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_SalesOrder_WareHouse" Association="Self.FK_SalesOrder_WareHouse">
             <End Role="WareHouse" EntitySet="WareHouse" />
             <End Role="SalesOrder" EntitySet="SalesOrder" />
@@ -1157,8 +1177,8 @@
           <Property Name="Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="GroupGood" Relationship="Self.FK_Customer_GroupGoods" FromRole="Customer" ToRole="GroupGoods" />
           <NavigationProperty Name="TypeCustomer" Relationship="Self.FK_Customer_TypeCustomer" FromRole="Customer" ToRole="TypeCustomer" />
-          <NavigationProperty Name="PurchaseOrders" Relationship="Self.FK_PurchaseOrder_Customer" FromRole="Customer" ToRole="PurchaseOrder" />
           <NavigationProperty Name="SalesOrders" Relationship="Self.FK_SalesOrder_Customer" FromRole="Customer" ToRole="SalesOrder" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_Customer" FromRole="Customer" ToRole="PurchaseOrder" />
         </EntityType>
         <EntityType Name="Delivery">
           <Key>
@@ -1192,7 +1212,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdGoods" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdReceipt" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdPurchaseOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -1202,8 +1222,8 @@
           <Property Name="Quantity" Type="Double" />
           <Property Name="QuantityScan" Type="Double" />
           <NavigationProperty Name="Good" Relationship="Self.FK_DetailGoodOrder_Goods" FromRole="DetailGoodOrder" ToRole="Goods" />
-          <NavigationProperty Name="PurchaseOrder" Relationship="Self.FK_DetailGoodOrder_PurchaseOrder" FromRole="DetailGoodOrder" ToRole="PurchaseOrder" />
           <NavigationProperty Name="Receipt" Relationship="Self.FK_DetailGoodOrder_Receipt" FromRole="DetailGoodOrder" ToRole="Receipt" />
+          <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_DetailGoodOrder_PurchaseOrder" FromRole="DetailGoodOrder" ToRole="PurchaseOrder" />
         </EntityType>
         <EntityType Name="DetailSaleOrder">
           <Key>
@@ -1412,35 +1432,12 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="modifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="PurchaseOrder">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdTypeStatus" Type="Int32" />
-          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <Property Name="Deliver" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IdCustomer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Customer" Relationship="Self.FK_PurchaseOrder_Customer" FromRole="PurchaseOrder" ToRole="Customer" />
-          <NavigationProperty Name="DetailGoodOrders" Relationship="Self.FK_DetailGoodOrder_PurchaseOrder" FromRole="PurchaseOrder" ToRole="DetailGoodOrder" />
-          <NavigationProperty Name="TypeStatu" Relationship="Self.FK_PurchaseOrder_TypeStatus" FromRole="PurchaseOrder" ToRole="TypeStatus" />
-          <NavigationProperty Name="WareHouse" Relationship="Self.FK_PurchaseOrder_WareHouse" FromRole="PurchaseOrder" ToRole="WareHouse" />
-          <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipt_PurchaseOrder" FromRole="PurchaseOrder" ToRole="Receipt" />
-        </EntityType>
         <EntityType Name="Receipt">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdPurchaseOrder" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdUser1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IdUser2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1450,7 +1447,8 @@
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
           <NavigationProperty Name="DetailGoodOrders" Relationship="Self.FK_DetailGoodOrder_Receipt" FromRole="Receipt" ToRole="DetailGoodOrder" />
-          <NavigationProperty Name="PurchaseOrder" Relationship="Self.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="Receipt" ToRole="SalesOrder" />
+          <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
         </EntityType>
         <EntityType Name="RecentPage">
           <Key>
@@ -1497,6 +1495,8 @@
           <NavigationProperty Name="Deliveries" Relationship="Self.FK_Delivery_SalesOrder" FromRole="SalesOrder" ToRole="Delivery" />
           <NavigationProperty Name="DetailSaleOrders" Relationship="Self.FK_DetailSaleOrder_SalesOrder1" FromRole="SalesOrder" ToRole="DetailSaleOrder" />
           <NavigationProperty Name="WareHouse" Relationship="Self.FK_SalesOrder_WareHouse" FromRole="SalesOrder" ToRole="WareHouse" />
+          <Property Name="PO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="SalesOrder" ToRole="Receipt" />
         </EntityType>
         <EntityType Name="Stock">
           <Key>
@@ -1539,7 +1539,7 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="PurchaseOrders" Relationship="Self.FK_PurchaseOrder_TypeStatus" FromRole="TypeStatus" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_TypeStatus" FromRole="TypeStatu" ToRole="PurchaseOrder" />
         </EntityType>
         <EntityType Name="WareHouse">
           <Key>
@@ -1560,8 +1560,8 @@
           <NavigationProperty Name="DetailWareHouses" Relationship="Self.FK_DetailWareHouse_WareHouse" FromRole="WareHouse" ToRole="DetailWareHouse" />
           <NavigationProperty Name="EPCs" Relationship="Self.FK_EPC_WareHouse1" FromRole="WareHouse" ToRole="EPC" />
           <NavigationProperty Name="Goods" Relationship="Self.FK_Goods_WareHouse" FromRole="WareHouse" ToRole="Goods" />
-          <NavigationProperty Name="PurchaseOrders" Relationship="Self.FK_PurchaseOrder_WareHouse" FromRole="WareHouse" ToRole="PurchaseOrder" />
           <NavigationProperty Name="SalesOrders" Relationship="Self.FK_SalesOrder_WareHouse" FromRole="WareHouse" ToRole="SalesOrder" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="WareHouse" ToRole="PurchaseOrder" />
         </EntityType>
         <Association Name="FK_ChildrenFolder_ParentFolder">
           <End Role="ParentFolder" Type="Self.ParentFolder" Multiplicity="0..1" />
@@ -1596,18 +1596,6 @@
             </Principal>
             <Dependent Role="Customer">
               <PropertyRef Name="IdTypeCustomer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PurchaseOrder_Customer">
-          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
-          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseOrder">
-              <PropertyRef Name="IdCustomer" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1656,18 +1644,6 @@
             </Principal>
             <Dependent Role="DetailGoodOrder">
               <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailGoodOrder_PurchaseOrder">
-          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="0..1" />
-          <End Role="DetailGoodOrder" Type="Self.DetailGoodOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PurchaseOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailGoodOrder">
-              <PropertyRef Name="IdPurchaseOrder" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1815,42 +1791,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PurchaseOrder_TypeStatus">
-          <End Role="TypeStatus" Type="Self.TypeStatu" Multiplicity="0..1" />
-          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TypeStatus">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseOrder">
-              <PropertyRef Name="IdTypeStatus" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PurchaseOrder_WareHouse">
-          <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
-          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseOrder">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Receipt_PurchaseOrder">
-          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="0..1" />
-          <End Role="Receipt" Type="Self.Receipt" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PurchaseOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Receipt">
-              <PropertyRef Name="IdPurchaseOrder" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_SalesOrder_WareHouse">
           <End Role="WareHouse" Type="Self.WareHouse" Multiplicity="0..1" />
           <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
@@ -1884,7 +1824,6 @@
           <EntitySet Name="ParamFunctions" EntityType="Self.ParamFunction" />
           <EntitySet Name="ParentFolders" EntityType="Self.ParentFolder" />
           <EntitySet Name="PurchaseNotifies" EntityType="Self.PurchaseNotify" />
-          <EntitySet Name="PurchaseOrders" EntityType="Self.PurchaseOrder" />
           <EntitySet Name="Receipts" EntityType="Self.Receipt" />
           <EntitySet Name="RecentPages" EntityType="Self.RecentPage" />
           <EntitySet Name="SaleOrderNotifies" EntityType="Self.SaleOrderNotify" />
@@ -1905,10 +1844,6 @@
             <End Role="TypeCustomer" EntitySet="TypeCustomers" />
             <End Role="Customer" EntitySet="Customers" />
           </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrder_Customer" Association="Self.FK_PurchaseOrder_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
           <AssociationSet Name="FK_SalesOrder_Customer" Association="Self.FK_SalesOrder_Customer">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="SalesOrder" EntitySet="SalesOrders" />
@@ -1923,10 +1858,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_DetailGoodOrder_Goods" Association="Self.FK_DetailGoodOrder_Goods">
             <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailGoodOrder_PurchaseOrder" Association="Self.FK_DetailGoodOrder_PurchaseOrder">
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
             <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
           </AssociationSet>
           <AssociationSet Name="FK_DetailGoodOrder_Receipt" Association="Self.FK_DetailGoodOrder_Receipt">
@@ -1977,18 +1908,6 @@
             <End Role="WareHouse" EntitySet="WareHouses" />
             <End Role="Goods" EntitySet="Goods" />
           </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrder_TypeStatus" Association="Self.FK_PurchaseOrder_TypeStatus">
-            <End Role="TypeStatus" EntitySet="TypeStatus" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrder_WareHouse" Association="Self.FK_PurchaseOrder_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Receipt_PurchaseOrder" Association="Self.FK_Receipt_PurchaseOrder">
-            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
-            <End Role="Receipt" EntitySet="Receipts" />
-          </AssociationSet>
           <AssociationSet Name="FK_SalesOrder_WareHouse" Association="Self.FK_SalesOrder_WareHouse">
             <End Role="WareHouse" EntitySet="WareHouses" />
             <End Role="SalesOrder" EntitySet="SalesOrders" />
@@ -2027,6 +1946,31 @@
           <AssociationSet Name="FK_Goods_Unit" Association="WMSModel.FK_Goods_Unit">
             <End Role="Unit" EntitySet="Units" />
             <End Role="Good" EntitySet="Goods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
+            <End Role="Receipt" EntitySet="Receipts" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+          <EntitySet Name="PurchaseOrders" EntityType="WMSModel.PurchaseOrder" />
+          <AssociationSet Name="FK_PurchaseOrder_Customer" Association="WMSModel.FK_PurchaseOrder_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailGoodOrder_PurchaseOrder" Association="WMSModel.FK_DetailGoodOrder_PurchaseOrder">
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_TypeStatus" Association="WMSModel.FK_PurchaseOrder_TypeStatus">
+            <End Role="TypeStatu" EntitySet="TypeStatus" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_WareHouse" Association="WMSModel.FK_PurchaseOrder_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Receipt_PurchaseOrder" Association="WMSModel.FK_Receipt_PurchaseOrder">
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="Receipt" EntitySet="Receipts" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="HeadFunction">
@@ -2228,6 +2172,104 @@
             </Principal>
             <Dependent Role="Good">
               <PropertyRef Name="IdUnit" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder">
+          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PurchaseOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdTypeStatus" Type="Int32" />
+          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Deliver" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IdCustomer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
+          <Property Name="ScanDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Customer" Relationship="WMSModel.FK_PurchaseOrder_Customer" FromRole="PurchaseOrder" ToRole="Customer" />
+          <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_PurchaseOrder" FromRole="PurchaseOrder" ToRole="DetailGoodOrder" />
+          <NavigationProperty Name="TypeStatu" Relationship="WMSModel.FK_PurchaseOrder_TypeStatus" FromRole="PurchaseOrder" ToRole="TypeStatu" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="PurchaseOrder" ToRole="WareHouse" />
+          <NavigationProperty Name="Receipts" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="PurchaseOrder" ToRole="Receipt" />
+        </EntityType>
+        <Association Name="FK_PurchaseOrder_Customer">
+          <End Type="WMSModel.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseOrder">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailGoodOrder_PurchaseOrder">
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailGoodOrder" Role="DetailGoodOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailGoodOrder">
+              <PropertyRef Name="IdPurchaseOrder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseOrder_TypeStatus">
+          <End Type="WMSModel.TypeStatu" Role="TypeStatu" Multiplicity="0..1" />
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeStatu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseOrder">
+              <PropertyRef Name="IdTypeStatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseOrder_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseOrder">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Receipt_PurchaseOrder">
+          <End Type="WMSModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="0..1" />
+          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Receipt">
+              <PropertyRef Name="IdPurchaseOrder" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2547,25 +2589,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseOrders">
-            <EntityTypeMapping TypeName="WMSModel.PurchaseOrder">
-              <MappingFragment StoreEntitySet="PurchaseOrder">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Deliver" ColumnName="Deliver" />
-                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Receipts">
             <EntityTypeMapping TypeName="WMSModel.Receipt">
               <MappingFragment StoreEntitySet="Receipt">
@@ -2611,6 +2634,7 @@
           <EntitySetMapping Name="SalesOrders">
             <EntityTypeMapping TypeName="WMSModel.SalesOrder">
               <MappingFragment StoreEntitySet="SalesOrder">
+                <ScalarProperty Name="PO" ColumnName="PO" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
                 <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
@@ -2798,6 +2822,28 @@
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseOrders">
+            <EntityTypeMapping TypeName="WMSModel.PurchaseOrder">
+              <MappingFragment StoreEntitySet="PurchaseOrder">
+                <ScalarProperty Name="ScanDate" ColumnName="ScanDate" />
+                <ScalarProperty Name="AnnouceDate" ColumnName="AnnouceDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+                <ScalarProperty Name="Deliver" ColumnName="Deliver" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
+                <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -17,8 +17,8 @@ namespace WMS.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Customer()
         {
-            this.PurchaseOrders = new HashSet<PurchaseOrder>();
             this.SalesOrders = new HashSet<SalesOrder>();
+            this.PurchaseOrders = new HashSet<PurchaseOrder>();
         }
     
         public string Id { get; set; }
@@ -64,8 +64,8 @@ namespace WMS.Models
         public virtual GroupGood GroupGood { get; set; }
         public virtual TypeCustomer TypeCustomer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
                 if (Request.Form.Count > 0)
                 {
                     if (Request.Form["warehouse"] == "-1")
@@ -71,9 +71,9 @@ namespace WMS.Controllers
                         Name = Request.Form["name"],
                         Deliver = Request.Form["deliver"],
                         Description = Request.Form["des"],
-                        CreateBy = session.FullName,
+                        CreateBy = session.Name,
                         CreateDate = DateTime.Now,
-                        ModifyBy = session.FullName,
+                        ModifyBy = session.Name,
                         ModifyDate = DateTime.Now,
                         Status = false,
                     };
@@ -113,8 +113,8 @@ namespace WMS.Controllers
                             }
                             data[index].CreateDate = DateTime.Now;
                             data[index].ModifyDate = DateTime.Now;
-                            data[index].CreateBy = session.FullName;
-                            data[index].ModifyBy = session.FullName;
+                            data[index].CreateBy = session.Name;
+                            data[index].ModifyBy = session.Name;
                             data[index].IdPurchaseOrder = id;
                             data[index].Status = false;
                         }
@@ -142,8 +142,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 if (!string.IsNullOrEmpty(id))
                 {                   
                     var po = (from p in db.PurchaseOrders
@@ -158,6 +158,9 @@ namespace WMS.Controllers
                                   idWarehouse = p.IdWareHouse,
                                   addressCustomer= p.Customer.AddRess,
                                   phone= p.Customer.Phone,
+                                  expiryDate = p.ExpiryDate,
+                                  annouceDate = p.AnnouceDate,
+                                  scanDate = p.ScanDate,
                                   status =p.Status,
                                   
                               }).ToList().LastOrDefault();   
@@ -242,7 +245,6 @@ namespace WMS.Controllers
         {
             try
             {
-                
                 string scanned = rm.GetString("Đã Quét").ToString();
                 string notScanned = rm.GetString("Chưa Quét").ToString();
                 string notScannedYet = rm.GetString("Chưa Quét Xong").ToString();

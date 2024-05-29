@@ -32,7 +32,7 @@ namespace WMS.Controllers
             try
             {
                 db.Configuration.ProxyCreationEnabled = false;
-                var session = (ApiAccount)Session["user"];
+                var session = (User)Session["user"];
                 var checkEpc = (from e in db.DetailWareHouses where e.IdGoods == upc && e.IdWareHouse == warehouse
                                 join w in db.WareHouses on e.IdWareHouse equals w.Id
                                 select new

@@ -34,6 +34,9 @@ namespace WMS.Models
         public Nullable<bool> Status { get; set; }
         public string Deliver { get; set; }
         public string IdCustomer { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.DateTime> AnnouceDate { get; set; }
+        public Nullable<System.DateTime> ScanDate { get; set; }
     
         public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

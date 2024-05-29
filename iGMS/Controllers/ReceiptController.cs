@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.SqlServer.Management.XEvent;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,14 +28,192 @@ namespace WMS.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public JsonResult Add(int statusSave, string id, string purchaseorder, string user1, string user2,string Des, string arrayGoods, string arrayepc)
+        public JsonResult Add(int statusSave, string id, string purchaseorder, string user1, string user2,string Des, string arrayGoods, int expirydate, int deadline)
         {
             try
             {
                 if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(purchaseorder))
                 {
-                    var session = (ApiAccount)Session["user"];
+                    if (statusSave != 0 && statusSave != 1)
+                    {
+                        return Json(new { status = 500, msg = "Trạng thái lưu không hợp lệ" });
+                    }
+                    var session = (User)Session["user"];
+                    var po = (from i in db.PurchaseOrders
+                              where i.Id == purchaseorder
+                              select i).FirstOrDefault();
+                    if(po == null)
+                    {
+                        return Json(new { status = 500, msg = "Mã phiếu nhập không hợp lệ" });
+                    }
+                    var detailGoodsOrder = JsonConvert.DeserializeObject<DetailGoodOrder[]>(arrayGoods);
+                    if (user1 == "-1" && user2 == "-1")
+                    {
+                        return Json(new { code = 300, msg = "Chưa có nhân viên kiểm hàng" });
+                    }
+                    else
+                    {
+                        if(user1 == "-1")
+                        {
+                            user1 = null;
+                        }
+                        if(user2 == "-1")
+                        {
+                            user2 = null;
+                        }
+                    }
+                    if (expirydate <= 0)
+                    {
+                        return Json(new { code = 300, msg = "Hạn gửi hàng không hợp lệ" });
+                    }
+                    else if (deadline < 0)
+                    {
+                        return Json(new { code = 300, msg = "Ngày thông báo không hợp lệ" });                    
+                    }
+                    var receipt = (from i in db.Receipts
+                                   where i.Id == id
+                                   select i).FirstOrDefault();
+                    if(receipt == null)
+                    {
+                        var newReceipt = new Receipt()
+                        {
+                            Id = id,
+                            IdPurchaseOrder = purchaseorder,
+                            IdUser1 = user1,
+                            IdUser2 = user2,
+                            Description = Des == "" ? null : Des,
+                            CreateDate = DateTime.Now,
+                            ModifyDate = DateTime.Now,
+                            CreateBy = session.Name,
+                            ModifyBy = session.Name,
+                            Status = statusSave == 1 ? true : false,
+                        };
+
+                        db.Receipts.Add(newReceipt);
+                    }
+                    else
+                    {
+                        receipt.IdUser1 = user1;
+                        receipt.IdUser2 = user2;
+                        receipt.Description = Des == "" ? null : Des;
+                        receipt.ModifyDate = DateTime.Now;
+                        receipt.ModifyBy = session.Name;
+                        receipt.Status = statusSave == 1 ? true : false;
+                    }
+                    var currentDate = DateTime.Now;
+                    if(po.ScanDate == null)
+                    {
+                        po.ScanDate = currentDate;
+                        po.ExpiryDate = currentDate.AddDays(expirydate);
+                        po.AnnouceDate = currentDate.AddDays(expirydate - deadline);
+                    }
+                    else
+                    {
+                        var time = Convert.ToDateTime(po.ScanDate);
+                        po.ExpiryDate = time.AddDays(expirydate);
+                        po.AnnouceDate = time.AddDays(expirydate - deadline);
+                    }
+                    po.ModifyDate = currentDate;
+                    po.ModifyBy = session.Name;
+
+                    for (int i = 0; i < detailGoodsOrder.Length; i++)
+                    {
+                        var goodId = detailGoodsOrder[i].IdGoods;
+                        var detailPO = (from j in db.DetailGoodOrders
+                                        where j.IdGoods == goodId && j.IdPurchaseOrder == purchaseorder
+                                        select j).FirstOrDefault();
+
+                        var quantityScan = detailGoodsOrder[i].QuantityScan - detailPO.QuantityScan;
+                        detailPO.QuantityScan = detailGoodsOrder[i].QuantityScan;
+                        if(detailPO.Quantity == detailPO.QuantityScan)
+                        {
+                            detailPO.Status = true;
+                        }
+                        
+                        var detailWH = (from j in db.DetailWareHouses
+                                        where j.IdWareHouse == po.IdWareHouse && j.IdGoods == goodId
+                                        select j).FirstOrDefault();
+                        if(detailWH != null)
+                        {
+                            detailWH.Inventory += quantityScan;
+                        }
+                        else
+                        {
+                            var newDetailWH = new DetailWareHouse()
+                            {
+                                IdWareHouse = po.IdWareHouse,
+                                IdGoods = goodId,
+                                Inventory = quantityScan
+                            };
+                            db.DetailWareHouses.Add(newDetailWH);
+                        }
+
+                        var good = (from j in db.Goods
+                                    where j.Id == goodId
+                                    select j).FirstOrDefault();
+                        good.Inventory += quantityScan;
+
+                        db.SaveChanges();
+                    }
+
+                    var listItemPO = (from i in db.DetailGoodOrders
+                                      where i.IdPurchaseOrder == purchaseorder
+                                      select i).ToList();
+
+                    if(statusSave == 1)
+                    {
+                        po.Status = true;
+                        var listReceiptFalse = db.Receipts.Where(x => x.IdPurchaseOrder == purchaseorder).ToList();
+                        if (statusSave == 1)
+                        {
+                            foreach (var item in listReceiptFalse)
+                            {
+                                item.Status = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var count = 0;
+                        var countListItemPO = listItemPO.Count();
+                        for (int i = 0; i < listItemPO.Count(); i++)
+                        {
+                            if (listItemPO[i].QuantityScan == listItemPO[i].Quantity)
+                            {
+                                count++;
+                            }
+                        }
+                        if(count == countListItemPO)
+                        {
+                            po.Status = true;
+                            var listReceiptFalse = db.Receipts.Where(x => x.IdPurchaseOrder == purchaseorder).ToList();
+                            foreach (var item in listReceiptFalse)
+                            {
+                                item.Status = true;
+                            }
+                        }
+                    }
+
+                    db.SaveChanges();
+                    return Json(new { status=200, arrayGoods = detailGoodsOrder });
+                }
+                else
+                {
+                    return Json(new { status = 500, msg = "Nhập Đủ Số Phiếu Nhập" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = 500, msg = rm.GetString("false") + e.Message });
+            }
+
+            /*try
+            {
+                if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(purchaseorder))
+                {
+                    var session = (User)Session["user"];
                     var purchaseOrder = db.PurchaseOrders.Find(purchaseorder);
                     var existingReceipt = db.Receipts.Find(id);
                     var idwarehouse = purchaseOrder.IdWareHouse;
@@ -52,8 +232,8 @@ namespace WMS.Controllers
                             Description = Des == "" ? null : Des,
                             CreateDate = DateTime.Now,
                             ModifyDate = DateTime.Now,
-                            CreateBy = session.FullName,
-                            ModifyBy = session.FullName,
+                            CreateBy = session.Name,
+                            ModifyBy = session.Name,
                             Status = statusSave == 1 ? true : false,
                         };
                         db.Receipts.Add(newReceipt);
@@ -104,7 +284,7 @@ namespace WMS.Controllers
                                     de.QuantityScan = detail.QuantityScan;
                                     de.Status = statusSave == 1 ? true : false;
                                     de.ModifyDate = DateTime.Now;
-                                    de.ModifyBy = session.FullName;
+                                    de.ModifyBy = session.Name;
                                 }
                                 else
                                 {
@@ -154,7 +334,7 @@ namespace WMS.Controllers
             catch (Exception e)
             {
                 return Json(new { status = 500, msg = rm.GetString("false") + e.Message }, JsonRequestBehavior.AllowGet);
-            }
+            }*/
         }
      
     [HttpGet]

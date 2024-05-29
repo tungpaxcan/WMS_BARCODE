@@ -34,6 +34,7 @@ namespace WMS.Models
         public Nullable<System.DateTime> ModifyDate { get; set; }
         public string ModifyBy { get; set; }
         public Nullable<bool> Status { get; set; }
+        public string PO { get; set; }
     
         public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -41,5 +42,6 @@ namespace WMS.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DetailSaleOrder> DetailSaleOrders { get; set; }
         public virtual WareHouse WareHouse { get; set; }
+        public virtual Receipt Receipt { get; set; }
     }
 }

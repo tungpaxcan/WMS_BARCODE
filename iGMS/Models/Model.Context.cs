@@ -45,7 +45,6 @@ namespace WMS.Models
         public virtual DbSet<ParamFunction> ParamFunctions { get; set; }
         public virtual DbSet<ParentFolder> ParentFolders { get; set; }
         public virtual DbSet<PurchaseNotify> PurchaseNotifies { get; set; }
-        public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual DbSet<Receipt> Receipts { get; set; }
         public virtual DbSet<RecentPage> RecentPages { get; set; }
         public virtual DbSet<SaleOrderNotify> SaleOrderNotifies { get; set; }
@@ -61,5 +60,6 @@ namespace WMS.Models
         public virtual DbSet<Function> Functions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Unit> Units { get; set; }
+        public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
     }
 }
