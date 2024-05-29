@@ -71,8 +71,6 @@ public partial class SalesOrder
 
     public virtual WareHouse WareHouse { get; set; }
 
-    public virtual PurchaseOrder PurchaseOrder { get; set; }
-
     public virtual Receipt Receipt { get; set; }
 
 }

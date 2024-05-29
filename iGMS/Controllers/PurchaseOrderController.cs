@@ -158,9 +158,6 @@ namespace WMS.Controllers
                                   idWarehouse = p.IdWareHouse,
                                   addressCustomer= p.Customer.AddRess,
                                   phone= p.Customer.Phone,
-                                  expiryDate = p.ExpiryDate,
-                                  annouceDate = p.AnnouceDate,
-                                  scanDate = p.ScanDate,
                                   status =p.Status,
                                   
                               }).ToList().LastOrDefault();   

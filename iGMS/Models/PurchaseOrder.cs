@@ -26,8 +26,6 @@ public partial class PurchaseOrder
 
         this.Receipts = new HashSet<Receipt>();
 
-        this.SalesOrders = new HashSet<SalesOrder>();
-
     }
 
 
@@ -57,10 +55,6 @@ public partial class PurchaseOrder
 
     public string IdCustomer { get; set; }
 
-    public Nullable<System.DateTime> ExpiryDate { get; set; }
-
-    public Nullable<System.DateTime> AnnouceDate { get; set; }
-
 
 
     public virtual Customer Customer { get; set; }
@@ -76,10 +70,6 @@ public partial class PurchaseOrder
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Receipt> Receipts { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<SalesOrder> SalesOrders { get; set; }
 
 }
 

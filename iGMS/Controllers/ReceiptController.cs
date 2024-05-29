@@ -34,6 +34,8 @@ namespace WMS.Controllers
         {
             try
             {
+                var currentDate = DateTime.Now;
+                var InventoryStatus = db.ModelSettings.Find("inventorystatus").Status;
                 if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(purchaseorder))
                 {
                     if (statusSave != 0 && statusSave != 1)
@@ -49,28 +51,21 @@ namespace WMS.Controllers
                         return Json(new { status = 500, msg = "Mã phiếu nhập không hợp lệ" });
                     }
                     var detailGoodsOrder = JsonConvert.DeserializeObject<DetailGoodOrder[]>(arrayGoods);
-                    if (user1 == "-1" && user2 == "-1")
+                    if (user1 == "-1")
                     {
-                        return Json(new { code = 300, msg = "Chưa có nhân viên kiểm hàng" });
+                        user1 = null;
                     }
-                    else
+                    if (user2 == "-1")
                     {
-                        if(user1 == "-1")
-                        {
-                            user1 = null;
-                        }
-                        if(user2 == "-1")
-                        {
-                            user2 = null;
-                        }
+                        user2 = null;
                     }
                     if (expirydate <= 0)
                     {
-                        return Json(new { code = 300, msg = "Hạn gửi hàng không hợp lệ" });
+                        return Json(new { code = 500, msg = "Hạn gửi hàng không hợp lệ" });
                     }
                     else if (deadline < 0)
                     {
-                        return Json(new { code = 300, msg = "Ngày thông báo không hợp lệ" });                    
+                        return Json(new { code = 500, msg = "Ngày thông báo không hợp lệ" });                    
                     }
                     var receipt = (from i in db.Receipts
                                    where i.Id == id
@@ -88,6 +83,8 @@ namespace WMS.Controllers
                             ModifyDate = DateTime.Now,
                             CreateBy = session.Name,
                             ModifyBy = session.Name,
+                            ExpiryDate = currentDate.AddDays(expirydate),
+                            AnnouceDate = currentDate.AddDays(expirydate - deadline),
                             Status = statusSave == 1 ? true : false,
                         };
 
@@ -102,102 +99,54 @@ namespace WMS.Controllers
                         receipt.ModifyBy = session.Name;
                         receipt.Status = statusSave == 1 ? true : false;
                     }
-                    var currentDate = DateTime.Now;
-                    if(po.ScanDate == null)
-                    {
-                        po.ScanDate = currentDate;
-                        po.ExpiryDate = currentDate.AddDays(expirydate);
-                        po.AnnouceDate = currentDate.AddDays(expirydate - deadline);
-                    }
-                    else
-                    {
-                        var time = Convert.ToDateTime(po.ScanDate);
-                        po.ExpiryDate = time.AddDays(expirydate);
-                        po.AnnouceDate = time.AddDays(expirydate - deadline);
-                    }
-                    po.ModifyDate = currentDate;
-                    po.ModifyBy = session.Name;
 
-                    for (int i = 0; i < detailGoodsOrder.Length; i++)
+                    foreach (var detail in detailGoodsOrder)
                     {
-                        var goodId = detailGoodsOrder[i].IdGoods;
-                        var detailPO = (from j in db.DetailGoodOrders
-                                        where j.IdGoods == goodId && j.IdPurchaseOrder == purchaseorder
-                                        select j).FirstOrDefault();
 
-                        var quantityScan = detailGoodsOrder[i].QuantityScan - detailPO.QuantityScan;
-                        detailPO.QuantityScan = detailGoodsOrder[i].QuantityScan;
-                        if(detailPO.Quantity == detailPO.QuantityScan)
-                        {
-                            detailPO.Status = true;
-                        }
+                        var de = db.DetailGoodOrders
+                            .SingleOrDefault(d => d.PurchaseOrder.IdWareHouse == po.WareHouse.Id && d.IdPurchaseOrder == purchaseorder && d.IdGoods == detail.IdGoods);
                         
-                        var detailWH = (from j in db.DetailWareHouses
-                                        where j.IdWareHouse == po.IdWareHouse && j.IdGoods == goodId
-                                        select j).FirstOrDefault();
-                        if(detailWH != null)
+                        if (de == null)
                         {
-                            detailWH.Inventory += quantityScan;
+                            return Json(new { status = 500, msg = rm.GetString("Mã Hàng Trong Danh Sách Không Có Trong Phiếu Nhập").ToString() }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
-                            var newDetailWH = new DetailWareHouse()
+                            var qtyScanned = detail.QuantityScan - (de.QuantityScan == null ? 0 : de.QuantityScan);
+                            var dew = db.DetailWareHouses
+                            .SingleOrDefault(d => d.IdWareHouse == po.WareHouse.Id && d.IdGoods == detail.IdGoods);
+                            if (dew != null)
                             {
-                                IdWareHouse = po.IdWareHouse,
-                                IdGoods = goodId,
-                                Inventory = quantityScan
-                            };
-                            db.DetailWareHouses.Add(newDetailWH);
-                        }
-
-                        var good = (from j in db.Goods
-                                    where j.Id == goodId
-                                    select j).FirstOrDefault();
-                        good.Inventory += quantityScan;
-
-                        db.SaveChanges();
-                    }
-
-                    var listItemPO = (from i in db.DetailGoodOrders
-                                      where i.IdPurchaseOrder == purchaseorder
-                                      select i).ToList();
-
-                    if(statusSave == 1)
-                    {
-                        po.Status = true;
-                        var listReceiptFalse = db.Receipts.Where(x => x.IdPurchaseOrder == purchaseorder).ToList();
-                        if (statusSave == 1)
-                        {
-                            foreach (var item in listReceiptFalse)
+                                if (InventoryStatus == true)
+                                {
+                                    var goods = db.Goods.Find(detail.IdGoods);
+                                    if (goods != null)
+                                    {
+                                        goods.Inventory += qtyScanned;
+                                    }
+                                    dew.Inventory += qtyScanned;
+                                }
+                                de.IdReceipt = id;
+                                de.QuantityScan = detail.QuantityScan;
+                                de.Status = statusSave == 1 ? true : false;
+                                de.ModifyDate = DateTime.Now;
+                                de.ModifyBy = session.Name;
+                            }
+                            else
                             {
-                                item.Status = true;
+                                var newDew = new DetailWareHouse
+                                {
+                                    IdWareHouse = po.WareHouse.Id,
+                                    IdGoods = detail.IdGoods,
+                                    Inventory = detail.QuantityScan,
+                                    Status = true,
+                                };
+                                db.DetailWareHouses.Add(newDew);
                             }
                         }
                     }
-                    else
-                    {
-                        var count = 0;
-                        var countListItemPO = listItemPO.Count();
-                        for (int i = 0; i < listItemPO.Count(); i++)
-                        {
-                            if (listItemPO[i].QuantityScan == listItemPO[i].Quantity)
-                            {
-                                count++;
-                            }
-                        }
-                        if(count == countListItemPO)
-                        {
-                            po.Status = true;
-                            var listReceiptFalse = db.Receipts.Where(x => x.IdPurchaseOrder == purchaseorder).ToList();
-                            foreach (var item in listReceiptFalse)
-                            {
-                                item.Status = true;
-                            }
-                        }
-                    }
-
                     db.SaveChanges();
-                    return Json(new { status=200, arrayGoods = detailGoodsOrder });
+                    return Json(new { status=200, msg = "Thành Công" });
                 }
                 else
                 {

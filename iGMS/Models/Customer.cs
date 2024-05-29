@@ -22,9 +22,9 @@ public partial class Customer
     public Customer()
     {
 
-        this.PurchaseOrders = new HashSet<PurchaseOrder>();
-
         this.SalesOrders = new HashSet<SalesOrder>();
+
+        this.PurchaseOrders = new HashSet<PurchaseOrder>();
 
     }
 
@@ -115,11 +115,11 @@ public partial class Customer
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
+    public virtual ICollection<SalesOrder> SalesOrders { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<SalesOrder> SalesOrders { get; set; }
+    public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
 
 }
 

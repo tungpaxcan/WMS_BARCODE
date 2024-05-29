@@ -80,16 +80,13 @@
         </div>
         <div class="form-group row">
             <label class="col-xl-2 col-lg-2 col-form-label">Hạn gửi hàng</label>
-            <div class="col-xl-3 col-lg-5">
+            <div class="col-xl-4 col-lg-4">
                 <input class="form-control" type="number" placeholder="Số ngày" id="expirydate" name="expirydate" />
             </div>
-        </div>
-        <div class="form-group row flex-lg-row">
             <label class="col-xl-2 col-lg-2 col-form-label">Thông báo trước khi đến hạn</label>
-            <div class="col-xl-3 col-lg-5">
+            <div class="col-xl-4 col-lg-4">
                 <input class="form-control" type="number" placeholder="Số ngày" name="deadline" id="deadline" />
             </div>
-            <label class="col-xl-3 col-lg-2 col-form-label">Ngày</label>
         </div>
         <div class="form-group row">
             <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Vị trí quét hàng</label>
@@ -97,9 +94,6 @@
                 <input class="form-control" readonly id="nameWarehouse" name="nameWarehouse" placeholder="" />
             </div>
         </div>
-        <button onclick="quethang()">
-            Quét
-        </button>
         @*<div class="form-group  row" id="desktoprfid">
             <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
             <div class="col-lg-10 col-xl-10">
@@ -283,15 +277,6 @@
      }
         function setInfoPurchase(po, detailPo, id) {
 
-            if (po.scanDate !== null && po.expiryDate !== null && po.annouceDate !== null) {
-                var scanDate = (jsonTodDate((po.scanDate).substr(6, 13)));
-                var expiryDate = (jsonTodDate((po.expiryDate).substr(6, 13)));
-                var annouceDate = (jsonTodDate((po.annouceDate).substr(6, 13)));
-
-                $('input[name="expirydate"]').val(calculateDays((scanDate), (expiryDate)))
-                $('input[name="deadline"]').val(calculateDays((annouceDate), (expiryDate)))
-            }
-
             $('input[name="datenhap"]').val(formatDate(po.createDate))
             $('input[name="nameCustomer"]').val(po.nameCustomer)
             $('input[name="nameWarehouse"]').val(po.nameWarehouse)
@@ -375,11 +360,6 @@
              "mahh":@Html.Raw(Json.Encode(Resources.Resource.Mã_HH.ToString())),
              "thieu": "@Resources.Resource.Thiếu",
              "dư":"@Resources.Resource.Dư",
-        }
-
-        function quethang() {
-            CompareReceipt("CLG225-00482R1227JP");
-            CompareReceipt("F33351311013276");
         }
         $(document).scannerDetection({
             timeBeforeScanTest: 200, // wait for the next character for upto 200ms
@@ -466,8 +446,6 @@
         //-------------------add--------------------
 
         function Add(statusSave) {
-            //Stop();
-            console.log(statusSave);
             var arrayGoods = [];
             var arrayRow = $('tbody').children(1).closest('tr.nhanhang');
             for (let i = 0; i < arrayRow.length / 2; i++) {
@@ -525,14 +503,6 @@
             var Des = $('[name="GhiChu"]').val();
             var expirydate = $('#expirydate').val();
             var deadline = $('#deadline').val();
-            if (expirydate == "") {
-                toastr.error("Chưa điền số ngày gửi hàng!");
-                return;
-            } else if (deadline == "") {
-                toastr.error("Chưa điền thông báo trước khi đến hạn bao nhiêu ngày!");
-                return;
-            }
-            //console.log(arrayGoods);
             $.ajax({
                 url: '/Receipt/Add',
                 type: 'post',
@@ -540,79 +510,11 @@
                     statusSave, id, purchaseorder, user1, user2, Des, arrayGoods: JSON.stringify(arrayGoods), expirydate, deadline
                 },
                 success: function (data) {
-                    console.log("hello");
                     if (data.status == 200) {
                         toastr.success(data.msg);
                         LastReceipt();
                         $('#ghiChu').text(Des);
                         $('#BILL').modal('show');
-                    } else if (data.status == 300) {
-                        /*Swal.fire({
-                            title: resourcereceipt.canhbao,
-                            text: data.msg,
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: resourcereceipt.quetlaitatca,
-                            cancelButtonText: resourcereceipt.huy,
-                            cancelButtonColor: "#d33",
-                            showCloseButton: true,
-                            showDenyButton: true,
-                            denyButtonText: resourcereceipt.quetlaimatrung,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                //Quét lại tất cả.
-                                //epcshow = [];
-                                $('td[class*="quantityscan"]').text("0").css('background', "red")
-                                $('#des').empty();
-                            } else if (result.dismiss === Swal.DismissReason.Deny) {
-                                // Tìm kiếm lấy mã trùng gửi...
-                                Swal.fire({
-                                    title: resourcereceipt.matrung,
-                                    html: data.epc,
-                                    icon: "info",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Ok",
-                                    cancelButtonText: resourcereceipt.gui,
-                                    showCloseButton: true,
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        //Ok
-                                        var amountS = $('.quantityscan' + data.c).eq(0);
-                                        var amount = $('#quantity' + data.c);
-                                        var bill = $('#BILL .quantityscan' + data.c);
-                                        epcshow = epcshow.filter(function (element) {
-                                            return element !== data.epc;
-                                        });
-                                        amountS.text(Number(amountS.text()) - 1);
-                                        if (Number(amountS.text()) < Number(amount.text())) {
-                                            amountS.css("background-color", 'red')
-                                            bill.css("background-color", 'red');
-                                        } else if (Number(amountS.text()) == Number(amount.text())) {
-                                            amountS.css("background-color", 'green')
-                                            bill.css("background-color", 'green');
-                                        } else {
-                                            amountS.css("background-color", 'yellow')
-                                            bill.css("background-color", 'yellow');
-                                        }
-                                        bill.text(amountS.text());
-                                    } else {
-                                        $.ajax({
-                                            url: "receipt/sendepc",
-                                            type: "get",
-                                            data: { epc: data.epc },
-                                            success: function (data) {
-
-                                            }
-                                        })
-                                    }
-                                });
-
-                            } else {
-                                //Hủy
-                                Swal.close();
-                            }
-                        });*/
-                        toastr.error(data.msg);
                     }
                     else {
                         toastr.error(data.msg);
@@ -622,7 +524,6 @@
                     $("#wait").css("display", "none");
                 }
             })
-            console.log("Hello2")
         }
         //-------------LastReceip----------
         function LastReceipt() {

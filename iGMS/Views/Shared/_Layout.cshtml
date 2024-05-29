@@ -1115,6 +1115,7 @@
 
         var chat = $.connection.realHub;
         chat.client.notify = function (message) {
+            console.log(message)
             if (message == "ok") {
                 chat();
                 if ($('#scroll').attr('data-idSend') != null) {
@@ -1126,10 +1127,10 @@
                 ChangeSession()
             }
             else if (message == "Inventory") {
+                
                 NotifyCheckStock();
 
             } else if (message == "locationEpc") {
-                console.log(01)
                 $.ajax({
                     url: '/Epcs/GetLocationEpc',
                     type: 'get',

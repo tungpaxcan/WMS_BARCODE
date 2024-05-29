@@ -344,9 +344,6 @@
           <Property Name="Status" Type="bit" />
           <Property Name="Deliver" Type="nvarchar(max)" />
           <Property Name="IdCustomer" Type="varchar" MaxLength="100" />
-          <Property Name="ExpiryDate" Type="datetime" />
-          <Property Name="AnnouceDate" Type="datetime" />
-          <Property Name="ScanDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Receipt">
           <Key>
@@ -362,6 +359,8 @@
           <Property Name="ModifyDate" Type="datetime" />
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
+          <Property Name="ExpiryDate" Type="datetime" />
+          <Property Name="AnnouceDate" Type="datetime" />
         </EntityType>
         <EntityType Name="RecentPages">
           <Key>
@@ -1222,8 +1221,8 @@
           <Property Name="Quantity" Type="Double" />
           <Property Name="QuantityScan" Type="Double" />
           <NavigationProperty Name="Good" Relationship="Self.FK_DetailGoodOrder_Goods" FromRole="DetailGoodOrder" ToRole="Goods" />
-          <NavigationProperty Name="Receipt" Relationship="Self.FK_DetailGoodOrder_Receipt" FromRole="DetailGoodOrder" ToRole="Receipt" />
           <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_DetailGoodOrder_PurchaseOrder" FromRole="DetailGoodOrder" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="Receipt" Relationship="WMSModel.FK_DetailGoodOrder_Receipt" FromRole="DetailGoodOrder" ToRole="Receipt" />
         </EntityType>
         <EntityType Name="DetailSaleOrder">
           <Key>
@@ -1432,24 +1431,6 @@
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="modifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Receipt">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdUser1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdUser2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="DetailGoodOrders" Relationship="Self.FK_DetailGoodOrder_Receipt" FromRole="Receipt" ToRole="DetailGoodOrder" />
-          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="Receipt" ToRole="SalesOrder" />
-          <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
-        </EntityType>
         <EntityType Name="RecentPage">
           <Key>
             <PropertyRef Name="Id" />
@@ -1647,18 +1628,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DetailGoodOrder_Receipt">
-          <End Role="Receipt" Type="Self.Receipt" Multiplicity="0..1" />
-          <End Role="DetailGoodOrder" Type="Self.DetailGoodOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Receipt">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailGoodOrder">
-              <PropertyRef Name="IdReceipt" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DetailSaleOrder_Goods">
           <End Role="Goods" Type="Self.Good" Multiplicity="0..1" />
           <End Role="DetailSaleOrder" Type="Self.DetailSaleOrder" Multiplicity="*" />
@@ -1824,7 +1793,6 @@
           <EntitySet Name="ParamFunctions" EntityType="Self.ParamFunction" />
           <EntitySet Name="ParentFolders" EntityType="Self.ParentFolder" />
           <EntitySet Name="PurchaseNotifies" EntityType="Self.PurchaseNotify" />
-          <EntitySet Name="Receipts" EntityType="Self.Receipt" />
           <EntitySet Name="RecentPages" EntityType="Self.RecentPage" />
           <EntitySet Name="SaleOrderNotifies" EntityType="Self.SaleOrderNotify" />
           <EntitySet Name="SalesOrders" EntityType="Self.SalesOrder" />
@@ -1858,10 +1826,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_DetailGoodOrder_Goods" Association="Self.FK_DetailGoodOrder_Goods">
             <End Role="Goods" EntitySet="Goods" />
-            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailGoodOrder_Receipt" Association="Self.FK_DetailGoodOrder_Receipt">
-            <End Role="Receipt" EntitySet="Receipts" />
             <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
           </AssociationSet>
           <AssociationSet Name="FK_DetailSaleOrder_Goods" Association="Self.FK_DetailSaleOrder_Goods">
@@ -1947,17 +1911,18 @@
             <End Role="Unit" EntitySet="Units" />
             <End Role="Good" EntitySet="Goods" />
           </AssociationSet>
-          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
-            <End Role="Receipt" EntitySet="Receipts" />
-            <End Role="SalesOrder" EntitySet="SalesOrders" />
-          </AssociationSet>
           <EntitySet Name="PurchaseOrders" EntityType="WMSModel.PurchaseOrder" />
+          <EntitySet Name="Receipts" EntityType="WMSModel.Receipt" />
           <AssociationSet Name="FK_PurchaseOrder_Customer" Association="WMSModel.FK_PurchaseOrder_Customer">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
           </AssociationSet>
           <AssociationSet Name="FK_DetailGoodOrder_PurchaseOrder" Association="WMSModel.FK_DetailGoodOrder_PurchaseOrder">
             <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+            <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailGoodOrder_Receipt" Association="WMSModel.FK_DetailGoodOrder_Receipt">
+            <End Role="Receipt" EntitySet="Receipts" />
             <End Role="DetailGoodOrder" EntitySet="DetailGoodOrders" />
           </AssociationSet>
           <AssociationSet Name="FK_PurchaseOrder_TypeStatus" Association="WMSModel.FK_PurchaseOrder_TypeStatus">
@@ -1971,6 +1936,10 @@
           <AssociationSet Name="FK_Receipt_PurchaseOrder" Association="WMSModel.FK_Receipt_PurchaseOrder">
             <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
             <End Role="Receipt" EntitySet="Receipts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrder_PurchaseOrder" Association="WMSModel.FK_SalesOrder_PurchaseOrder">
+            <End Role="Receipt" EntitySet="Receipts" />
+            <End Role="SalesOrder" EntitySet="SalesOrders" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="HeadFunction">
@@ -2175,18 +2144,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SalesOrder_PurchaseOrder">
-          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="0..1" />
-          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Receipt">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SalesOrder">
-              <PropertyRef Name="PO" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PurchaseOrder">
           <Key>
             <PropertyRef Name="Id" />
@@ -2204,14 +2161,31 @@
           <Property Name="Status" Type="Boolean" />
           <Property Name="Deliver" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IdCustomer" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
-          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
-          <Property Name="ScanDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Customer" Relationship="WMSModel.FK_PurchaseOrder_Customer" FromRole="PurchaseOrder" ToRole="Customer" />
           <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_PurchaseOrder" FromRole="PurchaseOrder" ToRole="DetailGoodOrder" />
           <NavigationProperty Name="TypeStatu" Relationship="WMSModel.FK_PurchaseOrder_TypeStatus" FromRole="PurchaseOrder" ToRole="TypeStatu" />
           <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="PurchaseOrder" ToRole="WareHouse" />
           <NavigationProperty Name="Receipts" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="PurchaseOrder" ToRole="Receipt" />
+        </EntityType>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdPurchaseOrder" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdUser1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdUser2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_Receipt" FromRole="Receipt" ToRole="DetailGoodOrder" />
+          <NavigationProperty Name="PurchaseOrder" Relationship="WMSModel.FK_Receipt_PurchaseOrder" FromRole="Receipt" ToRole="PurchaseOrder" />
+          <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_PurchaseOrder" FromRole="Receipt" ToRole="SalesOrder" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnouceDate" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_PurchaseOrder_Customer">
           <End Type="WMSModel.Customer" Role="Customer" Multiplicity="0..1" />
@@ -2234,6 +2208,18 @@
             </Principal>
             <Dependent Role="DetailGoodOrder">
               <PropertyRef Name="IdPurchaseOrder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailGoodOrder_Receipt">
+          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailGoodOrder" Role="DetailGoodOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailGoodOrder">
+              <PropertyRef Name="IdReceipt" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2270,6 +2256,18 @@
             </Principal>
             <Dependent Role="Receipt">
               <PropertyRef Name="IdPurchaseOrder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrder_PurchaseOrder">
+          <End Type="WMSModel.Receipt" Role="Receipt" Multiplicity="0..1" />
+          <End Type="WMSModel.SalesOrder" Role="SalesOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Receipt">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrder">
+              <PropertyRef Name="PO" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2589,22 +2587,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Receipts">
-            <EntityTypeMapping TypeName="WMSModel.Receipt">
-              <MappingFragment StoreEntitySet="Receipt">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
-                <ScalarProperty Name="IdUser1" ColumnName="IdUser1" />
-                <ScalarProperty Name="IdUser2" ColumnName="IdUser2" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="RecentPages">
             <EntityTypeMapping TypeName="WMSModel.RecentPage">
               <MappingFragment StoreEntitySet="RecentPages">
@@ -2829,9 +2811,6 @@
           <EntitySetMapping Name="PurchaseOrders">
             <EntityTypeMapping TypeName="WMSModel.PurchaseOrder">
               <MappingFragment StoreEntitySet="PurchaseOrder">
-                <ScalarProperty Name="ScanDate" ColumnName="ScanDate" />
-                <ScalarProperty Name="AnnouceDate" ColumnName="AnnouceDate" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
                 <ScalarProperty Name="Deliver" ColumnName="Deliver" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -2844,6 +2823,24 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
                 <ScalarProperty Name="IdTypeStatus" ColumnName="IdTypeStatus" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Receipts">
+            <EntityTypeMapping TypeName="WMSModel.Receipt">
+              <MappingFragment StoreEntitySet="Receipt">
+                <ScalarProperty Name="AnnouceDate" ColumnName="AnnouceDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IdUser2" ColumnName="IdUser2" />
+                <ScalarProperty Name="IdUser1" ColumnName="IdUser1" />
+                <ScalarProperty Name="IdPurchaseOrder" ColumnName="IdPurchaseOrder" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
