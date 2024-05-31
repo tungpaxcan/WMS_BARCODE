@@ -6,13 +6,10 @@ $(function UserSession() {
         type: 'get',
         success: function (data) {
             if (data.code == 200) {
-                $('span[name="userSession"]').append(data.user.FullName);
-                $('span[name="firstUserSession"]').append(data.Name);
+                $('span[name="userSession"]').append(data.Name);
+                $('span[name="firstUserSession"]').append(data.Name.substring(0,1));
                 $('span[name="nameServer"]').append(data.server);
                 $('span[name="nameData"]').append(data.database);
-/*                $('span[name="firstUserSession"]').append(data.user.substring(0,1));*/
-                //$('span[name="emailSession"]').append(data.email);
-                //$('span[name="loginTimeSession"]').append(data.loginTime);
             } else {
                 Swal.fire({
                     title: "Lỗi?",

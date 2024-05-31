@@ -73,7 +73,7 @@ namespace WMS.Controllers
                 EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder(connectionString);
                 server = new SqlConnectionStringBuilder(entityBuilder.ProviderConnectionString).DataSource;
                 database = new SqlConnectionStringBuilder(entityBuilder.ProviderConnectionString).InitialCatalog;
-                return Json(new { code = 200, user, server, database }, JsonRequestBehavior.AllowGet);
+                return Json(new { code = 200, user.Name, server, database }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

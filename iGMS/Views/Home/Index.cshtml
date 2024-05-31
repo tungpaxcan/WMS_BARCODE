@@ -196,7 +196,8 @@
     <script>
 
 
-      
+        PurchaseOrderNotify();
+        SaleOrderNotify()
         var con = $.connection.realHub;
 
         con.client.notify = function (message) {
@@ -204,7 +205,6 @@
             if (message == 'purchase') {
                 RoleClickPurchase();
                 PurchaseOrderNotify();
-                console.log(1);
             }
             else if (message == 'saleorder') {
                 SaleOrderNotify();
