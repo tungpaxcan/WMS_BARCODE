@@ -145,6 +145,11 @@ namespace WMS.Controllers
                             }
                         }
                     }
+                    if(statusSave == 1)
+                    {
+                        var PO = db.PurchaseOrders.SingleOrDefault(p => p.Id == purchaseorder);
+                        PO.Status = true;
+                    }
                     db.SaveChanges();
                     return Json(new { status=200, msg = "Thành Công" });
                 }

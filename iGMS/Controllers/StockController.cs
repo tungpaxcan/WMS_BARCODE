@@ -13,7 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 namespace WMS.Controllers
 {
     public class StockController : BaseController
-    {
+    { 
         // GET: Stock
         private WMSEntities db = new WMSEntities();
         ResourceManager rm = new ResourceManager("WMS.App_GlobalResources.Resource", typeof(Resources.Resource).Assembly);
@@ -49,6 +49,7 @@ namespace WMS.Controllers
         {
             try
             {
+
                 var check = db.DetailStocks.FirstOrDefault(x => x.IdStock == idStock);
                 if (check == null)
                 {
@@ -82,8 +83,8 @@ namespace WMS.Controllers
         {
             try
             {
-                var session = (ApiAccount)Session["user"];
-                var nameAdmin = session.UserName;
+                var session = (User)Session["user"];
+                var nameAdmin = session.User1;
                 var c = db.DetailStocks
                        .Where(x => x.IdStock == id)
                        .Select(s => new
@@ -136,12 +137,10 @@ namespace WMS.Controllers
                                 nameWarehouse = item.WareHouse.Name,
                                 idg = item.IdGoods,
                                 nameGoods = item.Good.Name,
-                                QuantityInventory = db.DetailWareHouses
-                                  .FirstOrDefault(dw => dw.IdWareHouse == item.IdWareHouse && dw.IdGoods == item.IdGoods).Inventory,
+                                QuantityInventory = item.QuantityInvetory,
                             }).ToList()
                         })
                         .ToList();
-
                     return Json(new { code = 200, stock }, JsonRequestBehavior.AllowGet);
                 }
                 else

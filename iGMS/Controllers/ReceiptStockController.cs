@@ -181,13 +181,57 @@ namespace WMS.Controllers
                                     }
                                 }
                             }
-                            if (data[index].IdGoods != null && data[index].IdWareHouse != null)
+                            else if(propertyName == "StartTime")
+                            {
+                                var s = Convert.ToDateTime(Request.Form[key]);
+                                if(stock.StartDate == null)
+                                {
+                                    stock.StartDate = s;
+                                }
+                                data[index].StartDate = s;
+                            }
+                            else if (propertyName == "EndTime")
+                            {
+                                var e = ReturnDate(Convert.ToDateTime(Request.Form[key]));
+                                if (stock.EndDate == null)
+                                {
+                                    stock.EndDate = (e);
+                                }
+                                data[index].EndDate = (e);
+                            }
+                            if (data[index].IdGoods != null && data[index].IdWareHouse != null && data[index].StartDate != null && data[index].EndDate != null)
                             {
                                 var idg = data[index].IdGoods;
                                 var idw = data[index].IdWareHouse;
-                                data[index].QuantityInvetory = db.DetailWareHouses.FirstOrDefault(x => x.IdGoods == idg && x.IdWareHouse == idw).Inventory;
+                                var s = data[index].StartDate;
+                                var e = data[index].EndDate;
+                                var getPOs = (from i in db.PurchaseOrders
+                                              where i.IdWareHouse == idw
+                                              select i).ToList();
+                                var countINV = 0;
+                                foreach (var PO in getPOs)
+                                {
+                                    var importGoodsinPO = (from i in db.DetailGoodOrders
+                                                           where i.IdGoods == idg && i.Status == true && i.IdPurchaseOrder == PO.Id && i.ModifyDate >= s && i.ModifyDate <= e
+                                                           select i).FirstOrDefault();
+                                    if (importGoodsinPO != null)
+                                    {
+                                        countINV += importGoodsinPO.QuantityScan == null ? 0 : (int)importGoodsinPO.QuantityScan;
+                                    }
+                                }
+                                data[index].QuantityInvetory = countINV;
+                                /*var detailwh = db.DetailWareHouses.FirstOrDefault(x => x.IdGoods == idg && x.IdWareHouse == idw);
+                                if (detailwh != null)
+                                {
+                                    data[index].QuantityInvetory = detailwh.Inventory;
+                                }
+                                else
+                                {
+                                    data[index].QuantityInvetory = 0;
+                                }*/
+                                //data[index].QuantityInvetory = db.DetailWareHouses.FirstOrDefault(x => x.IdGoods == idg && x.IdWareHouse == idw).Inventory;
                             }
-                           
+
                             data[index].IdStock = stock.Id;
                             data[index].Status = false;
                             var iddetailStock = "";
@@ -256,17 +300,54 @@ namespace WMS.Controllers
                 return Json(new { code = 500, msg = "Thất Bại" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        private DateTime ReturnDate(DateTime s)
+        {
+            var day = s.Day;
+            var month = s.Month;
+            var year = s.Year;
+            var datetime = new DateTime(year, month, day, 23, 59, 59);
+            return datetime;
+        }
+
         [HttpPost]
-        public JsonResult getdeatil(string IdGoods, string ArrayDetail)
+        public JsonResult getdeatil(string IdGoods, string ArrayDetail, DateTime tungay, DateTime denngay)
         {
             try
             {
+                denngay = ReturnDate(denngay);
                 var warehouse = JArray.Parse(ArrayDetail);
                 List<object> detailsList = new List<object>();
                 foreach (var tempData in warehouse)
                 {
+                    Dictionary<string, object> detail = new Dictionary<string, object>();
                     var idwarehouse = tempData["IdWareHouse"].ToString();
-                    var details = (from b in db.DetailWareHouses
+                    var wh = (from i in db.WareHouses
+                              where i.Id == idwarehouse
+                              select i).FirstOrDefault();
+                    var good = (from i in db.Goods
+                              where i.Id == IdGoods
+                              select i).FirstOrDefault();
+                    detail.Add("idWarehouse", wh.Id);
+                    detail.Add("nameWareHouse", wh.Name);
+                    detail.Add("idgoods", good.Id);
+                    detail.Add("nameGoods", good.Name);
+                    var getPOs = (from i in db.PurchaseOrders
+                                  where i.IdWareHouse == idwarehouse
+                                  select i).ToList();
+                    var countINV = 0;
+                    foreach(var PO in getPOs)
+                    {
+                        var importGoodsinPO = (from i in db.DetailGoodOrders
+                                               where i.IdGoods == IdGoods && i.Status == true && i.IdPurchaseOrder == PO.Id && i.ModifyDate >= tungay && i.ModifyDate <= denngay
+                                               select i).FirstOrDefault();
+                        if (importGoodsinPO != null)
+                        {
+                            countINV += importGoodsinPO.QuantityScan == null ? 0 : (int)importGoodsinPO.QuantityScan;
+                        }
+                    }
+                    detail.Add("qttInventory", countINV);
+                    /*var details = (from b in db.DetailWareHouses
                                    where b.IdGoods == IdGoods && b.IdWareHouse == idwarehouse
                                    select new
                                    {
@@ -275,14 +356,14 @@ namespace WMS.Controllers
                                        idWarehouse = b.IdWareHouse,
                                        nameWareHouse = b.WareHouse.Name,
                                        qttInventory = b.Inventory,
-                                   }).ToList();
-                    detailsList.Add(details);
+                                   }).ToList();*/
+                    detailsList.Add(detail);
                 }
                 return Json(new { code = 200, msg = "Thành Công !!!", detailsList }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Json(new { code = 500, msg = "Lỗi !!!" + e.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { code = 500, msg = "Lỗi !!!" + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
         [HttpPost]
@@ -304,6 +385,8 @@ namespace WMS.Controllers
                                      receiptstocker = p.CreateBy,
                                      //stocker = p.Stocker,
                                      status = p.Status,
+                                     startDate = p.StartDate,
+                                     endDate = p.EndDate
                                  }).ToList();
                     var detailStock = (from s in db.DetailStocks
                                        where s.IdStock == id
@@ -317,8 +400,7 @@ namespace WMS.Controllers
                                            unitGoods = s.Good.Unit.Name == null ? "" : s.Good.Unit.Name,
                                            idWarehouse = s.IdWareHouse,
                                            nameWarehouse = s.WareHouse.Name,
-                                           QuantityInventory = db.DetailWareHouses
-                                               .FirstOrDefault(dw => dw.IdWareHouse == s.IdWareHouse && dw.IdGoods == s.IdGoods).Inventory,
+                                           QuantityInventory = s.QuantityInvetory,
                                        }).ToList();
                     var warehouse = (from w in db.DetailStocks
                                      where w.IdStock == id

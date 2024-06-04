@@ -18,12 +18,12 @@ namespace WMS.Models
         public WareHouse()
         {
             this.Deliveries = new HashSet<Delivery>();
-            this.DetailStocks = new HashSet<DetailStock>();
             this.DetailWareHouses = new HashSet<DetailWareHouse>();
             this.EPCs = new HashSet<EPC>();
             this.Goods = new HashSet<Good>();
             this.PurchaseOrders = new HashSet<PurchaseOrder>();
             this.SalesOrders = new HashSet<SalesOrder>();
+            this.DetailStocks = new HashSet<DetailStock>();
         }
     
         public string Id { get; set; }
@@ -40,8 +40,6 @@ namespace WMS.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Delivery> Deliveries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DetailStock> DetailStocks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DetailWareHouse> DetailWareHouses { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EPC> EPCs { get; set; }
@@ -51,5 +49,7 @@ namespace WMS.Models
         public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DetailStock> DetailStocks { get; set; }
     }
 }

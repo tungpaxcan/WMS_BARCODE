@@ -31,6 +31,8 @@ namespace WMS.Models
         public Nullable<double> Residual { get; set; }
         public string Description { get; set; }
         public Nullable<bool> Status { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     
         public virtual Good Good { get; set; }
         public virtual Stock Stock { get; set; }

@@ -94,24 +94,88 @@
                     </select>
                 </div>
             </div>
-            <div style="height: 300px;overflow-y: scroll;">
-                <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
-                    <thead>
-                        <tr role="row">
-                            <th data-field="RecordID" class="datatable-cell-center datatable-cell datatable-cell-check"><span style="width: 30px;"><label class="checkbox checkbox-single checkbox-all kt-checkbox--solid"><input type="checkbox" id="allchange">&nbsp;<span></span></label></span></th>
-                            <th>Stt</th>
-                            <th>Mã Hàng</th>
-                            <th>Tên Hàng</th>
-                            <th>Nhóm Hàng</th>
-                            <th>Đơn Vị</th>
-                            <th>Hành Động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbd">
-                    </tbody>
-                </table>
+            <div class="form-group row" id="selectQuarterTime" style="display:none">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">Chọn năm<span style="color:red"> (*) </span></label>
+                <div class="col-xl-1">
+                    <select class="form-control" id="years" name="year" data-id="kt_select2_1"></select>
+                </div>
+                <label for="example-search-input" class="ml-10 col-xl-1 col-lg-2 col-form-label">Chọn quý</label>
+                <div class="col-xl-1">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="quarter-1" onchange="CheckQuarter(this)">
+                            <span></span>
+                        </label>
+                        Quý 1
+                    </span>
+                </div>
+                <div class="col-xl-1">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="quarter-2" onchange="CheckQuarter(this)">
+                            <span></span>
+                        </label>
+                        Quý 2
+                    </span>
+                </div>
+                <div class="col-xl-1">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="quarter-3" onchange="CheckQuarter(this)">
+                            <span></span>
+                        </label>
+                        Quý 3
+                    </span>
+                </div>
+                <div class="col-xl-1">
+                    <span class="switch">
+                        <label>
+                            <input type="checkbox" name="quarter-4" onchange="CheckQuarter(this)">
+                            <span></span>
+                        </label>
+                        Quý 4
+                    </span>
+                </div>
             </div>
-        </div>
+            <div class="form-group row" id="selectTime" style="display:flex">
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Từ_ngày</label>
+                <div class="col-xl-4">
+                    <input class="form-control" id="tungay" placeholder="Select time" type="date" onchange="onDateSelected()">
+                </div>
+                <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Đến_ngày</label>
+                <div class="col-xl-4">
+                    <input class="form-control" id="denngay" placeholder="Select time" type="date" onchange="onDateSelected()">
+                </div>
+            </div>
+            <div class="form-group" >
+                <div class="col-xl-3 row">
+                    <span class="switch">
+                        <label style="padding-right:15px">
+                            <input type="checkbox" id="chooseYear" onchange="CheckStockForYear(this)">
+                            <span></span>
+                        </label>
+                        Kiểm kê theo năm
+                    </span>
+                </div>
+            </div>
+                <div style="height: 300px;overflow-y: scroll;">
+                    <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info">
+                        <thead>
+                            <tr role="row">
+                                <th data-field="RecordID" class="datatable-cell-center datatable-cell datatable-cell-check"><span style="width: 30px;"><label class="checkbox checkbox-single checkbox-all kt-checkbox--solid"><input type="checkbox" id="allchange">&nbsp;<span></span></label></span></th>
+                                <th>Stt</th>
+                                <th>Mã Hàng</th>
+                                <th>Tên Hàng</th>
+                                <th>Nhóm Hàng</th>
+                                <th>Đơn Vị</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbd">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         <div class="card-footer">
             <div class="row">
                 <div class="col-2">
@@ -143,6 +207,7 @@
                 </div>
                 <p>- Người Tạo Phiếu : <span name="rcStocker"></span></p>
                 <p>- Kiểm Kê tại kho : <span name="nameware"></span></p>
+                <p>- Thời gian kiểm kê: <span name="timeCheck"></span></p>
                 <table class="table table-bordered" id="kt_datatable" role="grid" aria-describedby="kt_datatable_info" style="width:100%;">
                     <thead>
                     </thead>
@@ -184,6 +249,124 @@
     <script src="~/Scripts/jquery.scannerdetection.js"></script>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
     <script>
+        var tungay = "1900-12-12";
+        var denngay = "3000-12-12";
+        var checkYear = false;
+
+        function CheckQuarter(quarter) {
+            var getKey = quarter.getAttribute("name");
+            switch (getKey) {
+                case "quarter-1":
+                    checkOn(getKey);
+                    break;
+                case "quarter-2":
+                    if (quarter.checked) {
+                        checkOn(getKey);
+                    } else {
+                        checkOff(getKey);
+                    }
+                    break;
+                case "quarter-3":
+                    if (quarter.checked) {
+                        checkOn(getKey);
+                    } else {
+                        checkOff(getKey);
+                    }
+                    break;
+                case "quarter-4":
+                    checkOn(getKey);
+                    break;
+            }
+        }
+
+        function checkOff(quarterKey) {
+            var splitName = quarterKey.split("-");
+            var check1 = document.querySelector("input[name='" + splitName[0] + "-" + (parseInt(splitName[1]) - 1) + "']");
+            var check2 = document.querySelector("input[name='" + splitName[0] + "-" + (parseInt(splitName[1]) + 1) + "']");
+            if (check1.checked === true && check2.checked === true) {
+                check1.checked = false;
+                check2.checked = false;
+            }
+        }
+
+        function checkOn(quarterKey) {
+            switch (quarterKey) {
+                case "quarter-1":
+                    var splitName = quarterKey.split("-");
+                    var string = splitName[0];
+                    var check1 = document.querySelector("input[name='" + string + "-" + (parseInt(splitName[1]) + 3) + "']");
+                    if (check1.checked == true) {
+                        for (var i = 1; i < 3; i++) {
+                            document.querySelector("input[name='" + string + "-" + (parseInt(splitName[1]) + i) + "']").checked = true;
+                        }
+                    }
+                    break;
+                default:
+                    var splitName = quarterKey.split("-");
+                    var checkBefore = false;
+                    var string = splitName[0];
+                    for (var i = 1; i < splitName[1]; i++) {
+                        var first = document.querySelector("input[name='" + string + "-" + i + "']");
+                        if (i === 1 && first.checked) {
+                            checkBefore = true;
+                        } else if (splitName[1] === "4" && i === 2) {
+                            if (first.checked) {
+                                checkBefore = true;
+                            }
+                        }
+                        if (checkBefore) {
+                            first.checked = true;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        function getTimeStartFromQuarter(time){
+            var splitQuarter = time.split("-");
+            var string = splitQuarter[0];
+            var countQuarter = splitQuarter[1];
+            var array = [];
+            for (var i = countQuarter - 1; i >= 1; i--) {
+                if (i == countQuarter - 1) {
+                    var quarter = document.querySelector(("input[name='" + string + "-" + i + "']"));
+                    array.push(quarter);
+                }
+                var quarter = document.querySelector(("input[name='" + string + "-" + i + "']"));
+                if (quarter.checked) {
+
+                }
+            }
+        }
+
+        function CheckStockForYear(e) {
+            if (e.checked) {
+                $("#selectQuarterTime").css("display", "flex");
+                $("#selectTime").css("display", "none");
+
+                checkYear = true;
+            } else {
+                $("#selectQuarterTime").css("display", "none");
+                $("#selectTime").css("display", "flex");
+
+                checkYear = false;
+            }
+
+            console.log(checkYear)
+        }
+
+        function GenerateYears() {
+            var yearNow = new Date().getFullYear();
+            for (var i = yearNow; i >= 1900; i--) {
+                var string = `<option value="${i}">${i}</option>`;
+                $("#years").append(string);
+            }
+        }
+
+        GenerateYears();
+
+
+
         $(function GoodsChose() {
             $.ajax({
                 url: '/receiptstock/GoodsChose',
@@ -210,6 +393,7 @@
                 AllGoods();
             }
         });
+
         var allGoodsList = [];
         function AllGoods() {
             $.ajax({
@@ -469,6 +653,64 @@
             }
             return checkboxesChecked;
         }
+
+        function GetTimeQuarter(quarterKey, year) {
+            var time = {};
+            switch (quarterKey) {
+                case "quarter-1":
+                    time.tungay = year + "-01-01";
+                    time.denngay = year + "-03-31";
+                    break;
+                case "quarter-2":
+                    time.tungay = year + "-04-01";
+                    time.denngay = year + "-06-30";
+                    break;
+                case "quarter-3":
+                    time.tungay = year + "-07-01";
+                    time.denngay = year + "-09-30";
+                    break;
+                case "quarter-4":
+                    time.tungay = year + "-10-01";
+                    time.denngay = year + "-12-31";
+                    break;
+            }
+            return time;
+        }
+
+        function onDateSelected() {
+            tungay = $('#tungay').val().trim() == '' ? "1900-12-12" : $('#tungay').val().trim();
+            denngay = $('#denngay').val().trim() == '' ? "3000-12-12" : $('#denngay').val().trim();
+        }
+
+        function getTime() {
+            if (checkYear) {
+                var year = $("#years").val();
+                var count = 0;
+                var arrayQuarter = [];
+                var string = "quarter-"
+                for (var i = 1; i <= 4; i++) {
+                    if (document.querySelector("input[name='" + string + i + "']").checked) {
+                        count += 1;
+                        arrayQuarter.push(string + i);
+                    }
+                }
+                if (count === 4 || count === 0) {
+                    tungay = year + "-01-01";
+                    denngay = year + "-12-31";
+                } else {
+                    if (arrayQuarter.length === 1) {
+                        tungay = GetTimeQuarter(arrayQuarter[0], year).tungay;
+                        denngay = GetTimeQuarter(arrayQuarter[0], year).denngay;
+                    } else {
+                        tungay = GetTimeQuarter(arrayQuarter[0], year).tungay;
+                        denngay = GetTimeQuarter(arrayQuarter[arrayQuarter.length - 1], year).denngay;
+                    }
+                }
+            } else {
+                onDateSelected();
+            }
+        }
+
         //Popover
         var Popover = null;
         $(document).on('click', '.detail-icon', function (e) {
@@ -493,7 +735,6 @@
             $(this).on('shown.bs.popover', function () {
                 detailChoose(getIdGoods);
             });
-            
         });
         // Ẩn popover nếu nhấp ra ngoài popover
         $(document).on('click', function (e) {
@@ -503,6 +744,7 @@
         });
         // Hàm để hiển thị kho và số lượng tồn trong table Popover
         function detailChoose(IdGoods) {
+            getTime();
             var ArrayDetail = [];
             for (var i = 0; i < selectedWarehouses.length; i++) {
                 var IdWarehouse = selectedWarehouses[i].IdWareHouse;
@@ -510,23 +752,29 @@
                     "IdWareHouse": IdWarehouse,
                 });
             }
+            
             $.ajax({
                 url: '/receiptstock/getdeatil',
                 type: 'post',
-                data: { IdGoods: IdGoods, ArrayDetail: JSON.stringify(ArrayDetail) },
+                data: { IdGoods: IdGoods, ArrayDetail: JSON.stringify(ArrayDetail), tungay, denngay },
                 success: function (data) {
                     if (data.code == 200) {
                         $('#tbodytable').empty();
-                        console.log(data.detailsList);
-                        if (data.detailsList[0].length > 0) {
+                        if (data.detailsList.length <= 0) {
+                            toastr.info("Vui lòng chọn kho kiểm kê");
+                            return;
+                        } else {
                             data.detailsList.forEach(function (detailArray) {
-                                var detail = detailArray[0]; // Lấy phần tử đầu tiên trong mảng
-                                var newRowHTML = '<tr>' +
-                                    '<td>' + detail.nameWareHouse + '</td>' +
-                                    '<td>' + detail.nameGoods + '</td>' +
-                                    '<td>' + detail.qttInventory + '</td>' +
-                                    '</tr>';
-                                $('#tbodytable').append(newRowHTML);
+                                console.log(detailArray)
+                                if (Object.keys(detailArray).length > 0) {
+                                    var detail = detailArray; // Lấy phần tử đầu tiên trong mảng
+                                    var newRowHTML = '<tr>' +
+                                        '<td>' + detail.nameWareHouse + '</td>' +
+                                        '<td>' + detail.nameGoods + '</td>' +
+                                        '<td>' + detail.qttInventory + '</td>' +
+                                        '</tr>';
+                                    $('#tbodytable').append(newRowHTML);
+                                }
                             });
                         }
                     } else {
@@ -555,6 +803,7 @@
         // Thêm phiếu kiểm kê
         $(document).on('click', '#add', function (e) {
             e.preventDefault();
+            getTime();
             var form = document.getElementById("form");
             var formData = new FormData(form);
             var ArrayG = [];
@@ -571,6 +820,8 @@
             for (var i = 0; i < ArrayG.length; i++) {
                 formData.append('data[' + i + '].IdGoods', ArrayG[i].idgoods);
                 formData.append('data[' + i + '].IdWarehouse', ArrayG[i].idwarehouse);
+                formData.append('data[' + i + '].StartTime', tungay);
+                formData.append('data[' + i + '].EndTime', denngay);
             }
             var Des = $('[name="des"]').val();
             $.ajax({
@@ -606,6 +857,7 @@
                     $('span[name="iddh"]').empty();
                     $('span[name="datedh"]').empty();
                     $('span[name="nameware"]').empty();
+                    $('span[name="timeCheck"]').empty();
                     $('#tbdmodal').empty()
                     if (data.code == 200) {
                         $.each(data.stock, function (key, value) {
@@ -613,6 +865,7 @@
                             $('span[name="datedh"]').append(formatDate(value.createDate))
                             $('span[name="nameware"]').append(value.nameWarehouse);
                             $('span[name="rcStocker"]').append(value.receiptstocker)
+                            $('span[name="timeCheck"]').append("Từ " + formatDate(value.startDate) + " đến " + formatDate(value.endDate));
                         });
                         var firstIteration = true;
 
@@ -661,7 +914,12 @@
                                 tableHtml += '<td>' + goods.name + '</td>';
                                 tableHtml += '<td>' + goods.unit + '</td>';
                                 tableHtml += '<td>' + goods.group + '</td>';
-                                tableHtml += '<td>' + goods.quantity + '</td>';
+                                if (goods.quantity !== null) {
+                                    tableHtml += '<td>' + goods.quantity + '</td>';
+                                } else {
+                                    tableHtml += '<td> 0 </td>';
+                                }
+
                                 tableHtml += '</tr>';
                             });
                         }

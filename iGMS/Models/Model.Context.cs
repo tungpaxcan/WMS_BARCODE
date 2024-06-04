@@ -32,7 +32,6 @@ namespace WMS.Models
         public virtual DbSet<DetailEPC> DetailEPCs { get; set; }
         public virtual DbSet<DetailGoodOrder> DetailGoodOrders { get; set; }
         public virtual DbSet<DetailSaleOrder> DetailSaleOrders { get; set; }
-        public virtual DbSet<DetailStock> DetailStocks { get; set; }
         public virtual DbSet<DetailStockEpc> DetailStockEpcs { get; set; }
         public virtual DbSet<DetailWareHouse> DetailWareHouses { get; set; }
         public virtual DbSet<EPC> EPCs { get; set; }
@@ -62,5 +61,6 @@ namespace WMS.Models
         public virtual DbSet<Unit> Units { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WareHouse> WareHouses { get; set; }
+        public virtual DbSet<DetailStock> DetailStocks { get; set; }
     }
 }

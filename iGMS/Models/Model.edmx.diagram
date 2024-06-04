@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e382eab828f74d159779a38ba7c74a71" Name="Diagram1" ZoomLevel="54">
+      <Diagram DiagramId="e382eab828f74d159779a38ba7c74a71" Name="Diagram1" ZoomLevel="53">
         <EntityTypeShape EntityType="WMSModel.Backup" Width="1.5" PointX="10.75" PointY="4.75" />
         <EntityTypeShape EntityType="WMSModel.ChildrenFolder" Width="1.5" PointX="9.5" PointY="1.25" />
         <EntityTypeShape EntityType="WMSModel.Customer" Width="1.5" PointX="0.75" PointY="20" />
@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="WMSModel.DetailEPC" Width="1.5" PointX="11.75" PointY="0.75" />
         <EntityTypeShape EntityType="WMSModel.DetailGoodOrder" Width="1.5" PointX="11.25" PointY="20.375" />
         <EntityTypeShape EntityType="WMSModel.DetailSaleOrder" Width="1.5" PointX="13.75" PointY="20.125" />
-        <EntityTypeShape EntityType="WMSModel.DetailStock" Width="1.5" PointX="3" PointY="10" />
         <EntityTypeShape EntityType="WMSModel.DetailStockEpc" Width="1.5" PointX="5.25" PointY="9" />
         <EntityTypeShape EntityType="WMSModel.DetailWareHouse" Width="1.5" PointX="6" PointY="11.75" />
         <EntityTypeShape EntityType="WMSModel.EPC" Width="1.5" PointX="6" PointY="15.5" />
@@ -54,10 +53,6 @@
         <AssociationConnector Association="WMSModel.FK_DetailGoodOrder_Receipt" />
         <AssociationConnector Association="WMSModel.FK_DetailSaleOrder_Goods" />
         <AssociationConnector Association="WMSModel.FK_DetailSaleOrder_SalesOrder1" />
-        <AssociationConnector Association="WMSModel.FK_DetailStock_Goods" />
-        <AssociationConnector Association="WMSModel.FK_DetailStock_Stock" />
-        <AssociationConnector Association="WMSModel.FK_DetailStock_WareHouse" />
-        <AssociationConnector Association="WMSModel.FK_DetailStockEpc_DetailStock" />
         <AssociationConnector Association="WMSModel.FK_DetailWareHouse_Goods" />
         <AssociationConnector Association="WMSModel.FK_DetailWareHouse_WareHouse" />
         <AssociationConnector Association="WMSModel.FK_EPC_Goods" />
@@ -75,6 +70,11 @@
         <AssociationConnector Association="WMSModel.FK_Users_Role" />
         <AssociationConnector Association="WMSModel.FK_Users_RoleAdmin" />
         <AssociationConnector Association="WMSModel.FK_SalesOrder_WareHouse" />
+        <EntityTypeShape EntityType="WMSModel.DetailStock" Width="1.5" PointX="16.25" PointY="13.75" />
+        <AssociationConnector Association="WMSModel.FK_DetailStock_Goods" />
+        <AssociationConnector Association="WMSModel.FK_DetailStock_Stock" />
+        <AssociationConnector Association="WMSModel.FK_DetailStock_WareHouse" />
+        <AssociationConnector Association="WMSModel.FK_DetailStockEpc_DetailStock" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

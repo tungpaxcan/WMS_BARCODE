@@ -19,19 +19,6 @@
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="ChatMe">
-          <Property Name="Id" Type="int" />
-          <Property Name="Text" Type="nvarchar(max)" />
-          <Property Name="IdUserSend" Type="varchar" MaxLength="250" />
-          <Property Name="IdUserReceipt" Type="varchar" MaxLength="250" />
-          <Property Name="Status" Type="bit" />
-          <Property Name="CreateDate" Type="datetime" />
-          <Property Name="CreateBy" Type="nvarchar" MaxLength="250" />
-          <Property Name="ModifyDate" Type="datetime" />
-          <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
-        </EntityType>-->
         <EntityType Name="ChildrenFolder">
           <Key>
             <PropertyRef Name="Id" />
@@ -157,6 +144,8 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <Property Name="Residual" Type="float" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Status" Type="bit" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
         </EntityType>
         <EntityType Name="DetailStockEpc">
           <Key>
@@ -472,6 +461,8 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <Property Name="ModifyBy" Type="nvarchar" MaxLength="250" />
           <Property Name="Status" Type="bit" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -1139,7 +1130,6 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <EntitySet Name="DetailEPCs" EntityType="WMSModel.DetailEPC" />
           <EntitySet Name="DetailGoodOrders" EntityType="WMSModel.DetailGoodOrder" />
           <EntitySet Name="DetailSaleOrders" EntityType="WMSModel.DetailSaleOrder" />
-          <EntitySet Name="DetailStocks" EntityType="WMSModel.DetailStock" />
           <EntitySet Name="DetailStockEpcs" EntityType="WMSModel.DetailStockEpc" />
           <EntitySet Name="DetailWareHouses" EntityType="WMSModel.DetailWareHouse" />
           <EntitySet Name="EPCs" EntityType="WMSModel.EPC" />
@@ -1217,22 +1207,6 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
             <End Role="SalesOrder" EntitySet="SalesOrders" />
             <End Role="DetailSaleOrder" EntitySet="DetailSaleOrders" />
           </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_Goods" Association="WMSModel.FK_DetailStock_Goods">
-            <End Role="Good" EntitySet="Goods" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_Stock" Association="WMSModel.FK_DetailStock_Stock">
-            <End Role="Stock" EntitySet="Stocks" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStock_WareHouse" Association="WMSModel.FK_DetailStock_WareHouse">
-            <End Role="WareHouse" EntitySet="WareHouses" />
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DetailStockEpc_DetailStock" Association="WMSModel.FK_DetailStockEpc_DetailStock">
-            <End Role="DetailStock" EntitySet="DetailStocks" />
-            <End Role="DetailStockEpc" EntitySet="DetailStockEpcs" />
-          </AssociationSet>
           <AssociationSet Name="FK_DetailWareHouse_Goods" Association="WMSModel.FK_DetailWareHouse_Goods">
             <End Role="Good" EntitySet="Goods" />
             <End Role="DetailWareHouse" EntitySet="DetailWareHouses" />
@@ -1300,6 +1274,23 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <AssociationSet Name="FK_SalesOrder_WareHouse" Association="WMSModel.FK_SalesOrder_WareHouse">
             <End Role="WareHouse" EntitySet="WareHouses" />
             <End Role="SalesOrder" EntitySet="SalesOrders" />
+          </AssociationSet>
+          <EntitySet Name="DetailStocks" EntityType="WMSModel.DetailStock" />
+          <AssociationSet Name="FK_DetailStock_Goods" Association="WMSModel.FK_DetailStock_Goods">
+            <End Role="Good" EntitySet="Goods" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStock_Stock" Association="WMSModel.FK_DetailStock_Stock">
+            <End Role="Stock" EntitySet="Stocks" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStock_WareHouse" Association="WMSModel.FK_DetailStock_WareHouse">
+            <End Role="WareHouse" EntitySet="WareHouses" />
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetailStockEpc_DetailStock" Association="WMSModel.FK_DetailStockEpc_DetailStock">
+            <End Role="DetailStock" EntitySet="DetailStocks" />
+            <End Role="DetailStockEpc" EntitySet="DetailStockEpcs" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Backup">
@@ -1438,26 +1429,6 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailSaleOrder_Goods" FromRole="DetailSaleOrder" ToRole="Good" />
           <NavigationProperty Name="SalesOrder" Relationship="WMSModel.FK_DetailSaleOrder_SalesOrder1" FromRole="DetailSaleOrder" ToRole="SalesOrder" />
         </EntityType>
-        <EntityType Name="DetailStock">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IdStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="QuantityInvetory" Type="Double" />
-          <Property Name="QuantityStock" Type="Double" />
-          <Property Name="Suffice" Type="Double" />
-          <Property Name="Incomplete" Type="Double" />
-          <Property Name="Residual" Type="Double" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="DetailStock" ToRole="Good" />
-          <NavigationProperty Name="Stock" Relationship="WMSModel.FK_DetailStock_Stock" FromRole="DetailStock" ToRole="Stock" />
-          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="DetailStock" ToRole="WareHouse" />
-          <NavigationProperty Name="DetailStockEpcs" Relationship="WMSModel.FK_DetailStockEpc_DetailStock" FromRole="DetailStock" ToRole="DetailStockEpc" />
-        </EntityType>
         <EntityType Name="DetailStockEpc">
           <Key>
             <PropertyRef Name="Id" />
@@ -1546,12 +1517,12 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <Property Name="Line" Type="Int32" />
           <NavigationProperty Name="DetailGoodOrders" Relationship="WMSModel.FK_DetailGoodOrder_Goods" FromRole="Good" ToRole="DetailGoodOrder" />
           <NavigationProperty Name="DetailSaleOrders" Relationship="WMSModel.FK_DetailSaleOrder_Goods" FromRole="Good" ToRole="DetailSaleOrder" />
-          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="Good" ToRole="DetailStock" />
           <NavigationProperty Name="DetailWareHouses" Relationship="WMSModel.FK_DetailWareHouse_Goods" FromRole="Good" ToRole="DetailWareHouse" />
           <NavigationProperty Name="EPCs" Relationship="WMSModel.FK_EPC_Goods" FromRole="Good" ToRole="EPC" />
           <NavigationProperty Name="GroupGood" Relationship="WMSModel.FK_Goods_GroupGoods" FromRole="Good" ToRole="GroupGood" />
           <NavigationProperty Name="Unit" Relationship="WMSModel.FK_Goods_Unit" FromRole="Good" ToRole="Unit" />
           <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_Goods_WareHouse" FromRole="Good" ToRole="WareHouse" />
+          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="Good" ToRole="DetailStock" />
         </EntityType>
         <EntityType Name="GroupGood">
           <Key>
@@ -1810,6 +1781,8 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <Property Name="Status" Type="Boolean" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_Stock" FromRole="Stock" ToRole="DetailStock" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -1903,12 +1876,12 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <Property Name="MinInventory" Type="Int32" />
           <Property Name="MaxInventory" Type="Int32" />
           <NavigationProperty Name="Deliveries" Relationship="WMSModel.FK_Delivery_WareHouse" FromRole="WareHouse" ToRole="Delivery" />
-          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="WareHouse" ToRole="DetailStock" />
           <NavigationProperty Name="DetailWareHouses" Relationship="WMSModel.FK_DetailWareHouse_WareHouse" FromRole="WareHouse" ToRole="DetailWareHouse" />
           <NavigationProperty Name="EPCs" Relationship="WMSModel.FK_EPC_WareHouse1" FromRole="WareHouse" ToRole="EPC" />
           <NavigationProperty Name="Goods" Relationship="WMSModel.FK_Goods_WareHouse" FromRole="WareHouse" ToRole="Good" />
           <NavigationProperty Name="PurchaseOrders" Relationship="WMSModel.FK_PurchaseOrder_WareHouse" FromRole="WareHouse" ToRole="PurchaseOrder" />
           <NavigationProperty Name="SalesOrders" Relationship="WMSModel.FK_SalesOrder_WareHouse" FromRole="WareHouse" ToRole="SalesOrder" />
+          <NavigationProperty Name="DetailStocks" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="WareHouse" ToRole="DetailStock" />
         </EntityType>
         <Association Name="FK_ChildrenFolder_ParentFolder">
           <End Type="WMSModel.ParentFolder" Role="ParentFolder" Multiplicity="0..1" />
@@ -2051,54 +2024,6 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
             </Principal>
             <Dependent Role="DetailSaleOrder">
               <PropertyRef Name="IdSaleOrder" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_Goods">
-          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
-          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Good">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdGoods" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_Stock">
-          <End Type="WMSModel.Stock" Role="Stock" Multiplicity="0..1" />
-          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Stock">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdStock" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStock_WareHouse">
-          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
-          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WareHouse">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStock">
-              <PropertyRef Name="IdWareHouse" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DetailStockEpc_DetailStock">
-          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="0..1" />
-          <End Type="WMSModel.DetailStockEpc" Role="DetailStockEpc" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DetailStock">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DetailStockEpc">
-              <PropertyRef Name="IdDetailStock" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2306,6 +2231,76 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="DetailStock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IdWareHouse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IdGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IdStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="QuantityInvetory" Type="Double" />
+          <Property Name="QuantityStock" Type="Double" />
+          <Property Name="Suffice" Type="Double" />
+          <Property Name="Incomplete" Type="Double" />
+          <Property Name="Residual" Type="Double" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Good" Relationship="WMSModel.FK_DetailStock_Goods" FromRole="DetailStock" ToRole="Good" />
+          <NavigationProperty Name="Stock" Relationship="WMSModel.FK_DetailStock_Stock" FromRole="DetailStock" ToRole="Stock" />
+          <NavigationProperty Name="WareHouse" Relationship="WMSModel.FK_DetailStock_WareHouse" FromRole="DetailStock" ToRole="WareHouse" />
+          <NavigationProperty Name="DetailStockEpcs" Relationship="WMSModel.FK_DetailStockEpc_DetailStock" FromRole="DetailStock" ToRole="DetailStockEpc" />
+        </EntityType>
+        <Association Name="FK_DetailStock_Goods">
+          <End Type="WMSModel.Good" Role="Good" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Good">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdGoods" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStock_Stock">
+          <End Type="WMSModel.Stock" Role="Stock" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdStock" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStock_WareHouse">
+          <End Type="WMSModel.WareHouse" Role="WareHouse" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WareHouse">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStock">
+              <PropertyRef Name="IdWareHouse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetailStockEpc_DetailStock">
+          <End Type="WMSModel.DetailStock" Role="DetailStock" Multiplicity="0..1" />
+          <End Type="WMSModel.DetailStockEpc" Role="DetailStockEpc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DetailStock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetailStockEpc">
+              <PropertyRef Name="IdDetailStock" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2439,23 +2434,6 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="IdSaleOrder" ColumnName="IdSaleOrder" />
                 <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DetailStocks">
-            <EntityTypeMapping TypeName="WMSModel.DetailStock">
-              <MappingFragment StoreEntitySet="DetailStock">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Residual" ColumnName="Residual" />
-                <ScalarProperty Name="Incomplete" ColumnName="Incomplete" />
-                <ScalarProperty Name="Suffice" ColumnName="Suffice" />
-                <ScalarProperty Name="QuantityStock" ColumnName="QuantityStock" />
-                <ScalarProperty Name="QuantityInvetory" ColumnName="QuantityInvetory" />
-                <ScalarProperty Name="IdStock" ColumnName="IdStock" />
-                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
-                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2786,6 +2764,8 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
           <EntitySetMapping Name="Stocks">
             <EntityTypeMapping TypeName="WMSModel.Stock">
               <MappingFragment StoreEntitySet="Stock">
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
@@ -2887,6 +2867,25 @@ warning 6013: The table/view 'WMS_BARCODE.dbo.ChatMe' does not have a primary ke
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetailStocks">
+            <EntityTypeMapping TypeName="WMSModel.DetailStock">
+              <MappingFragment StoreEntitySet="DetailStock">
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Residual" ColumnName="Residual" />
+                <ScalarProperty Name="Incomplete" ColumnName="Incomplete" />
+                <ScalarProperty Name="Suffice" ColumnName="Suffice" />
+                <ScalarProperty Name="QuantityStock" ColumnName="QuantityStock" />
+                <ScalarProperty Name="QuantityInvetory" ColumnName="QuantityInvetory" />
+                <ScalarProperty Name="IdStock" ColumnName="IdStock" />
+                <ScalarProperty Name="IdGoods" ColumnName="IdGoods" />
+                <ScalarProperty Name="IdWareHouse" ColumnName="IdWareHouse" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

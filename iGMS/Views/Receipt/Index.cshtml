@@ -94,6 +94,7 @@
                 <input class="form-control" readonly id="nameWarehouse" name="nameWarehouse" placeholder="" />
             </div>
         </div>
+        <!--<button onclick="ADdd()">click</button>-->
         @*<div class="form-group  row" id="desktoprfid">
             <label for="example-search-input" class="col-xl-2 col-lg-2 col-form-label">@Resources.Resource.Hàng_Hóa<span style="color:red;"> (*) </span></label>
             <div class="col-lg-10 col-xl-10">
@@ -249,6 +250,11 @@
              Info(id)
          }
      })
+
+        function ADdd() {
+            CompareReceipt("CLG225-00482R1227JP");
+            CompareReceipt("F33351311013276");
+        }
 
      function Info(id) {
          $.ajax({
@@ -503,6 +509,14 @@
             var Des = $('[name="GhiChu"]').val();
             var expirydate = $('#expirydate').val();
             var deadline = $('#deadline').val();
+            if (expirydate === "") {
+                toastr.error("Chưa nhập số ngày gửi hàng");
+                return;
+            } else if (deadline === "") {
+                toastr.error("Chưa nhập số ngày thông báo trước khi đến hạn");
+                return;
+            }
+
             $.ajax({
                 url: '/Receipt/Add',
                 type: 'post',
